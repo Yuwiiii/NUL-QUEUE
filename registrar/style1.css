@@ -1,0 +1,121 @@
+.topbar {
+    background-color: #34418E; 
+    color: #fff; 
+    padding: 20px 30px; /* Increased padding top and bottom */
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); 
+    height: 60px; /* Increased height */
+}
+.logo {
+    width: 60px; /* Increased logo size */
+    height: 60px; /* Increased logo size */
+    margin-right: 10px;
+}
+
+/* Style for the text */
+.text {
+font-size: 24px;
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+margin-right: 1080px;
+font-weight: bold; /* Make the text bold */
+  }
+
+/* Push the text to the left */
+.text span {
+    margin-top: 5px; /* Add some margin to separate text from logo */
+}
+
+/* Adjust the font size of the second span */
+.text span:nth-child(2) {
+    font-size: 15px; /* Smaller font size for "Queuing System" */
+}
+
+.profile-icon {
+    width: 60px; /* Increased profile icon size */
+    height: 60px; /* Increased profile icon size */
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* Add this CSS to your existing CSS file or create a new one */
+.modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    background-color: #fff;
+    width: 30%;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.3); /* Add shadow */
+    position: relative;
+}
+
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+form {
+display: block;
+}
+
+label, input, textarea {
+display: block;
+margin-bottom: 10px;
+}
+
+button {
+padding: 10px 20px;
+background-color: #34418E;
+color: #fff;
+border: none;
+cursor: pointer;
+}
+
+button:hover {
+background-color: #34418E;
+}
+/* ... (your existing CSS styles) ... */
+
+/* Make textboxes stretch across the form */
+input[type="text"],
+textarea {
+    width: 95%;
+    /* Remove margin-bottom to make the textboxes stretch */
+}
+
+/* Make the dropdown match the size of the textboxes */
+select {
+    width: 97%;
+}
+
+/* Style the cancel and submit buttons */
+    button#cancelButton,
+    button#submitButton {
+        padding: 10px 75px; /* Increase the padding horizontally */
+        border-radius: 20px; /* Create an oblong shape */
+        width: auto; /* Allow buttons to stretch */
+    }
+
+/* Set the width to 7 columns and disable resizing */
+textarea#remarks {
+    width: 7em; /* Set width to 7 columns */
+    resize: none; /* Disable resizing */
+}

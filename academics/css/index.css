@@ -1,0 +1,859 @@
+body{
+    position: relative;
+    overflow-y: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.main-div{
+    min-height: 89.2%;
+    display: flex;
+}
+
+ .btn-div button:hover, 
+ .done-btn button:hover {
+    background-color: #1d2965;
+}
+
+.q-btn{
+    border: none;
+    background-color: #fde402;
+    padding: 13px;
+    font-size: 23px;
+    font-weight: 500;
+    color: #000000;
+    height: 60px;
+    cursor: pointer;
+}
+
+.tn-div{
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(240, 240, 240);
+}
+
+.tn-header{
+    background-color: #FFD41C;
+    padding: 15px;
+    text-align: center;
+}
+/* css/tn-list.css */
+
+
+
+.tn-list {
+    /* Set a fixed height or use a max-height to limit the container size */
+    height: 80px; /* Adjust the value as needed */
+  
+    /* Enable vertical scrolling if the content exceeds the specified height */
+    
+  
+    /* Add some padding and margin for better appearance */
+    /* padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px; */
+  }
+  
+
+ 
+  
+
+.kahitano-div{
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.lookup-btn{
+    height: 50px;
+    cursor: pointer;
+}
+
+
+/*Tracking List (Left Side)*/
+.queue-button{
+    border-bottom: solid 0.1px rgba(2, 2, 2, 0.212);
+    border-right: none;
+    border-left: none;
+    border-top: none;
+    background-color: #EDEDED;
+    padding: 13px;
+    font-size: 44px;
+    font-weight: 500;
+    color: black;
+    height: 100px;
+    cursor: pointer;
+    text-align: left;
+}
+.queue-button:hover{
+    background-color: #e2e2e2;
+}
+
+
+
+/*Student Details Display (Right Side)*/
+.form-div{
+    width: 75%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: -5px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.newque-div{
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    
+}
+
+.newque-div button{
+    background-color: rgb(24, 143, 24);
+    height: 50px;
+    width: 155px;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 12px;
+    margin-right: 12px;
+    border-radius: 5px;
+    
+}
+
+.newque-div i{
+    margin-left: 5px;
+}
+
+.newque-div button:hover{
+    background-color: rgb(20, 153, 20);
+}
+
+.form-div span{
+    margin-left: 10px;
+}
+
+.info-div{
+    width: 600px;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.info-div h1{
+    font-size: 55px;
+}
+.stdID-div, .transc-div, .endo-div, .rmk-div {
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+.stdID-div b, .transc-div b, .endo-div b, .rmk-div b {
+    font-size: 22px;
+}
+.time-div{
+    display:flex;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(198, 198, 198, 0.837);
+    font-size: 17px;
+}
+.msg-div{
+    width: 450px;
+    height: 120px;
+    padding: 20px;
+    margin-top: 15px;
+    background-color: rgb(223, 219, 219);
+    border-radius: 10px;
+}
+.btn-div button{
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 17px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.btn-div button:not(:last-child) {
+    margin-right: 10px; /* Add margin to the right of all buttons except the last one */
+}
+
+.btn-div button:not(:first-child) {
+    margin-left: 10px; /* Add margin to the right of all buttons except the last one */
+}
+
+
+.btn-div{
+    margin-top: 10px;
+    width: 490px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-div button i.fa-solid {
+    font-size: 22px;
+    margin-right: 8px;
+}
+
+/*Modals*/
+.modal-bg{
+    background-color: rgba(48, 43, 43, 0.685);
+    height: 99%;
+    width: 100%;
+    position: absolute;
+    top: 1;
+    display: none;
+    justify-content: center;
+    align-items: center;
+   
+}
+
+
+.queue-data-div{ /*check fetch_all_data.php*/
+    display: flex;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.confirm-div{
+    text-align: center;
+    margin-bottom: 15px;
+}
+.confirm-div p{
+    margin-top: 5px;
+    margin-bottom: 15px;
+    color: #FFD41C;
+}
+.confirm-div span{
+    color: #34418E;
+    font-weight: bold;
+    font-size: 60px;
+}
+.confirm-btn{
+    display: flex;
+    justify-content: center;
+}
+
+.form-modal h1, .done-modal h1, .confirm-modal h1{
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #34418E;
+    margin-top: 10px;
+}
+
+.modform-div form {
+    margin-top: 28px;
+}
+
+.modform-div {
+    display: none;
+    flex-direction: column;
+}
+
+.modform-div form .mema {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center; /* Align items vertically in the center */
+}
+
+.modform-div form .rms{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center; 
+}
+
+
+
+
+
+.modbtn-div{
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.done-div{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.done-btn{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+}
+
+.done-btn button{
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.text-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+}
+
+.text-div i{
+    width: 100px;
+    font-size: 95px;
+    color: rgb(29, 204,29);
+    margin-right: 20px;
+}
+
+
+.text-div h1{
+    font-size: 40px;
+}
+
+.mema select{
+    background-color: white;
+    width: 300px;
+    height: 33px;
+    cursor: pointer;
+    border: 1px solid gray;
+    border-radius: 10px;
+}
+
+.mema select option{
+    padding: 20px 20px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+    height: 20px;
+    margin-bottom: 50px;
+    font-size: 15px;
+}
+
+.mema select option:hover{
+    background-color: lightgray;
+}
+
+
+/* start form-modal */
+.form-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 48.5%;
+    margin-right: 25px;
+    margin-left: 25px;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 15px;
+    width: 100%; /* Adjusted width */
+    width: 549px;
+    padding: 20px;
+    z-index: 1000;
+    box-sizing: border-box; /* Include padding in width calculation */
+    overflow-x: hidden; /* Hide horizontal overflow */
+    
+}
+
+/* Add opacity background for the header */
+.form-modal header {
+    background-color: rgba(255, 255, 255, 0.9); /* Adjust the alpha (fourth) value for opacity */
+    border-radius: 15px 15px 0 0; /* Adjust border-radius for rounded corners */
+    padding: 10px;
+}
+
+.modform-div {
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.modform-div h1 {
+    margin-top: 10px;
+}
+
+.modform-div form label {
+    font-size: 18px;
+}
+
+.modform-div form .mema input,
+.modform-div form .mema select {
+    padding: 8px;
+    width: 300px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+.modform-div form .rms textarea {
+    padding: 8px;
+    width: 300px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    box-sizing: border-box; /* Include padding in width calculation */
+    resize: none;
+}
+
+.modform-div form .rms label {
+    font-size: 18px;
+    width: 120px;
+    display: block;
+}
+
+.modform-div form .mema label {
+    font-size: 18px;
+    width: 120px;
+    display: block;
+}
+
+.modbtn-div button,
+.confirm-btn button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.modbtn-div button:hover,
+.confirm-btn button:hover {
+    background-color: #1d2965;
+}
+
+.modbtn-div button:not(:last-child) {
+    margin-right: 10px;
+}
+
+.modbtn-div button:not(:first-child) {
+    margin-left: 10px;
+}
+
+
+/* Style for the 'Confirm Ending' modal */
+.confirm-end-modal {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    
+}
+
+.confirm-end-div {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 350px;
+    padding-left: 38px;
+    padding-right: 38px;
+}
+
+.confirm-end-btn {
+    margin-top: 20px;
+}
+
+.confirm-end-btn button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.confirm-end-div h1 {
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #34418E;
+    margin-top: 10px;
+}
+
+.confirm-end-div p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: black;
+}
+
+.confirm-end-div span {
+    color: #FFD41C;
+    font-weight: bold;
+    font-size: 60px;
+}
+
+.confirm-end-div button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+    
+}
+
+.confirm-end-div button:not(:last-child) {
+    margin-right: 10px; /* Add margin to the right of all buttons except the last one */
+}
+
+.confirm-end-div button:not(:first-child) {
+    margin-left: 10px; /* Add margin to the right of all buttons except the last one */
+}
+
+
+
+/* confim end transact button with no data */
+/* Style for the 'Please select a queue number first!' modal */
+#select-queue-modal {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1002; /* Higher z-index to overlay the form-modal and select-options-modal */
+}
+
+#select-queue-modal .confirm-end-div {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    backdrop-filter: blur(8px); /* Add backdrop-filter for the blur effect */
+}
+
+#select-queue-modal .confirm-end-btn {
+    margin-top: 20px;
+}
+
+#select-queue-modal .confirm-end-btn button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+#select-queue-modal h1 {
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #34418E;
+    margin-top: 10px;
+}
+
+#select-queue-modal p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: black;
+}
+
+#select-queue-modal span {
+    color: #FFD41C;
+    font-weight: bold;
+    font-size: 60px;
+}
+
+#select-queue-modal button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+/* Style for the 'Please select both 'Endorsed To' and 'Transaction' options' modal */
+#select-options-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0);
+    z-index: 0; /* Higher z-index to overlay the form-modal */
+}
+
+#select-options-modal .confirm-end-div {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px; /* Adjusted radius */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 468px; /* Same max-width as the form-modal */
+    box-sizing: border-box;
+    overflow-x: hidden;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#select-options-modal .confirm-end-btn {
+    margin-top: 20px;
+}
+
+#select-options-modal .confirm-end-btn button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+#select-options-modal h1 {
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #34418E;
+    margin-top: 10px;
+}
+
+#select-options-modal p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: black;
+}
+
+#select-options-modal span {
+    color: #FFD41C;
+    font-weight: bold;
+    font-size: 60px;
+}
+
+#select-options-modal button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+/* Style for the 'confirm-modal' */
+/* Style for the 'confirm-modal' */
+.confirm-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Higher z-index to overlay the form-modal and select-options-modal */
+}
+
+.confirm-div {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); */
+    text-align: center;
+    width: 450px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* backdrop-filter: blur(0px);  */
+    /* Add backdrop-filter for the blur effect */
+}
+
+.confirm-btn {
+    margin-top: 20px;
+}
+
+.confirm-btn button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.confirm-div h2 {
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #34418E;
+    margin-top: 10px;
+}
+
+.confirm-div p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: black;
+}
+
+.confirm-div span {
+    color: #FFD41C;
+    font-weight: bold;
+    font-size: 60px;
+}
+
+
+
+
+
+
+/* notify MODAL */
+/* Styles for the 'notifyFront' modal */
+#statusModal {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 350px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.confirm-end-btn {
+    margin-top: 20px;
+}
+
+.confirm-end-btn button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.modal-content h1 {
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #34418E;
+    margin-top: 10px;
+}
+
+.modal-content p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: black;
+}
+
+.modal-content span {
+    color: #FFD41C;
+    font-weight: bold;
+    font-size: 60px;
+}
+
+.modal-content button {
+    border: none;
+    border-radius: 100px;
+    width: 150px;
+    height: 48px;
+    background-color: #34418E;
+    font-size: 20px;
+    color: #FFD41C;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.modal-content button:not(:last-child) {
+    margin-right: 10px; /* Add margin to the right of all buttons except the last one */
+}
+
+.modal-content button:not(:first-child) {
+    margin-left: 10px; /* Add margin to the right of all buttons except the last one */
+}

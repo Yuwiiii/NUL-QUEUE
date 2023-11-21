@@ -1,0 +1,255 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+header{
+    background-color: #34418E;
+    display: flex;
+    justify-content: space-between;
+}
+
+img{
+    width: 40px;
+}
+
+
+
+.logo-div{
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    color: white;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    
+}
+.logo-div div{
+    margin-left: 10px;
+}
+.logo-div div p{
+    font-size: 13px;
+}
+
+.profile-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 999;
+    width: 100px;
+}
+
+.profile img {
+    margin-right: 30px;
+    width: 60px;
+}
+
+
+
+
+
+
+
+
+/* Profile Icon and Dropdown */
+.profile-div {
+  display: flex;
+  align-items: center;
+  
+  
+  position: relative;
+
+  flex-direction: column; /* Arrange the elements in a column */
+  text-align: center; /* Center text in the column */
+}
+
+#profile-icon {
+  font-size: 40px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+/* Adjust styles for the profile-info div */
+.profile-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 7px;
+}
+
+.profile-icon {
+  margin-right: 10px;
+  font-size: 55px; 
+  margin-left: 10px;/* Adjust the spacing between the icon and text as needed */
+}
+
+.profile-details {
+  flex-grow: 1; /* Allow the profile details to expand and occupy remaining space */
+}
+
+/* Raise the profile name slightly */
+#profile-name {
+  font-size: medium;
+  font-weight: bold;
+  margin-top: -3px; /* Adjust the margin-top to raise the profile name */
+}
+
+.availability-dropdown {
+  margin-left: -19px; /* Adjust the margin as needed */
+  
+}
+
+/* Status dot colors */
+.status-online {
+  background-color: rgb(85, 233, 85);
+}
+
+.status-offline {
+  background-color: red;
+}
+
+
+/* Common style for status dots */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 10px; 
+  
+}
+
+
+
+
+/* Adjust the spacing for the "Sign out" link */
+.left-align {
+  margin-top: 0px; /* Adjust the margin-top as needed */
+  margin-bottom: -6px;
+}
+
+/* Style the dropdown line to cover the entire content width */
+.dropdown-line {
+  width: 260px;
+  border: 0;
+  border-top: 1px solid #ccc;
+
+}
+
+
+
+
+
+
+
+
+.logout-link {
+  margin: 0;
+  font-size:medium;
+  align-self: flex-start;
+  padding-top: 10px; /* Add padding to separate the logout link from above elements */
+}
+
+.logout-link :hover{
+  background-color: #777;
+}
+
+/* Dropdown */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #ebebeb;
+  border-radius: 10px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  top: 75px;
+  right: 30px;
+  border: none;
+  min-width: 250px;
+  width: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0px;
+  padding: 6%;
+  padding-top: 12px;
+  
+  text-align: start;
+
+}
+
+label {
+  margin-right: 5px;
+}
+
+
+
+/* dropdown .availability-dropdown */
+.dropdown-content select {
+  font-size: 13px; 
+  margin-left: 15px; 
+  border: none;
+  outline: none;
+  border-radius: 100px;
+  background-color: #ebebeb;
+  cursor: pointer;
+  width: 150px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+
+.dropdown-content select option{
+  border: none;
+}
+
+
+
+
+/* Logout link aligned with Profile Name and Availability */
+a {
+  color: #333;
+  padding: 10px 12px;
+  text-decoration: none;
+  
+  display: inline-block;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.show {
+  display: block;
+}
+
+
+.dropdown-line{
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.profile-details{
+  margin-top: 10px;
+ 
+}
+
+
+
+/* Add styles for the availability status indicator */
+.status-indicator {
+  position: absolute;
+  top: 68%; 
+  right: 25px; 
+  transform: translateY(-50%); 
+  width: 15px; 
+  height: 15px; 
+  border-radius: 50%;
+  background-color: #00ff00;
+  border: solid #34418e;
+}
+
+/* Style the status indicator for "Available" */
+.status-indicator.available {
+  background-color: #00ff00; 
+}
+
+/* Style the status indicator for "Unavailable" */
+.status-indicator.unavailable {
+  background-color: white; 
+}

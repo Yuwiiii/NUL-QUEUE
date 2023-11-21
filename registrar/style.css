@@ -1,0 +1,127 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar {
+    width: 350px; /* Increase the width of the sidebar */
+    background-color: #34418E;
+    color: #fff;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 75px;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo img {
+    width: 150px;
+}
+
+.form-container {
+    margin: 0 auto;
+    width: 60%; /* Adjust the width as needed */
+    max-width: 500px; /* Limit the maximum width */
+    padding: 50px;
+    background-color: #fff;
+    border-radius: 25px;
+    margin-top: 100px;
+    margin-left: 600px; /* Add margin to move the form to the right */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+
+.btn-login {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 400px;
+}
+
+/* CSS Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Center the login button */
+.form-group.login-button {
+    text-align: center;
+}
+
+.btn-login {
+    background-color: #34418E;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block; 
+}
+
+
+/* Add this CSS rule to center the button within its parent container */
+.form-group.login-button button {
+    margin: 0 auto;
+}
+
+/* Add this CSS to style the heading */
+.heading {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.heading h2 {
+    font-weight: bold;
+    font-size: 24px; /* Adjust the font size as needed */
+}
+
+.heading h3 {
+    font-size: 18px; /* Adjust the font size as needed */
+    color: #34418E; /* You can change the color as desired */
+}
+
+.form-group .password-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Add this CSS rule to style the checkbox */
+.form-group .checkbox-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.form-group .checkbox-group input {
+    margin-right: 5px; /* Adjust the margin as needed */
+}
+

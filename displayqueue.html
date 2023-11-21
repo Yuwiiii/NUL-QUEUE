@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Queue</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles/displayqueue.css">
+    <link href='http://fonts.googleapis.com/css?family=' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    <div class="main-container">
+        <!-- TOP CONTAINER STARTS (NOW SERVING & DATETIME) -->
+        <header class="heading-datetime-container">
+            <div class="heading-container">
+                <h1 class="heading-text">NOW SERVING</h1>
+            </div>
+            <div class="datetime-container">
+                <h3 id="date"></h3>
+                <h1 id="time"></h1>
+            </div>
+        </header>
+        <!-- TOP CONTAINER ENDS (NOW SERVING & DATETIME) -->
+
+        <!-- MIDDLE CONTAINER STARTS (REGISTRAR ACCOUNTING ADMISSIONS) -->
+        <div class="raa-container">
+            <div class="registrar-container">
+                <div class="registrar-heading">
+                    <h1>REGISTRAR</h1>
+                </div>
+                <div class="registrar-queue-container">
+                    <div class="registrar-queue">
+                        <h2>R009</h2>
+                        <h2>WINDOW 1</h2>
+                    </div>
+                    <div class="registrar-queue">
+                        <h2>R009</h2>
+                        <h2>WINDOW 1</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="accounting-container">
+                <div class="accounting-heading">
+                    <h1>ACCOUNTING</h1>
+                </div>
+                <div class="accounting-queue-container">
+                    <div class="accounting-queue">
+                        <h2>R009</h2>
+                        <h2>WINDOW 1</h2>
+                    </div>
+                    <div class="accounting-queue">
+                        <h2>R009</h2>
+                        <h2>WINDOW 1</h2>
+                    </div>
+                    <div class="accounting-queue">
+                        <h2>R009</h2>
+                        <h2>WINDOW 1</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="admission-container">
+                <div class="admission-heading">
+                    <h1>ADMISSIONS</h1>
+                </div>
+                <div class="admission-queue-container">
+                    <div class="admission-queue">
+                        <h2>AD002</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- MIDDLE CONTAINER ENDS (REGISTRAR ACCOUNTING ADMISSIONS) -->
+
+        <!-- BOTTOM CONTAINER STARTS (ASSETS CLINIC ITRO GUIDANCE) -->
+        <div class="acig-container">
+            <div class="assets-container">
+                <div class="assets-heading">
+                    <h1>ASSETS</h1>
+                </div>
+                <div class="assets-queue-container">
+                    <div class="assets-queue">
+                        <h2>AD002</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="clinic-container">
+                <div class="clinic-heading">
+                    <h1>CLINIC</h1>
+                </div>
+                <div class="clinic-queue-container">
+                    <div class="clinic-queue">
+                        <h2>AD002</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="itso-container">
+                <div class="itso-heading">
+                    <h1>ITSO</h1>
+                </div>
+                <div class="itso-queue-container">
+                    <div class="itso-queue">
+                        <h2>AD002</h2>
+                        <h2>AD002</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="guidance-container">
+                <div class="guidance-heading">
+                    <h1>GUIDANCE</h1>
+                </div>
+                <div class="guidance-queue-container">
+                    <div class="guidance-queue">
+                        <h2>AD002</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- BOTTOM CONTAINER ENDS (ASSETS CLINIC ITRO GUIDANCE) -->
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script/displayscript.js"></script>
+</body>
+
+</html>

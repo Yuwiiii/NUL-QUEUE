@@ -1,0 +1,125 @@
+:root {
+    --primary-color: #34418E;
+    --secondary-color: #FFD41C;
+}
+
+* {
+    text-decoration: none;
+    list-style-type: none;
+}
+
+html {
+    font-size: 120%;
+}
+
+body::before {
+    content: "";
+    background-image: url("../assets/images/nulagunahero.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.55;
+    z-index: -1;
+}
+
+.main-container {
+    width: 90%;
+    margin: 5rem auto;
+    overflow-y: hidden;
+}
+
+.heading-datetime-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.heading-text-serving {
+    font-size: 10rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+#date {
+    font-size: 7rem;
+}
+
+#time {
+    font-size: 10rem;
+    font-weight: bold;
+}
+
+.offices-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.heading-container {
+    position: relative;
+    background-color: var(--secondary-color);
+    border-radius: 75px;
+    z-index: 2;
+}
+
+.office {
+    flex-grow: 1;
+}
+
+.heading-text {
+    font-size: 5rem;
+    color: var(--primary-color);
+    text-align: center;
+    padding: 1rem 10rem;
+}
+
+.queue {
+    position: relative;
+    padding: 8rem 5rem 4rem 5rem;
+    margin-top: -3rem;
+    background-color: var(--primary-color);
+    border-radius: 75px;
+}
+
+.queue h2 {
+    font-size: 5rem;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+/* MEDIA QUERY*/
+@media (max-width: 3600px) {
+    html {
+        font-size: 100%;
+    }
+}
+
+@media (max-width: 1920px) {
+    html {
+        font-size: 60%;
+    }
+
+    .queue {
+        border-radius: 50px;
+    }
+}
+
+@media (max-width: 1440px) {
+    html {
+        font-size: 45%;
+    }
+    .queue {
+        border-radius: 45px;
+    }
+}
+
+@media (max-width: 772px) {
+    body::before {
+        background-image: url("assets/images/nulagunaheromobile.jpg");
+    }
+}

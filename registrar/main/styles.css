@@ -1,0 +1,593 @@
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #34418E;
+    color: #fff;
+    padding: 20px;
+    position: fixed; 
+    width: 100%; 
+    top: 0;
+    left: 0; 
+    right: 0; 
+    z-index: 1000; 
+  }
+
+  .profile-icon {
+    cursor: pointer;
+    margin-right: 50px; 
+  }
+
+  .profile-info {
+    position: absolute;
+    top: 50px;
+    right: 70px;
+    background-color: #fff;
+    padding: 10px;
+    display: none;
+    border: 2px solid #34418E;
+    border-radius: 10px;
+    box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .profile-info:hover {
+    box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.5); 
+  }
+
+  .profile-info-content {
+    text-align: center;
+  }
+
+  .profile-name {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #000;
+  }
+
+  .profile-link {
+    text-decoration: none;
+    background-color: #34418E;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .profile-link:hover {
+    background-color: #26508B;
+  }
+
+  .logout-button {
+    background-color: #FFD41C;
+    color: #000000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .logout-button:hover {
+    background-color: #26508B;
+    color: #fff;
+  }
+
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        margin-right: 10px;
+      }
+    
+      .profile-separator {
+    border-top: 2px solid #34418E; 
+    margin: 10px 0; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+  }
+
+    .queue-header {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      position: relative;
+      background-color: yellow; 
+      padding: 10px;
+      border: 2px solid #000000;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+  }
+
+  .queue-header:hover {
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .queue-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 250px; 
+  bottom: -2px;
+  border-top: 2px solid #000000;
+  }
+    .queue-item {
+        cursor: pointer;
+        padding: 10px;
+        border: 2px solid #000000;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        width: 300%; 
+    }
+
+  .queue-item:hover {
+    background-color: #26508B;
+    color: white;
+  }
+
+  .next-btn:hover {
+    background-color: #FFD41C;
+    color: #000000;
+  }
+
+  .prev-btn:hover {
+    background-color: #FFD41C;
+    color: #000000;
+  }
+
+
+  #endorseButton:hover {
+    background-color: #FFD41C;
+    color: #000000;
+  }
+
+
+  .sidebar {
+    background-color: #d3d3d3;
+    color: black;
+    width: 250px;
+    padding: 10px;
+    border: 2px solid #000000;
+    position: fixed;
+    top: 80px; 
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
+    height: 100%; 
+  }
+
+.outinfo-div{
+  border: 2px solid #34418E;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin-right: -250px;
+  width: calc(50% - 2in); 
+}
+  
+
+  .output-div {
+    margin: 1.5in auto; 
+    background-color: white;
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+
+  .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); 
+  z-index: 1001; 
+  }
+
+  .f-modal {
+    background-color: white;
+    width: 40%;
+    max-width: 800px;
+    margin: 10% auto;
+    padding: 20px;
+    border: 2px solid #34418E;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-height: 80%; 
+    overflow-y: auto;   
+  }
+  .f-modal h1 {
+    margin-bottom: 20px; /* Adjust the spacing */
+  }
+  
+  #notifyModal label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px; /* Increase font size */
+    
+    background-color: #34418E; 
+    color: white;/* Set blue border for checkboxes */
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  #notifyModal .button-group {
+    margin-top: 20px; /* Adjust the spacing */
+  }
+  #notifyModal input[type="checkbox"][id^="window"]:hover + label {
+    background-color: #FFD41C;
+    color: black;
+  }
+  
+  
+  .form-container {
+  margin: 0 auto;
+  width: 60%; 
+  max-width: 500px; 
+  padding: 50px;
+  background-color: #fff;
+  border-radius: 25px;
+  margin-top: 100px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .form-group {
+  margin-bottom: 20px;
+  }
+
+  .form-group label {
+  display: block;
+  font-weight: bold;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+  width: 90%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  }
+
+  .form-group textarea {
+  height: auto; 
+  }
+
+  .form-group button {
+  background-color: #34418E;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0 10px;  
+  }
+
+  .heading {
+  text-align: center;
+  margin-bottom: 20px;
+  }
+
+  .heading h1 {
+  font-weight: bold;
+  font-size: 24px; 
+  color: #34418E; 
+  }
+
+  .center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .button-group button {
+    background-color: #ccc; 
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  #doneButton {
+    background-color: #34418E; 
+    margin-left: auto; 
+  }
+
+  #cancelButton {
+    background-color: #d3d3d3; 
+    color: #000000;
+    margin-left: auto; 
+  }
+
+  .right-button {
+    background-color: #34418E;
+    color: #fff;
+    padding: 10px 40px; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .left-button {
+    background-color: #34418E;
+    color: #fff;
+    padding: 10px 40px; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center; 
+  }
+
+  #endorseButton {
+    background-color: #34418E;
+    color: #fff;
+    padding: 10px; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    text-align: center; 
+  }
+
+  .next-btn {
+    background-color: #34418E;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin-top: 10px;
+    width: 100%; 
+  }
+
+  .prev-btn {
+    background-color: #34418E;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin-top: 10px;
+    width: 100%; 
+  }
+
+  .queue-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+  }
+
+
+  .popup-container {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+  }
+
+  .msg-div textarea {
+  border: 3px solid #34418E;
+  resize: none; 
+  width: 100%; 
+  }
+
+  .f-modal1 {
+  background-color: white;
+  width: 20%; 
+  max-width: 800px; 
+  margin: 10% auto; 
+  padding: 20px;
+  border: 2px solid #34418E;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .main {
+    min-height: calc(100vh - 10px); 
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    position: relative;
+  }
+
+  .tn-div {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(240, 240, 240);
+  }
+
+  .tn-div .active {
+    background-color: rgba(255, 255, 255, 0.896);
+    border-radius: 10px;
+  }
+
+  .tn-header {
+    background-color: #FFD41C;
+    padding: 15px;
+    text-align: center;
+  }
+
+  #notifyButton {
+    background-color: #FFD41C;
+    color: #000000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 490px;
+  }
+
+  button#cancelButton,
+  button#doneButton {
+      padding: 10px 75px; 
+      border-radius: 20px; 
+      width: 290px;
+  }
+
+  #cancelButton:hover {
+    background-color: #FFD41C;
+    color: #000000;
+  }
+
+  #doneButton:hover {
+    background-color: #FFD41C;
+    color: #000000;
+  }
+
+  #notifyButton:hover {
+    background-color: #34418E;
+    color: #fff;
+  }
+
+  .notification-message {
+    display: none;
+    position: fixed;
+    top: 100px;
+    right: 10px;
+    background-color: #34418E;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .notification-container {
+    position: fixed;
+    bottom: 20px;
+    right: -100%; /* Initially hides the notification off the screen */
+    transition: right 0.5s ease-in-out;
+    z-index: 1001;
+  }
+  
+  .notification-slide {
+    background-color: #34418E;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+  }
+  
+  .notification-text {
+    margin-right: 10px;
+  }
+  
+  .notification-slide.active {
+    right: 20px; /* Slide in when the active class is applied */
+  }
+  
+  .slide-notification {
+    position: fixed;
+    top: 50px;
+    right: -300px; /* Initially outside the viewport */
+    width: 250px;
+    height: 50px;
+    background-color: #2ecc71;
+    color: #fff;
+    text-align: center;
+    line-height: 50px;
+    transition: right 1s ease-in-out;
+    z-index: 9999; /* Ensure it appears above other elements */
+}
+
+#endTransactionButton {
+  background-color: transparent;
+  color: black;
+  border: 2px solid #34418E;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#endTransactionButton:hover {
+  background-color: #FFD41C;
+  color: black;
+}
+
+#submitCommentButton {
+  background-color: #34418E; 
+  margin-left: auto; 
+}
+
+button#cancelCommentButton,
+button#submitCommentButton {
+    padding: 10px 75px; 
+    border-radius: 20px; 
+    width: 290px;
+}
+
+#submitCommentButton:hover {
+  background-color: #FFD41C;
+  color: #000000;
+}
+
+#cancelCommentButton {
+  background-color: #d3d3d3; 
+  color: #000000;
+  margin-left: auto; 
+}
+
+#cancelCommentButton:hover {
+  background-color: #FFD41C;
+  color: #000000;
+}
+
+.notification-box {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  max-width: 300px;
+  background-color: #f44336;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  display: none;
+  animation: slideIn 0.5s ease-in-out, slideOut 0.5s ease-in-out 2.5s;
+}
+
+/* Add keyframe animations */
+@keyframes slideIn {
+  from {
+      transform: translateX(300px);
+  }
+  to {
+      transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+      transform: translateX(0);
+  }
+  to {
+      transform: translateX(300px);
+  }
+}
+
+

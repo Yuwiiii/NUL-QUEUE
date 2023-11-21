@@ -1,0 +1,279 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<head>
+  <link rel="stylesheet" type="text/css" href="./css/index.css" />
+  <link rel="stylesheet" type="text/css" href="./css/header.css" />
+  <link rel="stylesheet" type="text/css" href="./css/login.css" />
+  
+  <script
+    src="https://kit.fontawesome.com/bd6fee4447.js"
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include jQuery -->
+  <title>Academics Log-in</title>
+</head>
+<html>
+  <body>
+    <header>
+      <div class="logo-div">
+        <img src="img/nu_logo.png" />
+        <div>
+          <h1>NU LAGUNA</h1>
+          <p>QUEUEING SYSTEM</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-div2">
+      <div class="form-div">
+        <h1>SETUP NEW PASSWORD</h1>
+        <h3>ACADEMICS</h3>
+        <br /><br />
+        <div id="login-error" style="color: red"></div>
+        <!-- Container for error messages -->
+        <form id="login-form">
+          <div class="password-container2">
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Username"
+              required
+            />
+          </div>
+        <div class="password-container2">
+          <input
+            type="password"
+            id="id_password"
+            name="password"
+            placeholder="Password" 
+            required
+          />
+          <i class="fa-sharp fa-solid fa-eye" id="togglePassword" style="margin-left: -50px; cursor: pointer; padding: 10px;"></i>
+        </div>
+
+
+         <div class="password-container2">
+          <input
+            type="password"
+            id="id_password2"
+            name="password"
+            placeholder="Confirm Password" 
+            required
+          />
+          <i class="fa-sharp fa-solid fa-eye" id="togglePassword2" style="margin-left: -50px; cursor: pointer; padding: 10px;"></i>
+        </div>
+
+
+          <br /><br />
+
+          <input type="button" value="submit" onclick="resetPassword()" />
+        </form>
+      </div>
+    </div>
+
+    <script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#id_password');
+
+    togglePassword.addEventListener('click', function (e) {
+      // toggle the type attribute
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      // toggle the eye icon class
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+
+    const togglePassword2 = document.querySelector('#togglePassword2');
+    const password2 = document.querySelector('#id_password2');
+
+    togglePassword2.addEventListener('click', function (e) {
+      // toggle the type attribute
+      const type = password2.getAttribute('type') === 'password' ? 'text' : 'password';
+      password2.setAttribute('type', type);
+      // toggle the eye icon class
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+    
+    function resetPassword() {
+      // Get form data
+      var username = document.getElementById("username").value;
+      var password = document.getElementById("id_password").value;
+      var confirm_password = document.getElementById("id_password2").value;
+
+      // Check if passwords match
+      if (password !== confirm_password) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      // Create a data object to send to the server
+      var data = {
+        username: username,
+        password: password,
+      };
+
+      // Send an Ajax request to the server
+      $.ajax({
+        type: "POST",
+        url: "reset_password.php",
+        data: data,
+        success: function (response) {
+          if (response === "success") {
+            alert("Password reset successful.");
+            window.location.href = "login.html";
+          } else {
+            alert("Password reset failed. Please try again.");
+          }
+        },
+      });
+    }
+
+
+
+    </script>
+  </body>
+</html>
+=======
+<!DOCTYPE html>
+<head>
+  <link rel="stylesheet" type="text/css" href="./css/index.css" />
+  <link rel="stylesheet" type="text/css" href="./css/header.css" />
+  <link rel="stylesheet" type="text/css" href="./css/login.css" />
+  
+  <script
+    src="https://kit.fontawesome.com/bd6fee4447.js"
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include jQuery -->
+  <title>Academics Log-in</title>
+</head>
+<html>
+  <body>
+    <header>
+      <div class="logo-div">
+        <img src="img/nu_logo.png" />
+        <div>
+          <h1>NU LAGUNA</h1>
+          <p>QUEUEING SYSTEM</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-div2">
+      <div class="form-div">
+        <h1>SETUP NEW PASSWORD</h1>
+        <h3>ACADEMICS</h3>
+        <br /><br />
+        <div id="login-error" style="color: red"></div>
+        <!-- Container for error messages -->
+        <form id="login-form">
+          <div class="password-container2">
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Username"
+              required
+            />
+          </div>
+        <div class="password-container2">
+          <input
+            type="password"
+            id="id_password"
+            name="password"
+            placeholder="Password" 
+            required
+          />
+          <i class="fa-sharp fa-solid fa-eye" id="togglePassword" style="margin-left: -50px; cursor: pointer; padding: 10px;"></i>
+        </div>
+
+
+         <div class="password-container2">
+          <input
+            type="password"
+            id="id_password2"
+            name="password"
+            placeholder="Confirm Password" 
+            required
+          />
+          <i class="fa-sharp fa-solid fa-eye" id="togglePassword2" style="margin-left: -50px; cursor: pointer; padding: 10px;"></i>
+        </div>
+
+
+          <br /><br />
+
+          <input type="button" value="submit" onclick="resetPassword()" />
+        </form>
+      </div>
+    </div>
+
+    <script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#id_password');
+
+    togglePassword.addEventListener('click', function (e) {
+      // toggle the type attribute
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      // toggle the eye icon class
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+
+    const togglePassword2 = document.querySelector('#togglePassword2');
+    const password2 = document.querySelector('#id_password2');
+
+    togglePassword2.addEventListener('click', function (e) {
+      // toggle the type attribute
+      const type = password2.getAttribute('type') === 'password' ? 'text' : 'password';
+      password2.setAttribute('type', type);
+      // toggle the eye icon class
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+    
+    function resetPassword() {
+      // Get form data
+      var username = document.getElementById("username").value;
+      var password = document.getElementById("id_password").value;
+      var confirm_password = document.getElementById("id_password2").value;
+
+      // Check if passwords match
+      if (password !== confirm_password) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      // Create a data object to send to the server
+      var data = {
+        username: username,
+        password: password,
+      };
+
+      // Send an Ajax request to the server
+      $.ajax({
+        type: "POST",
+        url: "reset_password.php",
+        data: data,
+        success: function (response) {
+          if (response === "success") {
+            alert("Password reset successful.");
+            window.location.href = "login.html";
+          } else {
+            alert("Password reset failed. Please try again.");
+          }
+        },
+      });
+    }
+
+
+
+    </script>
+  </body>
+</html>
+>>>>>>> 370c682425903fd586c09a59324ffca61c227b8b

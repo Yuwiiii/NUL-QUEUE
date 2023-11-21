@@ -1,0 +1,42 @@
+
+.btn{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    cursor: pointer; 
+    font-size: 16px;
+    background-color: #34418E;
+    color: #ffdb58;
+    border: none;
+    border-radius: 50px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+}
+.btn:hover{
+    background-color: #ffdb58;
+    color: #34418E;
+    font-weight: lighter;
+
+}
+.button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    cursor: pointer; 
+    font-size: 16px;
+    background-color: #34418E;
+    color: #ffdb58;
+    border: none;
+    border-radius: 50px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+}
+.button:hover{
+    background-color: #ffdb58;
+    color: #34418E;
+    font-weight: bold;
+}
