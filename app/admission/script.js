@@ -94,11 +94,10 @@ $("#office").on('change', function () {
   if (selectedOption === "ACADEMICS") {
     $("#academics-colleges-dropdown").css("display", "block");
     $("#program-chairs-dropdown").css("display", "block");
-    $("#program-course-dropdown").css("display", "block");
   } else {
     $("#academics-colleges-dropdown").css("display", "none");
     $("#program-chairs-dropdown").css("display", "none");
-    $("#program-course-dropdown").css("display", "none");
+
   }
 })
 

@@ -52,12 +52,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
                 case 'Academics':
                     $tableName = 'academics_queue';
-                    $columnNames = "queue_number, student_id, remarks, program, concern, transaction, endorsed_to, course";
+                    $columnNames = "queue_number, student_id, remarks, program, concern, transaction, endorsed_from, course";
                     $columnValues = "'$queueNumber', '$studentId', '$remarks', '$program', '$concern', '$transaction','ACADEMICS', '$course'";
                     break;
             case 'Admission':
                     $tableName = 'admission';
-                    $columnNames = "queue_number, student_id, transaction, remarks, endorsed_to";
+                    $columnNames = "queue_number, student_id, transaction, remarks, endorsed_from";
                     $columnValues = "'$queueNumber', '$studentId','$transaction', '$remarks', 'ADMISSION'";
                     break;
             case 'Clinic':

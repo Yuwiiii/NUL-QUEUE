@@ -136,8 +136,7 @@ function endorse($post_data) {
           $course = $programRow['course'];
           $insertIntoOfficeQuery = "INSERT INTO academics_queue (queue_number, student_id, remarks, timestamp, endorsed_from, status, program, concern, course) VALUES ('$queue_number', '$student_id', '$remarks', '$time_stamp', '$endorsed_from', $status, '$program', '$concern', '$course')";
       }
-      
-    
+       
   }
    
   } else {

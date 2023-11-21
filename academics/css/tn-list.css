@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .tn-div{
     width: 25%;
     display: flex;
@@ -15,22 +14,4 @@
     height: 81.9vh; /* Adjust the height as needed */
     overflow-y: auto;
     border: none; /* Add a border for a visual separation */
-=======
-.tn-div{
-    width: 25%;
-    display: flex;
-    flex-direction: column;
-    background-color: rgb(240, 240, 240);
-}
-
-.tn-header{
-    background-color: #FFD41C;
-    padding: 15px;
-    text-align: center;
-}
-#tn-list-container {
-    height: 81.9vh; /* Adjust the height as needed */
-    overflow-y: auto;
-    border: none; /* Add a border for a visual separation */
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
   }

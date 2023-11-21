@@ -21,10 +21,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit();
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
     $selectedQueueNumber = $_POST['queue_number'];
     $selectedTimestamp = $_POST['timestamp'];
@@ -40,11 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
     $tableName = strtolower($formattedSelectedOffice); // Assuming the table names are lowercase
 
     // Initialize SQL statements
-<<<<<<< HEAD
     $sqlInsert = "";
-=======
-    $sqlInsertAcademics = "";
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
     $selectedProgram = "";
 
     if ($formattedSelectedOffice === 'Academics') {
@@ -52,7 +44,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         $selectedProgram = $_POST['program'];
         $selectedConcern = $_POST['concern'];
 
-<<<<<<< HEAD
         // Fetch the course value from the program_chairs table based on the selected concern
         $courseSql = "SELECT course FROM program_chairs WHERE full_name = '$selectedConcern'";
         $courseResult = $conn->query($courseSql);
@@ -70,27 +61,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
             }
         } else {
             echo "Error fetching course value for selected concern";
-=======
-        $sqlInsertAcademics = "INSERT INTO academics_queue (queue_number, timestamp, student_id, program, concern, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedConcern', '$selectedRemarks', 'Accounting', '$selectedTransaction')";
-
-        if ($conn->query($sqlInsertAcademics) !== TRUE) {
-            echo "Error inserting data into academics table: " . $conn->error;
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
         }
     } elseif ($formattedSelectedOffice === 'Admission') {
         // If the selected office is 'Admission', get the selected program from the dropdown
         $selectedProgram = $_POST['program'];
 
         // Add your query to insert data into the 'admission' table
-<<<<<<< HEAD
         $sqlInsert = "INSERT INTO admission (queue_number, timestamp, student_id, program, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedRemarks', 'Accounting', '$selectedTransaction')";
 
         if ($conn->query($sqlInsert) !== TRUE) {
-=======
-        $sqlInsertAdmission = "INSERT INTO admission (queue_number, timestamp, student_id, program, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedRemarks', 'Accounting', '$selectedTransaction')";
-
-        if ($conn->query($sqlInsertAdmission) !== TRUE) {
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
             echo "Error inserting data into admission table: " . $conn->error;
         }
     } else {
@@ -102,7 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         }
     }
 
-<<<<<<< HEAD
 // ... (Your existing code)
 
 // Insert the data into the 'accounting_logs' table
@@ -146,27 +124,6 @@ if ($conn->query($sqlInsertIntoAccountingLogs) === TRUE) {
 // ... (Any remaining code)
 
 
-=======
-    // Update the endorsed_to column in the 'accounting' table
-    $sqlUpdateEndorsedTo = "UPDATE accounting SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
-
-    if ($conn->query($sqlUpdateEndorsedTo) !== TRUE) {
-        echo "Error updating endorsed_to column: " . $conn->error;
-    }
-
-  // Update status column in the 'accounting' table and display table
-$sqlUpdateStatusAndDisplay = "UPDATE accounting, display
-SET accounting.status = 1,
-    display.status = 1
-WHERE accounting.queue_number = '$selectedQueueNumber'
-    AND display.queue_number = '$selectedQueueNumber'
-    AND accounting.endorsed_to = '$formattedSelectedOffice'
-    AND display.officeName = 'Accounting'";
-
-if ($conn->query($sqlUpdateStatusAndDisplay) !== TRUE) {
-echo "Error updating status and display table: " . $conn->error;
-}
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
 }
 
 
@@ -308,11 +265,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
         <h4 class="fw-bold text-light text-center">QUEUING SYSTEM</h4>
     </div>
     <button class="icon" onclick="exit()"><i class="fa fa-user" aria-hidden="true" ></i><p style="font-size:20px;">Logout</p></button>
-<<<<<<< HEAD
     <button class="button" style="position: absolute; right: 0; margin-top:11%; margin-right:1%" onclick="openQue()">Add New Queue</button>
-=======
-    <button class="button" style="position: absolute; right: 0; margin-top:11%; margin-right:1%" onclick="openQue()">Add New Que</button>
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
     <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
@@ -701,11 +654,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
             <input type="hidden" name="timestamp" value="<?php echo $selectedTimestamp; ?>">
             <input type="hidden" name="student_id" value="<?php echo $selectedStudentID; ?>">
             <input type="hidden" name="transaction" value="<?php echo $selectedTransaction; ?>">
-<<<<<<< HEAD
             <input type="hidden" name="course" id="course" value="">
 
-=======
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
 
             <p><strong>Endorse To:</strong> 
                 <select id="office" name="office" class="drop" onchange="handleOfficeChange()">
@@ -748,7 +698,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
         <select name="concern" class="drop" id="concern">
             <option value="" disabled selected>Choose a concern</option>
             <?php
-<<<<<<< HEAD
           // Fetch concern options from the program_chairs table where status is "available"
 $concernSql = "SELECT full_name, course FROM program_chairs";
 $concernResult = $conn->query($concernSql);
@@ -767,21 +716,6 @@ if ($concernResult->num_rows > 0) {
 
 // Include the hidden input field for course in the form
 echo '<input type="hidden" name="course" id="course" value="">';
-=======
-            // Fetch concern options from the program_chairs table where status is "available"
-            $concernSql = "SELECT full_name FROM program_chairs";
-            $concernResult = $conn->query($concernSql);
-
-            if ($concernResult->num_rows > 0) {
-                while ($concernRow = $concernResult->fetch_assoc()) {
-                    // Convert to uppercase using strtoupper
-                    echo "<option value='" . strtoupper($concernRow['full_name']) . "'>" . strtoupper($concernRow['full_name']) . "</option>";
-                }
-            } else {
-                // If no available concerns, display a default option or handle it as needed
-                echo "<option value=''>No available concerns</option>";
-            }
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
             ?>
         </select>
     </p>
@@ -940,11 +874,7 @@ echo '<input type="hidden" name="course" id="course" value="">';
 
     // Redirect to Que main
     function openQue() {
-<<<<<<< HEAD
         window.open('../academicsinterface.php', '_blank');
-=======
-        window.location.href = 'http://localhost/accounting/nu-queue-main/index.html';
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
         }
 
     // JavaScript to open the endorsement popup

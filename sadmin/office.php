@@ -309,11 +309,7 @@ if ($rowTableName) {
                             $columnsToSelect = [];
                             while ($row = mysqli_fetch_assoc($resultColumns)) {
                                 $columnName = $row['Field'];
-<<<<<<< HEAD
                                 if ($columnName !== 'id' && $columnName !== 'availability' && $columnName !== 'window') {
-=======
-                                if ($columnName !== 'availability' && $columnName !== 'window') {
->>>>>>> 370c682425903fd586c09a59324ffca61c227b8b
                                     $columnsToSelect[] = $columnName;
                                 }
                             }
