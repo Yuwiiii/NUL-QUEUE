@@ -1,8 +1,4 @@
-const socket = io('localhost:8080');
 
-socket.on('connection', () => {
-    console.log('Main queue connected');
-  });
 
 function submitStudentId() {
   var studentId = document.getElementById("studentId").value;
@@ -42,7 +38,6 @@ function registerStudent() {
               $('#thirdModal').modal('show');
 
             // Notify target offices of new Queue
-            socket.emit('newQueue', {office: office, queueNumber: queueNumber});
 
           } else {
               alert("Error: " + response.message);
@@ -81,7 +76,6 @@ function registerGuest() {
               $('#thirdModal').modal('show');
 
             // Notify target offices of new Queue
-            socket.emit('newQueue', {office: office, queueNumber: queueNumber});
 
             console.log("transmitting message")
           } else {

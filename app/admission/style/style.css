@@ -126,3 +126,7 @@ body{
   /* Disable pointer events */
   pointer-events: none;
 }
+
+#logout-btn {
+  cursor: pointer;
+}

@@ -120,6 +120,7 @@ function endorse($post_data) {
   $queue_number = $data['queue_number'];
   $office = $data['endorse_to'];
   $remarks = $data['remarks'];
+  $transaction = $data['transaction'];
   $student_id = $data['student_id'];
   $time_stamp = $data['timestamp'];
   $endorsed_from = $CURRENT_OFFICE;
@@ -134,14 +135,16 @@ function endorse($post_data) {
       if ($programRow = $sqlResult->fetch_assoc()) {
           // Convert to uppercase using strtoupper
           $course = $programRow['course'];
-          $insertIntoOfficeQuery = "INSERT INTO academics_queue (queue_number, student_id, remarks, timestamp, endorsed_from, status, program, concern, course) VALUES ('$queue_number', '$student_id', '$remarks', '$time_stamp', '$endorsed_from', $status, '$program', '$concern', '$course')";
+          $insertIntoOfficeQuery = "INSERT INTO academics_queue (queue_number, student_id, remarks, timestamp, endorsed_from, status, program, concern, course, transaction) VALUES ('$queue_number', '$student_id', '$remarks', '$time_stamp', '$endorsed_from', $status, '$program', '$concern', '$course', '$transaction')";
       }
        
   }
    
   } else {
-    $insertIntoOfficeQuery = "INSERT INTO $office (queue_number, student_id, remarks, timestamp, endorsed_from, status) VALUES ('$queue_number', '$student_id', '$remarks', '$time_stamp', '$endorsed_from', $status)";
+    $insertIntoOfficeQuery = "INSERT INTO $office (queue_number, student_id, remarks, timestamp, endorsed_from, status, transaction) VALUES ('$queue_number', '$student_id', '$remarks', '$time_stamp', '$endorsed_from', $status, '$transaction')";
   }
+
+
   $result = $conn->query($insertIntoOfficeQuery);
 
  

@@ -11,8 +11,9 @@ function insertQueueToAdmission($data)
     $timeStamp = date('Y-m-d H:i:s');
     $transaction = $data['transaction'] ?? null;
     $remarks = $data['remarks'] ?? null;
+    $endorsed = 'Kiosk';
 
-    $sql = "INSERT INTO admission (queue_number, student_id, timestamp, transaction, remarks, program) VALUES ('$queueNumber', '$studentId', '$timeStamp', '$transaction', '$remarks', '$program')";
+    $sql = "INSERT INTO admission (queue_number, student_id, timestamp, transaction, remarks, program, endorsed_from) VALUES ('$queueNumber', '$studentId', '$timeStamp', '$transaction', '$remarks', '$program', '$endorsed')";
 
     if ($conn->query($sql) === TRUE) {
         return true;

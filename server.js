@@ -15,6 +15,7 @@ const queueBeingHandled = new Map();
 // SOCKET LOGIC
 io.on('connection', (socket) => {
   console.log('a user connected');
+  alert("TEEEEEEEEEEEEEEESTTT")
 
   socket.on('storeUserInfo', (userInfo) => {
     const user = {

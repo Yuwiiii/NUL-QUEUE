@@ -2,6 +2,10 @@
 session_start();
 $STATUS_COMPLETE = 1;
 
+// if(!$(_SESSION['user']) ) {
+//   header('Location: /queue/app/auth');
+// }
+
 require_once './database.php';
 $sql = "SELECT * FROM admission  where (status != $STATUS_COMPLETE OR status IS NULL) ORDER BY timestamp ASC";
 $result = $conn->query($sql);
@@ -41,7 +45,7 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
     <div class="nav container-fluid d-flex align-items-center p-1 border justify-content-between px-2">
       <div class="d-flex align-items-center">
         <div class="logo p-2">
-          <img src="/assets/NU_shield.svg" alt="logo" id="logo">
+          <img src="/queue/assets/NU_shield.svg" alt="logo" id="logo">
         </div>
         <div>
           <h1 class=""><strong>NU LAGUNA</strong></h1>
@@ -103,7 +107,10 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
               </h1>
             </div>
             <div class="modal-body">
-              <p>Transaction: <span id="transaction"></span></p>
+            <p>Student Id: <span id="modal-student-id"></span></p>
+              <label for="modal-transaction">Transaction: </label>
+              <input type="text" id="modal-transaction" required>
+              <br>
               <label for="office">Endorse To: </label>
               <select name="office" id="office">
                 <?php foreach ($offices as $office) : ?>
@@ -131,7 +138,7 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
               
               <p>Remarks:</p>
               <div>
-                <textarea id="remarks" name="remarks" id="" cols="40" rows="5"></textarea>
+                <textarea id="remarks" name="remarks" id="" cols="40" rows="5" required></textarea>
               </div>
             </div>
             <div class="modal-footer d-flex justify-content-center border-0">
