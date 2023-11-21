@@ -10,7 +10,7 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
     if (!isset($_SESSION["login_alert_shown"])) {
         // Set the default concern in the session during login
         echo "<script> alert('Successfully logged in. Welcome, $full_name!\\n\\nOffice: $office' )</script>";
-
+        
         // Mark the alert as shown
         $_SESSION["login_alert_shown"] = true;
     }
