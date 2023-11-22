@@ -298,3 +298,46 @@ setInterval(function () {
 function returnIndex() {
     window.location.href = 'index.php'
   }
+
+  // DYNAMIC GET PER OFFICE CUSTOMER COUNT
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function getOfficeCustomerCount() {
+    $.ajax({
+        url: 'office-db-process.php',
+        type: 'GET',
+        dataType: 'json', // Expect JSON response
+        success: (data) => {
+            // Clear existing content
+            const officeCountContainer = $('#office-count').empty();
+
+            // Dynamically get the selected office from the URL parameter named 'office'
+            const selectedOffice = getParameterByName('office');
+
+            // Check if the selected office data is found
+            const selectedOfficeData = data.find(item => item.office === selectedOffice);
+            if (selectedOfficeData) {
+                const officeElement = $(`<span class="office-count-item">${selectedOfficeData.customer_count}</span>`);
+                officeCountContainer.append(officeElement);
+            } else {
+                console.log(`Data not found for the selected office: ${selectedOffice}`);
+            }
+        },
+        error: (xhr, status, error) => {
+            console.log(`Error: ${error}`);
+        }
+    });
+}
+
+$(document).ready(function () {
+    getOfficeCustomerCount();
+    setInterval(getOfficeCustomerCount, 1000);
+});

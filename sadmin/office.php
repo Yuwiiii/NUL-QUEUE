@@ -55,7 +55,7 @@ if ($rowTableName) {
         $rowPending = mysqli_fetch_assoc($resultPending);
         $pendingCount = $rowPending['pending_count'];
 
-        // Count all rows in the table
+        // FOR Count all rows in the table
         $sqlCustomerCount = "SELECT COUNT(*) AS customer_count FROM `$officeTableName`";
         $stmtCustomerCount = mysqli_prepare($conn, $sqlCustomerCount);
         mysqli_stmt_execute($stmtCustomerCount);
@@ -180,7 +180,7 @@ if ($rowTableName) {
                                         <input type="text" class="search" id="myInputcompleted"
                                             onkeyup="mycompletedTable()" placeholder="SEARCH" title="Type">
                                     </div>
-                                    <div class="table-container" style="max-height: 521px; overflow-y: scroll; overflow-x: auto;">
+                                    <div class="table-container" style="height: 400px; overflow-y: scroll; overflow-x: auto;">
                                         <?php
                                         // Check if the selected office exists in the 'offices' table
                                         if ($rowTableName) {
