@@ -176,8 +176,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             echo "<td>" . $items['window'] . "</td>";
                                             echo "<td>" . $items['username'] . "</td>";
                                             // echo "<td>" . $items['password'] . "</td>";
-                                            echo "<td><button class='btn btn-edit my-2 my-sm-0 mx-2' type='submit'>Edit</button>";
-                                            echo "<button class='btn btn-red my-2 my-sm-0 mx-2' type='submit'>Delete</button></td>";
+                                            echo "<td><button class='btn btn-edit my-2 my-sm-0 mx-2 edit-button' onclick='openEditUserModal(" . $items['ID'] . ", \"" . $items['full_name'] . "\", \"" . $items['office'] . "\", \"" . $items['window'] . "\", \"" . $items['username'] . "\" , \"" . $items['password'] . "\")'>Edit</button>";
+                                            echo "<button class='btn btn-red my-2 my-sm-0 mx-2' type='button' onclick='deleteUser(" . $items['ID'] . ")'>Delete</button>";
                                             echo "</tr>";
                                         }
                                     } else {
