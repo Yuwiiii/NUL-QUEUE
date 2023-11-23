@@ -114,7 +114,7 @@
     </div>
 
     <!-- Third Modal -->
-    <div class="modal fade" id="thirdModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="thirdModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header d-block border-0 pb-0">
@@ -128,7 +128,7 @@
                     <span class="custom-primary-color fs-1 queue-number" id="queueNumber">Loading...</span>
                 </div>
                 <div class="modal-footer d-flex flex-column border-0">
-                    <button type="button" class="btn btn-yes px-4 rounded" data-bs-dismiss="modal" onclick='returnIndex()'>DONE</button>
+                    <button type="button" class="btn btn-yes px-4 rounded" data-bs-dismiss="modal" onclick='returnIndex()' id="doneButton">DONE</button>
                 </div>
             </div>
         </div>
@@ -137,6 +137,22 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="script/script.js"></script>
     <script src="script/printThis.js"></script>
+    <script>
+        //disable done button for 5 seconds
+        document.addEventListener('DOMContentLoaded', function () {
+            var doneButton = document.getElementById('doneButton');
+
+            function disableDoneButton() {
+                doneButton.disabled = true;
+                setTimeout(function () {
+                    doneButton.disabled = false;
+                }, 5000);
+            }
+            $('#thirdModal').on('show.bs.modal', function () {
+                disableDoneButton();
+            });
+        });
+    </script>
 </body>
 
 </html>
