@@ -73,7 +73,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-center border-0">
                     <button type="button" class="btn btn-yes px-4 rounded-pill" data-bs-toggle="modal"
-                        data-bs-target="#thirdModal" id="ADMISSIONBTN" onclick="registerStudent()">YES</button>
+                        data-bs-target="#thirdModal" onclick="registerStudent()" id="btn-print-qn">YES</button>
                     <button type="button" class="btn btn-no px-4 rounded-pill" data-bs-dismiss="modal">NO</button>
                 </div>
             </div>
@@ -85,13 +85,13 @@
 
 
     <!-- Modal -->
-    <div class="modal fade" id="thirdModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="thirdModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header d-block border-0 pb-0">
                     <h1 class="modal-title fs-4 text-center custom-bold custom-primary-color" id="modalTitle3">
                         REGISTRAR</h1>
-                    <p class="modal-secondary text-center custom-secondary-color custom-italic p-0 m-0">Please proceed
+                    <p id="desc" class="modal-secondary text-center custom-secondary-color custom-italic p-0 m-0">Please proceed
                         to your selected office. Take note of your Queuing Number:</p>
                     <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                 </div>
@@ -99,7 +99,7 @@
                     <span class="custom-primary-color fs-1 queue-number" id="queueNumber">Loading...</span>
                 </div>
                 <div class="modal-footer d-flex flex-column border-0">
-                    <button type="button" class="btn btn-yes px-4 rounded-pill" data-bs-dismiss="modal" onclick='returnIndex()'>DONE</button>
+                    <button type="button" class="btn btn-yes px-4 rounded-pill" data-bs-dismiss="modal" onclick='returnIndex()' id="doneButton">DONE</button>
                 </div>
             </div>
         </div>
@@ -109,6 +109,23 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.socket.io/4.3.1/socket.io.min.js"></script>
     <script src="script/client.js"></script>
+    <script src="script/printThis.js"></script>
+    <script>
+        //disable done button for 5 seconds
+        document.addEventListener('DOMContentLoaded', function () {
+            var doneButton = document.getElementById('doneButton');
+
+            function disableDoneButton() {
+                doneButton.disabled = true;
+                setTimeout(function () {
+                    doneButton.disabled = false;
+                }, 5000);
+            }
+            $('#thirdModal').on('show.bs.modal', function () {
+                disableDoneButton();
+            });
+        });
+    </script>
 </body>
 
 </html>

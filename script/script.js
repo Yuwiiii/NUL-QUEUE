@@ -341,3 +341,14 @@ $(document).ready(function () {
     getOfficeCustomerCount();
     setInterval(getOfficeCustomerCount, 1000);
 });
+
+$(document).ready(function () {
+    $('#btn-print-qn, #submit-button').click(function () {
+        $('#queueNumber, #modalTitle3, #desc').printThis({
+            importCSS: true,
+            importStyle: true,
+            loadCSS: "/nul-queue/styles/printqueue.css",
+            footer: null
+        });
+    });
+});
