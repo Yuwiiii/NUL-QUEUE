@@ -67,9 +67,34 @@ if (!isset($_SESSION['email'])) {
                     }
                 });
 
+                $('#btn-empty-office').click(function () {
+                    if (confirm('Are you sure you want to empty the office?')) {
+                        $.ajax({
+                            url: 'empty-office.php',
+                            method: 'POST',
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.success) {
+                                    alert('Office emptied successfully!');
+                                    location.reload();
+                                } else {
+                                    alert('Error emptying Office: ' + response.error);
+                                    console.error('Request failed:', response.error);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('AJAX request failed with status ' + status + ': ' + error);
+                            }
+                        });
+                    }
+                });
 
                 document.getElementById('btn-empty-queue').addEventListener('click', function (e) {
                     e.preventDefault(); // Prevent the form from being submitted
+                });
+
+                document.getElementById('btn-empty-office').addEventListener('click', function (e) {
+                    e.preventDefault();
                 });
 
                 document.getElementById('btn-print-this').addEventListener('click', function (e) {
@@ -246,6 +271,7 @@ if (!isset($_SESSION['email'])) {
                         </button>
                         <input type="submit" value="Export CSV">
                         <button id="btn-empty-queue" class="btn btn-danger btn-sm"> Empty Queue</button>
+                        <button id="btn-empty-office" class="btn btn-danger btn-sm"> Empty Office</button>
                     </form>
 
 
