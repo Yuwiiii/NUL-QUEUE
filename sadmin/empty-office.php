@@ -10,7 +10,6 @@ if ($result) {
     while ($row = $result->fetch_assoc()) {
         $officeName = $row['officeName'];
 
-        // Construct SQL query for inserting into _logs table
         $insertLogsSql = "INSERT INTO " . $officeName . "_logs (student_id, queue_number, timestamp, status)
                           SELECT student_id, queue_number, timestamp, status FROM " . $officeName . ";";
         // $insertLogsSql = "INSERT INTO " . $officeName . "_logs (" . implode(", ", $columns) . ")
@@ -19,7 +18,6 @@ if ($result) {
         $insertLogsResult = $conn->query($insertLogsSql);
 
         if ($insertLogsResult) {
-            // Construct SQL query for truncating the original table
             $truncateSql = "TRUNCATE TABLE " . $officeName;
             $truncateResult = $conn->query($truncateSql);
 
