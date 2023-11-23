@@ -73,7 +73,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-center border-0">
                     <button type="button" class="btn btn-yes px-4 rounded-pill" data-bs-toggle="modal"
-                        data-bs-target="#thirdModal" id="ADMISSIONBTN" onclick="registerStudent()">YES</button>
+                        data-bs-target="#thirdModal" onclick="registerStudent()" id="btn-print-qn">YES</button>
                     <button type="button" class="btn btn-no px-4 rounded-pill" data-bs-dismiss="modal">NO</button>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                 <div class="modal-header d-block border-0 pb-0">
                     <h1 class="modal-title fs-4 text-center custom-bold custom-primary-color" id="modalTitle3">
                         REGISTRAR</h1>
-                    <p class="modal-secondary text-center custom-secondary-color custom-italic p-0 m-0">Please proceed
+                    <p id="desc" class="modal-secondary text-center custom-secondary-color custom-italic p-0 m-0">Please proceed
                         to your selected office. Take note of your Queuing Number:</p>
                     <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                 </div>
@@ -109,6 +109,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.socket.io/4.3.1/socket.io.min.js"></script>
     <script src="script/client.js"></script>
+    <script src="script/printThis.js"></script>
 </body>
 
 </html>

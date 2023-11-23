@@ -106,7 +106,7 @@
 
                 <div class="modal-footer d-flex justify-content-center border-0">
                     <button type="button" class="btn btn-yes px-4 rounded" data-bs-toggle="modal"
-                        data-bs-target="#thirdModal" onclick="insertAcads()">YES</button>
+                        data-bs-target="#thirdModal" onclick="insertAcads()" id="btn-print-qn">YES</button>
                     <button type="button" class="btn btn-no px-4 rounded" data-bs-dismiss="modal">NO</button>
                 </div>
             </div>
@@ -120,7 +120,7 @@
                 <div class="modal-header d-block border-0 pb-0">
                     <h1 class="modal-title fs-4 text-center custom-bold custom-primary-color" id="modalTitle3">
                         REGISTRAR</h1>
-                    <p class="modal-secondary text-center custom-secondary-color custom-italic p-0 m-0">Please proceed
+                    <p id="desc" class="modal-secondary text-center custom-secondary-color custom-italic p-0 m-0">Please proceed
                         to your selected office. Take note of your Queuing Number:</p>
                     <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                 </div>
@@ -136,6 +136,7 @@
     <!-- 3rd MODAL REGISTRAR ENDS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="script/script.js"></script>
+    <script src="script/printThis.js"></script>
 </body>
 
 </html>

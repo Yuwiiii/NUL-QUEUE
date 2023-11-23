@@ -207,3 +207,14 @@ function returnIndex() {
     window.location.href = 'index.php'
   }
 
+  $(document).ready(function () {
+    $('#btn-print-qn').click(function () {
+        $('#queueNumber, #modalTitle3, #desc').printThis({
+            importCSS: true,
+            importStyle: true,
+            loadCSS: "/nul-queue/styles/printqueue.css",
+            footer: null
+        });
+    });
+});
+

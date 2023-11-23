@@ -1,0 +1,16 @@
+@media print {
+    @page {
+        size: 3in 2in; /* Width x Height */
+        text-align: center;
+        align-items: center;
+        margin-bottom: 0;
+    }
+
+    body {
+        font-size: 10px !important;
+        text-align: center;
+        align-items:center;
+    }
+
+
+}
