@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $remarks = $_POST["remarks"];
     $timenow = $_POST["form-queue-timestamp"];
     $queuenumbercolumn = $_POST["form-queue-number"];
-    $endorsedFrom = "Academics"; // You mentioned this value should be "ACADEMICS"
+    $endorsedFrom = "Academics"; 
     $endorse = $_POST["form-queue-endoresedfrom"];
 
     if ($office === "select" || $transaction === "select") {
