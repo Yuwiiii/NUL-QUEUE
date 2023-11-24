@@ -15,10 +15,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $studentInfo = $_POST["studentInfo"];
     $transaction = $_POST["transactionInfo"];
     $endorsedFrom = $_POST["endorsementInfo"];
+    $remarks = $_POST["remarks"];
 
     // Perform the SQL query to update the database
-    $sql = "INSERT INTO academics_logs (queue_number, student_id, endorsed_from, timestamp, timeout,transaction)
-        VALUES ('$queueNumber', '$studentInfo', '$endorsedFrom', '$queueTime' , NOW(),'$transaction')";
+    $sql = "INSERT INTO academics_logs (queue_number, student_id, endorsed_from, timestamp, timeout, remarks, transaction, status)
+        VALUES ('$queueNumber', '$studentInfo', '$endorsedFrom', '$queueTime' , NOW(), '$remarks', '$transaction','1')";
     $sql2 = "DELETE FROM academics_queue WHERE queue_number = '$queueNumber'";
     if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE) {
         echo "Record updated successfully";

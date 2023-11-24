@@ -30,11 +30,9 @@ function updateAvailabilityIcon() {
     var dropdown = document.getElementById("profile-dropdown-content");
     dropdown.classList.toggle("show");
   }
-
   function stopPropagation() {
     event.stopPropagation();
   }
-
   function filterByProgram(program) {
     // Use AJAX to fetch data based on the selected program
     $.ajax({
@@ -54,7 +52,6 @@ function fetchInfo(queueNumber) {
   xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
-
           // Update the HTML elements with fetched data
           document.getElementById('info-queue-number').textContent = data.queue_number;
           document.getElementById('info-queue-time').textContent = "Queued in " + data.queue_time;
@@ -66,13 +63,14 @@ function fetchInfo(queueNumber) {
           document.getElementById('queue-number').textContent = data.queue_number;
           document.getElementById('form-queue-number').value = data.queue_number;
           document.getElementById('info-queue-timestamp').textContent = data.timestamp;
+          document.getElementById('form-queue-timestamp').value = data.timestamp;
+          document.getElementById('form-queue-endoresedfrom').value = data.endorse;
           // Add more code to update other elements if needed
       }
   };
   xhr.open('POST', 'fetch_info.php', true);
   xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhr.send('queue_number=' + queueNumber);
-
   // Prevent the default button behavior
   event.preventDefault();
 }
@@ -110,20 +108,15 @@ function fetchInfo(queueNumber) {
   const formModal = document.querySelector('.form-modal');
   const doneModal = document.querySelector('.done-modal');
   const confirmModal = document.querySelector('.confirm-modal');
-
   const endorseButton = document.getElementById('endorseButton');
   const cancelButton = document.getElementById('cancelButton');
   const doneButton = document.getElementById('doneButton');
-
-
   const exitButton = document.getElementById('ext-div');
   const nextButton = document.getElementById('nxt-div');
   const confirmButton = document.getElementById('confirm-done-btn');
-
   const endorseForm = document.querySelector('.modform-div');
   const doneDiv = document.getElementById('done-div');
   const confirmDiv = document.getElementById('confirm-div');
- 
   const queuebutton = document.getElementById('new-queue-button');
 
   // start for endorse and end confirmation modal
@@ -131,8 +124,6 @@ function fetchInfo(queueNumber) {
     const confirmEndModal = document.querySelector('.confirm-end-modal');
     const confirmEndYesButton = document.getElementById('confirm-end-yes-btn');
     const confirmEndNoButton = document.getElementById('confirm-end-no-btn');
-
-   // ... (your existing code)
 
 // Add a click event listener to the 'END' button
 $("#end-button").on("click", function () {
@@ -146,11 +137,17 @@ $("#end-button").on("click", function () {
       $("#info-remarks").text().trim() === "";
 
   if (isInfoDivEmpty) {
-      // Show the 'Please select a queue number first!' modal
       $("#select-queue-modal").css("display", "flex");
   } else {
-      // Show the confirmation modal
-      confirmEndModal.style.display = 'flex';
+      $("#end-button").prop("disabled", true);      
+      $("#wait-modal").css("display", "flex");
+      setTimeout(function() {
+        $("#end-button").prop("disabled", false);
+        $("#wait-modal").css("display", "none");
+      }, 120000);
+      setTimeout(function() {
+        confirmEndModal.style.display = 'flex';
+      }, 120000);
   }
 });
 
@@ -159,7 +156,6 @@ $("#select-queue-yes-btn").on("click", function () {
   // Close the 'Please select a queue number first!' modal
   $("#select-queue-modal").css("display", "none");
 });
-
     // Add a click event listener to the Yes button in the confirmation modal
     confirmEndYesButton.addEventListener('click', function () {
         // Get data from the elements
@@ -168,7 +164,11 @@ $("#select-queue-yes-btn").on("click", function () {
         var studentInfo = $("#info-student").text();
         var transactionInfo = $("#info-transaction").text();
         var endorsementInfo = $("#info-endorse").text();
-
+        var remarks = $("#remarks-reason").val();
+        if (remarks.trim() === "") {
+          showReasonModal();
+        return;
+        }
         // AJAX request to send data to end.php
         $.ajax({
             url: "end.php",
@@ -178,7 +178,8 @@ $("#select-queue-yes-btn").on("click", function () {
                 queueTime: queueTime,
                 studentInfo: studentInfo,
                 transactionInfo: transactionInfo,
-                endorsementInfo: endorsementInfo
+                endorsementInfo: endorsementInfo,
+                remarks: remarks
             },
             success: function (response) {
                 // Handle the response from the server if needed
@@ -188,8 +189,7 @@ $("#select-queue-yes-btn").on("click", function () {
                 document.getElementById('info-student').textContent = "";
                 document.getElementById('info-transaction').textContent = "";
                 document.getElementById('info-endorse').textContent = "";
-                document.getElementById('info-remarks').textContent = "";
-
+                document.getElementById('remarks-reason').value = "";
                 // Close the confirmation modal
                 confirmEndModal.style.display = 'none';
             },
@@ -199,7 +199,6 @@ $("#select-queue-yes-btn").on("click", function () {
             }
         });
     });
-
     // Add a click event listener to the No button in the confirmation modal
     confirmEndNoButton.addEventListener('click', function () {
         // Close the confirmation modal without performing the 'END' action
@@ -207,6 +206,17 @@ $("#select-queue-yes-btn").on("click", function () {
     });
 });
 
+// REASON MODAL START
+function showReasonModal() {
+  $("#confirm-end-modal").css("display", "none");
+  const reasonModal = document.getElementById('reason-modal');
+  reasonModal.style.display = 'block';
+  const okButton = document.getElementById('reason-modal-ok-btn');
+  okButton.addEventListener('click', function () {
+      reasonModal.style.display = 'none';
+      $("#confirm-end-modal").css("display", "flex");
+  });
+}
   
 endorseButton.addEventListener('click', () => {
   // Check if there is data in the info-div
@@ -241,18 +251,13 @@ endorseButton.addEventListener('click', () => {
     formModal.style.display = 'none';
     endorseForm.style.display = 'none';
 });
-
-
-
 // end for endorse and confirmation modal
-
 
 queuebutton.addEventListener('click', () => {
   window.open('../academicsinterface.php', '_blank');
 });
 
 // start of endorse function START START START
-
   document.getElementById("doneButton").addEventListener("click", function () {
     // Get the form data
     const form = document.getElementById("endorseForm");
@@ -266,8 +271,9 @@ queuebutton.addEventListener('click', () => {
         .then(() => {
             const office = document.getElementById("office").value;
             const transaction = document.getElementById("transaction").value;
-
-            if (office === 'select' || transaction === 'select') {
+            const remarks = document.getElementById("remarks-form").value;
+            
+            if (office === 'select' || transaction === 'select' || remarks.trim() === '') {
                 // Instead of alert, show the new modal
                 showOptionsModal();
             } else {
@@ -293,15 +299,12 @@ function showFormModal() {
   formModal.style.display = 'flex';
 }
 
-
 function showOptionsModal() {
     // Hide the form-modal
     hideFormModal();
-
     // Display the modal for informing the user to select options
     const optionsModal = document.getElementById('select-options-modal');
     optionsModal.style.display = 'block';
-
     // Add an event listener to the OK button in the modal
     const okButton = document.getElementById('select-options-ok-btn');
     okButton.addEventListener('click', function () {
@@ -312,10 +315,8 @@ function showOptionsModal() {
     });
 }
 
-
 document.getElementById("confirm-done-btn").addEventListener("click", function () {
   const queueNumber = document.getElementById("form-queue-number").value;
-
   if (queueNumber) {
       fetch("delete_queue.php", {
           method: "POST",
@@ -333,13 +334,10 @@ document.getElementById("confirm-done-btn").addEventListener("click", function (
               document.getElementById('info-transaction').textContent = "";
               document.getElementById('info-endorse').textContent = "";
               document.getElementById('info-remarks').textContent = "";
-
               // Close the confirm-modal
               confirmModal.style.display = 'none';
-
               // Go back to the previous page
               window.location.href = 'index.php';
-              
           })
           .catch((error) => {
               console.error("Error:", error);
@@ -347,24 +345,7 @@ document.getElementById("confirm-done-btn").addEventListener("click", function (
   }
 });
 
-
-
-//   exitButton.addEventListener('click', (event) => {
-//     event.preventDefault(); 
-//     document.getElementById('office').value = 'select';
-//     document.getElementById('transaction').value = 'select';
-//     document.getElementById('remarks-form').value = '' ;
-//     // Toggle the display property of modal elements to hide the modal
-//     modalBg.style.display = 'none';
-//     doneModal.style.display = 'none';
-//     doneDiv.style.display = 'none';
-//   });
-
-
   // For new notification slide
-
- 
-
   function closeNotification() {
     var notification = document.getElementById("notification");
     notification.style.right = "-400px"; // Slide out to the right
@@ -392,7 +373,8 @@ function checkForNewQueueNumber() {
         }
     });
 }
-
+// sort START
+// sort END
 
 setInterval(checkForNewQueueNumber, 8000);
 
@@ -416,13 +398,11 @@ setInterval(checkForNewQueueNumber, 8000);
     });
 }
 
-
 // Call the function when needed, for example, when the page loads
 $(document).ready(function () {
     fetchDataAndPopulate();
     setInterval(fetchDataAndPopulate, 1000);
 });
-
 
 // For NOTIFY button
 let currentQueueNumber;
@@ -430,7 +410,6 @@ let currentQueueNumber;
 function notifyFront() {
   // Get the queuenumber from somewhere, e.g., an input field or a variable
   currentQueueNumber = document.getElementById("info-queue-number").textContent;
-
   // Check if there is data in the info-div
   var isInfoDivEmpty =
       $("#info-queue-number").text().trim() === "Welcome!" &&
@@ -464,14 +443,12 @@ function confirmStatus() {
               // Update the modal content
               $("#statusMessage").text("Displaying queue number failed. Please contact admin.");
           }
-
           // Hide the modal after processing
           $("#statusModal").css("display", "none");
       },
       error: function() {
           // Update the modal content
           $("#statusMessage").text("An error occurred. Please try again.");
-
           // Hide the modal after processing
           $("#statusModal").css("display", "none");
       }
@@ -483,80 +460,20 @@ function cancelStatus() {
   $("#statusModal").css("display", "none");
 }
 
-
-
-// const endModal = document.querySelector('.end-modal');
-// const exitbtn= document.querySelector('.end-btn');
-
-
-// $(document).ready(function() {
-//   $("#end-button").on("click", function() {
-//       // Get data from the elements
-//       var queueNumber = $("#info-queue-number").text();
-//       var queueTime = $("#info-queue-timestamp").text();
-//       var studentInfo = $("#info-student").text();
-//       var transactionInfo = $("#info-transaction").text();
-//       var endorsementInfo = $("#info-endorse").text();
-
-//       // AJAX request to send data to end.php
-//       $.ajax({
-//           url: "end.php",
-//           type: "POST",
-//           data: {
-//               queueNumber: queueNumber,
-//               queueTime: queueTime,
-//               studentInfo: studentInfo,
-//               transactionInfo: transactionInfo,
-//               endorsementInfo: endorsementInfo
-//           },
-//           success: function(response) {
-//               // Handle the response from the server if needed
-//               console.log(response);
-//                 document.getElementById('info-queue-number').textContent = "Welcome!";
-//                 document.getElementById('info-queue-time').textContent = "please select queue number" ;
-//                 document.getElementById('info-student').textContent = "";
-//                 document.getElementById('info-transaction').textContent = "";
-//                 document.getElementById('info-endorse').textContent = "";
-//                 document.getElementById('info-remarks').textContent = "";
-         
-//                 endModal.style.display = 'flex';
-//                 modalBg.style.display = 'flex'; // Hide the form modal
-         
-//               },
-//           error: function(error) {
-//               // Handle errors if any
-//               console.log(error);
-//           }
-//       });
-//   });
-// });
-
-
-
-
-
-
-
-
 function updateProgramOptions() {
   var selectElement = document.getElementById('program-filter');
-
   // Create an XMLHttpRequest object
   var xhr = new XMLHttpRequest();
-
   // Set up the request
   xhr.open('GET', 'get_program_options.php', true);
-
   // Set up the callback
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       if (xhr.status == 200) {
         // Parse the JSON response
         var options = JSON.parse(xhr.responseText);
-
         // Clear existing options
         selectElement.innerHTML = '<option value="" selected disabled>➕ Program</option>';
-
         // Add new options
         options.forEach(function (option) {
           var optionElement = document.createElement('option');
@@ -569,19 +486,26 @@ function updateProgramOptions() {
       }
     }
   };
-
   // Set up the error callback
   xhr.onerror = function () {
     console.error('Network error while fetching options');
   };
-
   // Send the request
   xhr.send();
 }
-
 // Call the function to update options on page load
 updateProgramOptions();
 
+document.addEventListener('DOMContentLoaded', function () {
+  // Assuming you have a cancel button with id "cancelbtn"
+  var cancelwaitbtn = document.getElementById('cancel-mins-wait-btn');
 
+  cancelwaitbtn.addEventListener('click', function (event) {
+      event.preventDefault();
 
-
+      // Add your cancel process logic here
+      // For demonstration purposes, let's simply hide the wait-modal
+      var waitModal = document.getElementById('wait-modal');
+      waitModal.style.display = 'none';
+  });
+});
