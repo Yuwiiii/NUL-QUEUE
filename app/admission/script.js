@@ -54,7 +54,6 @@ $("#college").on('change', function () {
   });
 
   $("#logout-btn").click(() => {
-    socket.disconnect(); // Terminate the socket connection
     console.log("logout");
     logout();
   });
@@ -75,7 +74,7 @@ $("#college").on('change', function () {
     const queueData = await getQueueFromQueueArray(queueArray, id)
     queueData.remarks = $('#remarks').val();
 
-    console.log(`remarks: ${remarks}`);
+    console.log(`remarks: ${ queueData.remarks}`);
     queueData.endorse_to = $('#office').val();
     queueData.transaction = $('#modal-transaction').val();
 
@@ -88,8 +87,16 @@ $("#college").on('change', function () {
 
       console.log(queueData);
 
-      if (!queueData.remarks || queueData.transaction) {
-      
+      if (!queueData.remarks || !queueData.transaction) {
+        Swal.fire({
+          title: `Please fill up all fields`,
+          icon: "warning",
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        })
+
         return
       } 
   
@@ -98,8 +105,17 @@ $("#college").on('change', function () {
 
     } else {
 
-      if (!queueData.remarks || queueData.transaction) {
-      
+      if (!queueData.remarks || !queueData.transaction) {
+        
+        Swal.fire({
+          title: `Please fill up all fields`,
+          icon: "warning",
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        })
+
         return
       } 
       isEndorsedSuccessfully = await endorse(queueData);
@@ -142,6 +158,10 @@ $("#college").on('change', function () {
   })
 
   $("#transaction-complete-btn").click(async ()=>{
+    $("#modalTitle2").text($("#queue-number").text());
+  })
+
+  $("#end-transaction-btn").click(async () => {
     const id = $('#queue-number').data("id")
     const queueList = await getQueue(USER_OFFICE);
 
@@ -150,42 +170,50 @@ $("#college").on('change', function () {
     const endorsed_from = queueData.endorsed_from;
 
     queueData.endorsed_from = endorsed_from !== null ? endorsed_from : '';
+    queueData.remarks = $('#done-remarks').val();
 
     console.log("queueData:")
     console.log(queueData)
-    const isTransactionCompleted = await finishTransaction(queueData);
-    
-    // console.log(`hasmdasdasn ${isTransactionCompleted}`)
 
-    if (isTransactionCompleted) {
-      await getQueue(USER_OFFICE);
-      Swal.fire({
-        title: `Successfully Completed #${queueData.queue_number}`,
-        icon: "success",
-        confirmButtonText: "Okay",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          $('#remarks').val('');
-          $('#student-id').text('');
-          $('#modalTitle1').text('Select Queue Number');
-          $('#modal-student-id').text('');
-          $('#modal-transaction').val('');
-          $('#queue-number').text('select a queue to view details');
-          $('#queue-number').data('id', '');
-          $('#endorsed-from').text('');
-          $('#student-remarks').text('select a queue number to view remarks');
-          $('#firstModal').modal('hide');
+  
+    // const isTransactionCompleted = await finishTransaction(queueData);
 
+    Swal.fire({
+      title: `Are you sure you want to end the transaction of #${queueData.queue_number}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const isTransactionCompleted = await finishTransaction(queueData);
+        if (isTransactionCompleted) {
+          await getQueue(USER_OFFICE);
+          Swal.fire({
+            title: `Successfully Completed #${queueData.queue_number}`,
+            icon: "success",
+            confirmButtonText: "Okay",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $('#remarks').val('');
+              $('#done-remarks').val('');
+              $('#student-id').text('');
+              $('#modalTitle2').text('Select Queue Number');
+              $('#modal-student-id').text('');
+              $('#modal-transaction').val('');
+              $('#queue-number').text('select a queue to view details');
+              $('#queue-number').data('id', '');
+              $('#endorsed-from').text('');
+              $('#student-remarks').text('select a queue number to view remarks');
+              $('#secondModal').modal('hide');
 
-          $("#endorse-btn").prop("disabled", true);
-          $("#transaction-complete-btn").prop("disabled", true);
-          $("#notify-btn").prop("disabled", true);
-        }
-      });
-    }
-
-
-    
+              $("#endorse-btn").prop("disabled", true);
+              $("#transaction-complete-btn").prop("disabled", true);
+              $("#notify-btn").prop("disabled", true);
+            }
+          })
+      }}
+    })
   })
 
 async function insertQueueToDisplayTable(data) {

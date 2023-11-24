@@ -230,7 +230,11 @@ function insertQueueLog($data) {
   $transaction = $data['transaction'];
   $status = $data['status'];
 
-  $insertIntoQueueLogQuery = "INSERT INTO $log_table (queue_number, student_id, remarks, timestamp, timeout, endorsed_from, transaction, status) VALUES ('$queue_number', '$student_id', '$remarks', '$timestamp', '$timeout', '$endorsed_from', '$transaction', $status)";
+  if ($currentOffice == "REGISTRAR") {
+    $insertIntoQueueLogQuery = "INSERT INTO registrar_done (queue_number, student_id, remarks, timestamp, timeout, endorsed_from, transaction, status) VALUES ('$queue_number', '$student_id', '$remarks', '$timestamp', '$timeout', '$endorsed_from', '$transaction', $status)";
+  } else {
+    $insertIntoQueueLogQuery = "INSERT INTO $log_table (queue_number, student_id, remarks, timestamp, timeout, endorsed_from, transaction, status) VALUES ('$queue_number', '$student_id', '$remarks', '$timestamp', '$timeout', '$endorsed_from', '$transaction', $status)";
+  }
 
   $result = $conn->query($insertIntoQueueLogQuery);
 
