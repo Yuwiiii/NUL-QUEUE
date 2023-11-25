@@ -93,7 +93,7 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
           </div>
           <div class="d-flex justify-content-around w-75 mt-5">
             <button class="btn btn-blue" id="endorse-btn" data-bs-toggle="modal" data-bs-target="#firstModal" disabled>Endorse</button>
-            <button class="btn btn-yellow" id="transaction-complete-btn" disabled>Done</button>
+            <button class="btn btn-yellow" id="transaction-complete-btn"  data-bs-toggle="modal" data-bs-target="#secondModal" disabled>Done</button>
             <button class="btn btn-yellow" id="notify-btn" disabled>Notify</button>
           </div>
       </section>
@@ -134,8 +134,6 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
                 </select>
               </div>
               
-              
-              
               <p>Remarks:</p>
               <div>
                 <textarea id="remarks" name="remarks" id="" cols="40" rows="5" required></textarea>
@@ -144,6 +142,28 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
             <div class="modal-footer d-flex justify-content-center border-0">
               <button type="button" class="btn btn-yes px-4 rounded-pill" id="endorse">YES</button>
               <button type="button" class="btn btn-no px-4 rounded-pill" data-bs-dismiss="modal" id="reject-endorsement-btn">NO</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--2nd modal-->
+      <div class="modal fade" id="secondModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header d-block border-0">
+              <h1 class="modal-title fs-4 text-center custom-bold custom-primary-color" id="modalTitle2">Loading...
+              </h1>
+            </div>
+            <div class="modal-body">       
+              <p>Remarks:</p>
+              <div>
+                <textarea id="done-remarks" name="remarks" id="" cols="55" rows="5" required></textarea>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center border-0">
+              <button type="button" class="btn btn-yes px-4 rounded-pill" id="end-transaction-btn">YES</button>
+              <button type="button" class="btn btn-no px-4 rounded-pill" data-bs-dismiss="modal">NO</button>
             </div>
           </div>
         </div>
