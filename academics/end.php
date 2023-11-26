@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql3 = "INSERT INTO queue_logs (queue_number, student_id, endorsed, office, timestamp, remarks)
     VALUES ('$queuenumbercolumn', '$studentId', '$academicsStr', '$academicsStr', '$timenow', '$remarks')";
 
-    if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE) {
+    if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE && $conn->query($sql3) === TRUE) {
         echo "Record updated successfully";
     } else {
         echo "Error updating record: " . $conn->error;
