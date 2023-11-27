@@ -42,7 +42,7 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 <body>
 
   <body>
-    <div class="nav container-fluid d-flex align-items-center p-1 border justify-content-between px-2">
+    <div class="nav container-fluid d-flex align-items-center justify-content-between px-2">
       <div class="d-flex align-items-center">
         <div class="logo p-2">
           <img src="/queue/assets/NU_shield.svg" alt="logo" id="logo">
@@ -92,9 +92,9 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
             Select a queue number to view remarks.
           </div>
           <div class="d-flex justify-content-around w-75 mt-5">
-            <button class="btn btn-blue" id="endorse-btn" data-bs-toggle="modal" data-bs-target="#firstModal" disabled>Endorse</button>
-            <button class="btn btn-yellow" id="transaction-complete-btn"  data-bs-toggle="modal" data-bs-target="#secondModal" disabled>Done</button>
-            <button class="btn btn-yellow" id="notify-btn" disabled>Notify</button>
+            <button class="btn btn-blue" id="endorse-btn"  >Endorse</button>
+            <button class="btn btn-yellow" id="transaction-complete-btn">Done</button>
+            <button class="btn btn-yellow" id="notify-btn">Notify</button>
           </div>
       </section>
 

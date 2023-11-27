@@ -7,19 +7,43 @@ const USER_WINDOW = $("#user-data").data("window");
 const USER_ID = $("#user-data").data("user-id");
 const USERNAME = $("#user-data").data("user-name");
 let academicsCollegeSelected = 'SCS';
+let isDoneButtonOnCooldown = false;
   
 //adjustment sa class 
 function refreshByInterval() {
   console.log('refresh')
   setInterval(async () => {
     await getQueue(USER_OFFICE)
-  }, 2000);
+  }, 5000);
 }
 
 
 // REMOVE THIS IF DI NA NEED NG SET INTERVAL!!!
 // refreshByInterval();
 
+
+$("#endorse-btn").click(() => {
+  const hasSelectedQueue = $("#queue-number").data("key");
+
+  console.log(hasSelectedQueue);
+
+  if (hasSelectedQueue === "") {
+    // Hide the modal and show a warning message
+    $('#firstModal').modal('hide');
+
+    Swal.fire({
+      title: `Please select a queue number first`,
+      icon: "warning",
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+    });
+  } else {
+    // Proceed with modal popup
+    $('#firstModal').modal('show');
+  }
+});
 
 let queueArray = getQueue(USER_OFFICE);
 
@@ -50,7 +74,27 @@ $("#college").on('change', function () {
       window: USER_WINDOW
     }
 
-    await insertQueueToDisplayTable(payload);
+    const hasSelectedQueue = $("#queue-number").data("key");
+
+    console.log(hasSelectedQueue);
+  
+    if (hasSelectedQueue === "") {
+  
+      Swal.fire({
+        title: `Please select a queue number first`,
+        icon: "warning",
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    } else {
+      // Proceed with modal popup
+      await insertQueueToDisplayTable(payload);
+    }
+
+
+
   });
 
   $("#logout-btn").click(() => {
@@ -65,10 +109,6 @@ $("#college").on('change', function () {
 
   $("#endorse").click(async ()=>{
     const id = $('#queue-number').data("id")
-
-    console.log("======")
-    console.log(id)
-    console.log("======")
 
     queueArray = await getQueue(USER_OFFICE);
     const queueData = await getQueueFromQueueArray(queueArray, id)
@@ -104,7 +144,6 @@ $("#college").on('change', function () {
       isEndorsedSuccessfully = await endorse(queueData);
 
     } else {
-
       if (!queueData.remarks || !queueData.transaction) {
         
         Swal.fire({
@@ -146,10 +185,11 @@ $("#college").on('change', function () {
           $('#student-remarks').text('select a queue number to view remarks');
           $('#firstModal').modal('hide');
 
+          $("#queue-number").data("key", "");
 
-          $("#endorse-btn").prop("disabled", true);
-          $("#transaction-complete-btn").prop("disabled", true);
-          $("#notify-btn").prop("disabled", true);
+          // $("#endorse-btn").prop("disabled", true);
+          // $("#transaction-complete-btn").prop("disabled", true);
+          // $("#notify-btn").prop("disabled", true);
 
 
         }
@@ -158,7 +198,34 @@ $("#college").on('change', function () {
   })
 
   $("#transaction-complete-btn").click(async ()=>{
-    $("#modalTitle2").text($("#queue-number").text());
+
+    const hasSelectedQueue = $("#queue-number").data("key");
+
+    console.log(hasSelectedQueue);
+
+    if(isDoneButtonOnCooldown){
+     
+      return
+    }
+  
+    if (hasSelectedQueue === "" && !isDoneButtonOnCooldown) {
+      // Hide the modal and show a warning message
+      $('#secondModal').modal('hide');
+  
+      Swal.fire({
+        title: `Please select a queue number first`,
+        icon: "warning",
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    } else {
+      // Proceed with modal popup
+      $('#secondModal').modal('show');
+      $("#modalTitle2").text($("#queue-number").text());
+    }
+
   })
 
   $("#end-transaction-btn").click(async () => {
@@ -174,9 +241,6 @@ $("#college").on('change', function () {
 
     console.log("queueData:")
     console.log(queueData)
-
-  
-    // const isTransactionCompleted = await finishTransaction(queueData);
 
     Swal.fire({
       title: `Are you sure you want to end the transaction of #${queueData.queue_number}?`,
@@ -207,10 +271,47 @@ $("#college").on('change', function () {
               $('#student-remarks').text('select a queue number to view remarks');
               $('#secondModal').modal('hide');
 
-              $("#endorse-btn").prop("disabled", true);
+              $("#queue-number").data("key", "");
+
+              isDoneButtonOnCooldown = true;
+
+              setTimeout(() => {
+                isDoneButtonOnCooldown = false;
+              }, 5000);
+
+              let timerInterval;
               $("#transaction-complete-btn").prop("disabled", true);
-              $("#notify-btn").prop("disabled", true);
+              Swal.fire({
+                title: "Finish transaction cooldown!",
+                html: "Can perform finish operation after <b></b> milliseconds.",
+                timer: 10000,
+                toast: true,
+                position: 'top-end',
+                timerProgressBar: true,
+                showCancelButton: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                  const timer = Swal.getPopup().querySelector("b");
+                  timerInterval = setInterval(() => {
+                    timer.textContent = `${Swal.getTimerLeft()}`;
+                  }, 100);
+                },
+                willClose: () => {
+                  clearInterval(timerInterval);
+                }
+        
+              }).then((result) => {
+                $("#transaction-complete-btn").prop("disabled", false);
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                  console.log("I was closed by the timer");
+                }
+              });
             }
+
+      
+
           })
       }}
     })
@@ -263,11 +364,6 @@ async function getQueue(office) {
               `<div class="queue-item" data-id="${queue.id}" data-number="${queue.queue_number}"> <h5 scope="row" class="pending-queue-number">${queue.queue_number}</h5></div>`
             );
 
-
-            // console.log("=====================")
-            // console.log("getting queue")
-            // console.log("=====================")
-            // Attach click listener using event delegation
             $queueItem.on("click", function () {
               const clickedQueueNumber = queue.queue_number;
 
@@ -279,10 +375,7 @@ async function getQueue(office) {
               $("#student-remarks").text(queue.remarks);
               $("#endorsed-from").text(queue.endorsed_from ?? "");
 
-              $("#endorse-btn").prop("disabled", false);
-              $("#transaction-complete-btn").prop("disabled", false);
-              $("#notify-btn").prop("disabled", false);
-          
+              $("#queue-number").data("key", "active");
 
               console.log(clickedQueueNumber)
             });

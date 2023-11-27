@@ -23,10 +23,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         $conn->query($truncateTableSql);
     }
 
-    $officeDataSql = "SELECT * FROM display WHERE officeName = '$office' AND status = 0 ORDER BY window, id DESC";
+    $officeDataSql = "SELECT * FROM display WHERE officeName = '$office' AND status = 0 ORDER BY 'window', id DESC";
     $officeDataResult = $conn->query($officeDataSql);
 
-    echo '<div class="' . $office . '-queue-container">';
+    echo '<div data-office="' . $office . ' class="' . $office . '-queue-container">';
     $queues = [];
     $currentWindows = [];
 
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
 
             // Display only the latest queue for each window
             if (!in_array($window, $currentWindows)) {
-                $queues[] = '<div class="' . $office . '-queue queue"><h2 class="queue-text">Window ' . $window . ': ' . $queueNumber . '</h2></div>';
+                $queues[] = '<div class="' . $office . '-queue queue"><h2 class="queue-text" data-queue-number="' . $queueNumber .'">Window ' . $window . ': ' . $queueNumber . '</h2></div>';
                 $currentWindows[] = $window;
 
                 if ($status == 0) {

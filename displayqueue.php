@@ -38,6 +38,7 @@ $result = $conn->query($sql);
             <header class="heading-datetime-container">
                 <div class="heading-container-serving">
                     <h1 class="heading-text-serving">NOW SERVING</h1>
+                    <div id="playButton"></div>
                 </div>
                 <div class="datetime-container">
                     <h3 id="date"></h3>
@@ -91,6 +92,7 @@ $result = $conn->query($sql);
                 }
                 ?>
             </section>
+        
             <!-- OFFICES WITH QUEUE ENDS -->
         </div>
         <!-- SERVING OF THE QUEUE ENDS -->
@@ -99,9 +101,16 @@ $result = $conn->query($sql);
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+        const audio = new Audio('sound/queue_notification.mp3');
+        document.getElementById('playButton').addEventListener('click', () => {
+        audio.play();
+        });
+
+        let currentQueues = {};
+
         function fetchQueueData() {
             <?php
-
             $result->data_seek(0);
             while ($row = $result->fetch_assoc()) {
                 $officeName = $row["officeName"];
@@ -112,12 +121,27 @@ $result = $conn->query($sql);
                     data: {
                         office: '<?php echo $officeName; ?>'
                     },
-                    success: function(data) {
+                    success: function (data) {
                         $('#<?php echo $officeName; ?>QueueContainer').html(data);
+                        const newData = $('#<?php echo $officeName; ?>QueueContainer').children().first().text();
+
+                        if (currentQueues['<?php echo $officeName; ?>'] !== undefined && currentQueues['<?php echo $officeName; ?>'] !== newData) {
+                            console.log('Data changed for', '<?php echo $officeName; ?>');
+                            console.log('Old data:', currentQueues['<?php echo $officeName; ?>']);
+                            console.log('New data:', newData);
+
+                            // Play sound
+                            $("#playButton").click();
+                        }
+
+                        // Update currentQueues with new data
+                        currentQueues['<?php echo $officeName; ?>'] = newData;
+                        
                     }
                 });
             <?php } ?>
         }
+
 
         // Fetch queue data on page load
         fetchQueueData();
@@ -138,7 +162,7 @@ $result = $conn->query($sql);
         // Fetch pending queue data on page load
         fetchPendingQueue();
 
-        setInterval(fetchPendingQueue, 5000);
+        // setInterval(fetchPendingQueue, 5000);
     </script>
     <script src="script/displayscript.js"></script>
 </body>
