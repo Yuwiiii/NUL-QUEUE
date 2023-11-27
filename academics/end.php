@@ -15,12 +15,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $studentInfo = $_POST["studentInfo"];
     $transaction = $_POST["transactionInfo"];
     $endorsedFrom = $_POST["endorsementInfo"];
-
+    $remarks = $_POST["remarks"];
+    $academicsStr = "ACADEMICS";
     // Perform the SQL query to update the database
-    $sql = "INSERT INTO academics_logs (queue_number, student_id, endorsed_from, timestamp, timeout,transaction)
-        VALUES ('$queueNumber', '$studentInfo', '$endorsedFrom', '$queueTime' , NOW(),'$transaction')";
+    $sql = "INSERT INTO academics_logs (queue_number, student_id, endorsed_from, timestamp, timeout, remarks, transaction, status)
+        VALUES ('$queueNumber', '$studentInfo', '$endorsedFrom', '$queueTime' , NOW(), '$remarks', '$transaction','1')";
+
+    $sql3 = "INSERT INTO queue_logs (queue_number, student_id, endorsed, office, timestamp, remarks)
+    VALUES ('$queueNumber', '$studentInfo', '$academicsStr', '$academicsStr', '$queueTime', '$remarks')";
+
     $sql2 = "DELETE FROM academics_queue WHERE queue_number = '$queueNumber'";
-    if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE) {
+
+
+   
+
+    if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE && $conn->query($sql3) === TRUE) {
         echo "Record updated successfully";
     } else {
         echo "Error updating record: " . $conn->error;

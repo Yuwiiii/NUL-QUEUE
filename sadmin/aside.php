@@ -75,6 +75,7 @@
                     <h4 class="fw-bold text-light text-center">OFFICES</h4>
                 </button>
                 <ul class="dropdown-content offset-md-2" id="myDropdown">
+                <li class="pt-1 all-office"><a href="all-office.php" class="fw-bold text-light text-decoration-none">ALL OFFICES</a></li>
                     <?php
                     // Fetch office names from the offices table
                     $query = "SELECT officeName FROM offices";
@@ -135,6 +136,11 @@
             window.location.href = "office-aside.php";
         }
 
+            // Redirect to all-office.php when the "ALL OFFICES" header is clicked
+        function redirectToAllOffices() {
+            window.location.href = "all-office.php";
+        }
+
         // Handle clicks on list items
         document.addEventListener("DOMContentLoaded", function() {
             var listItems = document.querySelectorAll("#myDropdown li");
@@ -146,6 +152,13 @@
                     window.location.href = "office.php?office=" + encodeURIComponent(officeName);
                 });
             });
+            
+        // Handle click on the "ALL OFFICES" header
+        var allOfficesHeader = document.querySelector(".all-office");
+        allOfficesHeader.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent the default behavior of the link
+            redirectToAllOffices();
+        });
 
             // Handle click on the "OFFICES" header using h4
             var officesHeader = document.querySelector(".dropbtn h4");

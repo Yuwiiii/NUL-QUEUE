@@ -17,13 +17,6 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
     header("Location: login.html");
     exit();
 }
-
-
-
-
-
-
-
 ?>
 
 
@@ -32,7 +25,7 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
   <link rel="stylesheet" type="text/css" href="css/header.css?version=60" />
   <link rel="stylesheet" type="text/css" href="css/notification.css" />
   <link rel="stylesheet" type="text/css" href="css/tn-list.css" />
-  <link rel="stylesheet" type="text/css" href="css/index.css?version=58">
+  <link rel="stylesheet" type="text/css" href="css/index.css?version=61">
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -58,7 +51,6 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
             history.go(1);
         };
   </script>
-
 
   <title>Academics Queue</title>
 </head>
@@ -127,7 +119,7 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
         </div>
       </div>
     </header>
-
+<!-- start of main-div -->
   <div class="main-div">
     <div class="tn-div">
       <div class="tn-header">
@@ -146,14 +138,16 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
             <!-- Options will be dynamically populated using JavaScript -->
             <option value="" selected></option>
         </select>
-        <button onclick="refreshQueue()" style="padding: 5px;">Default</button>
+        <button onclick="refreshQueue()" style="width: 40%;">Default</button>
+        <!-- Add your new button here -->
+        <!-- <button onclick="sortFilter()" id="sortButton" style="width: 40%;">↑↓ Sort</button> -->
       </div>
       <div id="tnn" style="overflow-y: auto; height: 100%;">
       <!-- Container to display queue-numbers -->
       <div id="tn-list"  class="tn-list"></div>
       </div>
 
-    </div> <!--End of tn-div-->
+    </div> <!--End of main-div-->
 
     <div class="form-div">
         <div class="newque-div">
@@ -173,22 +167,18 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
             <b><span id="info-student"></span></b>
             </p>
         </div>
-
         <div class="stdID-div">
                       
             <p><b>Transaction:</b> 
             <span id="info-transaction"></span>
             </p>
         </div>
-
-        
         <div class="stdID-div">
           
             <p><b>Endorsed from:</b> 
             <span id="info-endorse"></span>
             </p>
         </div>
-
         <div class="rmk-div">
             <p><b>Remarks:</b></p>
             <div class="msg-div">
@@ -196,7 +186,6 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
               <span id="info-remarks"></span><!--remarks-->
               </p>
             </div>
-       
           <div class="btn-div">
             <button onclick="notifyFront()"><i class="fa-solid fa-bell"></i>NOTIFY</button>
             <button id="endorseButton"><i class="fa-solid fa-paper-plane"></i>ENDORSE</button>
@@ -205,16 +194,17 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
         </div>
         <!--End of info-div-->
     </div><!--End of form-div-->
-    
   </div><!--End of main-div>-->
 
     <div class="modal-bg">
       <div class="form-modal" id="formModal">
           <div class="modform-div">
               <h1>ENDORSING FORM</h1>
+              
               <form id="endorseForm">
-                  <input type="hidden" id="form-queue-timestamp" name="form-queue-timestamp" required />
-                  <input type="hidden" id="form-queue-number" name="form-queue-number" required />
+                  <input type="hidden" id="form-queue-timestamp" name="form-queue-timestamp"/>
+                  <input type="hidden" id="form-queue-number" name="form-queue-number" />
+                  <input type="hidden" id="form-queue-endoresedfrom" name="form-queue-endoresedfrom" />
                   <div class="mema">
                       <label><b>Student ID: </b></label>
                       <input type="text" id="student-id" name="student_id"  required />
@@ -233,73 +223,31 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
                       <label><b>Transaction: </b></label>
                       <select id="transaction" name="transaction" required>
                           <option value="select" disabled selected>Please Select</option>
-                          <option value="accounting">PAYMENT</option>
-                          <option value="admission">OTHERS</option>
+                          <option value="Payment">PAYMENT</option>
+                          <option value="Others">OTHERS</option>
                       </select>
                   </div>
 
                   <div class="rms">
                       <label><b>Remarks: </b></label>
-                      <textarea id="remarks-form" name="remarks" rows="4" cols="50"></textarea>
+                      <textarea id="remarks-form" name="remarks" rows="4" cols="50" placehorder="Enter remarks" required></textarea>
+                  </div><br>
+                  <div class="note-notify">
+                      <p><i class="fa-regular fa-bell fa-shake"></i> Notify the queue before processing an endorsement.</p>
                   </div>
-
                   <div class="modbtn-div">
                       <button id="cancelButton">CANCEL</button>
                       <button type="button" id="doneButton"><b>DONE</b></button>
                   </div>
+                  
               </form>
           </div>
       </div>
-
-      <!-- <div class="confirm-modal">
-        <div class="confirm-div">
-            <h1 id="Confirm-modal"></h1>
-            <p><i>Please proceed to the Registrar's Office. Your tracking number is:</i></p>
-            <span id='queue-number'></span>
-        </div>
-
-        <div class="confirm-btn">
-            <button id="confirm-done-btn">DONE</button>
-        </div>
-    </div> -->
-
-
-
-
-      <!-- <div class="done-modal">
-        <div class="done-div" id="done-div">
-          <div class="text-div">
-            <i class="fa-solid fa-circle-check"></i>
-            <h1>ENDORSED SUCCESSFULLY</h1>
-          </div>
-
-          <div class="done-btn">
-            <button class="nxt-btn" id="ext-div">EXIT</button>
-          </div>
-        </div>
-      </div> -->
-
-      <!-- <div1 class="end-modal">
-        <div2 class="end-div" id="end-div">
-          <div3 class="text-div">
-            <i class="fa-solid fa-circle-check"></i>
-            <h1>TRANSACTION ENDED SUCCESSFULLY</h1>
-          </div3>
-
-          <div1 class="done-btn">
-            <button class="end-btn" id="end-btn">EXIT</button>
-          </div1>
-        </div2>
-      </di1v> -->
-
     </div>
-
-
 
     </div>
 
     <!-- For new notification slide -->
-
     <div class="notification-container" id="notification">
       <img src="img/horn.png" />
       <div class="notification-content">
@@ -312,23 +260,30 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
     </div>
     <!-- For new notification slide -->
 
-
-
 <!-- Add this modal to your HTML structure -->
 <div class="custom-modal" id="statusModal">
   <div class="modal-content">
     <!-- <span class="close" onclick="closeStatusModal()">&times;</span> -->
     <h1>Notify Queue</h1>
     <p id="statusMessage"></p><br>
-    <button onclick="confirmStatus()"><b>OK</b></button>
     <button onclick="cancelStatus()">CANCEL</button>
+    <button onclick="confirmStatus()"><b>OK</b></button>
   </div>
 </div>
 
+<!-- Add a modal for the disabled state -->
+<div id="wait-modal" class="modal">
+  <div class="modal-content">
+    <div class="loading-circle"></div>
+    <p>Please wait for 2 minutes before you can end a transaction again.</p>
+    
+    <div class="modal-buttons">
+      <button id="cancel-mins-wait-btn">Cancel</button>
+    </div>
+    
+  </div>
+</div>
 
-
-<!-- index.php -->
-<!-- Add this code after your form-modal -->
 <div id="confirm-modal" class="confirm-modal">
   <div class="confirm-div">
     <!-- <h1 id="Confirm-modal"></h1> -->
@@ -340,45 +295,50 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
   </div>
 </div>
 
-
-
-
 <!-- Start for endorse and end button confirmation modal -->
 <div id="select-queue-modal">
     <div class="confirm-end-div">
     <h1>No Queue Selected</h1>
         <p>Please select a queue number first!</p><br>
-        <button id="select-queue-yes-btn">OK</button>
+        <button id="select-queue-yes-btn"><b>OK</b></button>
     </div>
 </div>
 
 <!-- Please select both 'Endorsed To' and 'Transaction' options modal -->
 <div id="select-options-modal" class="modal-bg">
     <div class="confirm-end-div">
-        <h1>No Options Selected</h1>
-        <p>Please select both <b>'Endorsed To'</b> and <b>'Transaction'</b> options!</p><br>
-        <button id="select-options-ok-btn">OK</button>
+        <h1>Fill out all fields</h1>
+        <p>Do not leave any options or text areas blank, fill them out.</p><br>
+        <button id="select-options-ok-btn"><b>OK</b></button>
     </div>
 </div>
 
+<div id="reason-modal" class="reason-modal">
+    <div class="reason-modal-div">
+        <h1>Input Required</h1>
+        <p>Please enter a reason for ending the transaction.</p><br>
+        <button id="reason-modal-ok-btn"><b>OK</b></button>
+    </div>
+</div>
 
-<div class="confirm-end-modal">
+<div id="confirm-end-modal" class="confirm-end-modal">
     <div class="confirm-end-div">
-        <h1>Confirm Ending</h1>
-        <p>Are you sure you want to end the current transaction?</p>
+        <h1>End Transaction</h1>
+        <p>Enter a reason to proceed with ending.</p>
+        <textarea id="remarks-reason" placeholder="Input here." required></textarea><br>
+        <div class="note-notify">
+          <p style="color: gray; font-size: 16px;"><i class="fa-regular fa-bell fa-shake"></i> Notify the queue before processing end.</p>
+        </div>
         <div class="confirm-end-btn">
-            <button id="confirm-end-yes-btn"><b>YES</b></button>
-            <button id="confirm-end-no-btn">NO</button>
+            <button id="confirm-end-no-btn">CANCEL</button>
+            <button id="confirm-end-yes-btn"><b>DONE</b></button>
         </div>
     </div>
 </div>
 <!-- End for endorse and end button confirmation modal -->
 
 
-    <script src="./js/scripts.js?version=60"></script>
-
-
-
+    <script src="./js/scripts.js?version=62"></script>
     <script>
 
     function populateConcernFilter(program) {
@@ -396,7 +356,6 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
         });
     }
     
-
     function filterByProgram() {
     var selectedProgram = $("#program-filter").val();
     var selectedConcern = $("#concern-filter").val();
@@ -415,15 +374,10 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
     });
     } 
 
-
-
     function filterByConcern() {
         filterByProgram(); // Call the same function when the concern filter is changed
     }
 
-
-   
-      
         function fetchDefaultConcernQueueNumbers() {
             // Assuming you have a PHP script (e.g., fetch_default_concern.php) to fetch queue numbers
             $.ajax({
@@ -439,8 +393,6 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
             });
         }
 
-
-
         function refreshQueue() {
     // Reset program and concern filters to default values
     $("#program-filter").val("");
@@ -449,8 +401,6 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
     // Fetch and display default concern queue numbers
     fetchDefaultConcernQueueNumbers();
 }
-
-
 </script>
 
   </body>
