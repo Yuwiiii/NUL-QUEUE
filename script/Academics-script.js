@@ -25,7 +25,7 @@ function checkQueueData() {
 
                 // Update the previous queue numbers for this course
                 previousCourseQueueNumbers[course] = currentQueueNumbers;
-                console.log(currentQueueNumbers);
+                
             });
 
             // Update the container with the new data
