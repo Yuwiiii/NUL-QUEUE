@@ -18,7 +18,7 @@ function refreshByInterval() {
 
 
 // REMOVE THIS IF DI NA NEED NG SET INTERVAL!!!
-// refreshByInterval();
+refreshByInterval();
 
 
 let queueArray = getQueue(USER_OFFICE);
