@@ -55,10 +55,6 @@ $displayedProgram = [];
                 echo "'>";
                 echo "<p><b>" . $course . ":</b></p>";
 
-                // Trigger audio playback when a new list-div is generated
-                echo '<audio class="notificationSound" src="sound/queue_notification.mp3"></audio>';
-                // echo "<script>document.querySelector('.notificationSound').play();</script>";
-
                 // Display queue numbers with status 1 for this course
                 while ($row = $getqueuenumerDataSqlresult->fetch_assoc()) {
                     echo "<div class='qn-div'>";
