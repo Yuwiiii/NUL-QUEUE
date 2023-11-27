@@ -19,7 +19,7 @@ function refreshByInterval() {
 
 
 // REMOVE THIS IF DI NA NEED NG SET INTERVAL!!!
-// refreshByInterval();
+refreshByInterval();
 
 
 $("#endorse-btn").click(() => {
