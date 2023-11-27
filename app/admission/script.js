@@ -8,6 +8,8 @@ const USER_ID = $("#user-data").data("user-id");
 const USERNAME = $("#user-data").data("user-name");
 let academicsCollegeSelected = 'SCS';
 let isDoneButtonOnCooldown = false;
+
+const TWO_MINUTES = 160000;
   
 //adjustment sa class 
 function refreshByInterval() {
@@ -277,14 +279,14 @@ $("#college").on('change', function () {
 
               setTimeout(() => {
                 isDoneButtonOnCooldown = false;
-              }, 5000);
+              }, TWO_MINUTES);
 
               let timerInterval;
               $("#transaction-complete-btn").prop("disabled", true);
               Swal.fire({
                 title: "Finish transaction cooldown!",
-                html: "Can perform finish operation after <b></b> milliseconds.",
-                timer: 10000,
+                html: "Can perform finish operation after <b></b> seconds.",
+                timer: TWO_MINUTES,
                 toast: true,
                 position: 'top-end',
                 timerProgressBar: true,
@@ -294,7 +296,8 @@ $("#college").on('change', function () {
                   Swal.showLoading();
                   const timer = Swal.getPopup().querySelector("b");
                   timerInterval = setInterval(() => {
-                    timer.textContent = `${Swal.getTimerLeft()}`;
+                    const remainingTime = Math.ceil(Swal.getTimerLeft() / 1000); // Convert milliseconds to seconds
+                    timer.textContent = `${remainingTime}`;
                   }, 100);
                 },
                 willClose: () => {
