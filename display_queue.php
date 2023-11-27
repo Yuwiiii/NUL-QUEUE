@@ -46,27 +46,30 @@ $displayedProgram = [];
             if ($getqueuenumerDataSqlresult->num_rows > 0) {
                 $courseCount++;
                 echo "<div class='list-div";
-
+            
                 // Check if it's the last list-div
                 if ($courseCount === $getcourseDataSqlresult->num_rows) {
                     echo " last-list-div";
                 }
-
+            
                 echo "'>";
                 echo "<p><b>" . $course . ":</b></p>";
+            
+                $courseQueueNumbers = []; // Initialize an array to store previous queue numbers for each course
 
-                // Display queue numbers with status 1 for this course
                 while ($row = $getqueuenumerDataSqlresult->fetch_assoc()) {
-                    echo "<div class='qn-div'>";
+                    $courseQueueNumbers[$course][] = $row['queue_number'];
+                
+                    echo "<div class='qn-div' data-queue-number='" . $row['queue_number'] . "'>";
                     echo "<p><b>" . $row['queue_number'] . "</b></p>";
                     echo "</div>";
                 }
-
+            
                 echo "</div>";
-
+            
                 // Set the flag to true as there are queue numbers
                 $hasQueueNumbers = true;
-
+            
                 // Add the course to the array to mark it as displayed
                 $displayedCourses[] = $course;
             }

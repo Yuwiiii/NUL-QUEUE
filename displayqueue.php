@@ -102,7 +102,7 @@ $result = $conn->query($sql);
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 
-        const audio = new Audio('sound/queue_notification.mp3');
+        const audio = new Audio('../queue/sound/queue_notification.mp3');
         document.getElementById('playButton').addEventListener('click', () => {
         audio.play();
         });
@@ -124,7 +124,6 @@ $result = $conn->query($sql);
                     success: function (data) {
                         $('#<?php echo $officeName; ?>QueueContainer').html(data);
                         const newData = $('#<?php echo $officeName; ?>QueueContainer').children().first().text();
-
                         if (currentQueues['<?php echo $officeName; ?>'] !== undefined && currentQueues['<?php echo $officeName; ?>'] !== newData) {
                             console.log('Data changed for', '<?php echo $officeName; ?>');
                             console.log('Old data:', currentQueues['<?php echo $officeName; ?>']);
