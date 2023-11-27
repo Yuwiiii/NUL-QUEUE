@@ -118,7 +118,7 @@ body {
 }
 
 .list-div {
-    border-bottom: 2px white solid;
+    /* border-bottom: 2px white solid; */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -146,4 +146,13 @@ body {
 
 .course-div .quenum-div {
     font-weight: bold;
+}
+
+.que-div p{
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #FFD41C;
 }
