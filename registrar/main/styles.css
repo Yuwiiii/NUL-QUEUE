@@ -435,11 +435,12 @@
   #notifyButton {
     background-color: #FFD41C;
     color: #000000;
-    padding: 10px 20px;
+    padding: 10px 30px;
     border-radius: 5px;
     cursor: pointer;
     display: inline-block;
     margin: 0 490px;
+    margin-left: 550px;
   }
 
   button#cancelButton,
@@ -591,3 +592,18 @@ button#submitCommentButton {
 }
 
 
+#addqueuenumber {
+  background-color: #34418E;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0 490px;
+  margin-left : 180px;
+}
+
+#addqueuenumber:hover {
+  background-color: #FFD41C;
+  color: #000000;
+}

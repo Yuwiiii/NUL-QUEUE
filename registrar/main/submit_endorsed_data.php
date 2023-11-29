@@ -1,4 +1,6 @@
 <?php
+session_start(); // Make sure to start the session
+
 $db_host = "localhost";
 $db_username = "root";
 $db_password = "";
@@ -24,8 +26,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $courseResult = $conn->query($fetchCourseSql);
     $courseRow = $courseResult->fetch_assoc();
     $course = $courseRow['course'];
-  
-      
 
     $fetchTimestampSql = "SELECT timestamp FROM registrar WHERE queue_number = '$queueNumber'";
     $timestampResult = $conn->query($fetchTimestampSql);
@@ -74,6 +74,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                              $_SESSION['notification_message'] = "<span style='color: red;'>Invalid department selected or Queue Number does not exist.</span>";
                              header("Location: registrar_admin.php");
                              exit;
+        }
+
+        $insertQueueLogsSql = "INSERT INTO queue_logs (student_id, queue_number, office, program, timestamp, status, remarks, endorsed) VALUES ('$studentId', '$queueNumber', 'REGISTRAR', '$program', '$originalTimestamp', 1, '$remarks', '$endorsedTo')";
+        if (!$conn->query($insertQueueLogsSql)) {
+            echo "Error inserting into queue_logs: " . $conn->error;
+        }
+
+        // Insert into registrar_logs
+        $insertRegistrarLogsSql = "INSERT INTO registrar_logs (queue_number, student_id, endorsed_from, transaction, remarks, status, timestamp) VALUES ('$queueNumber', '$studentId', '$endorsedTo', '$transaction', '$remarks', 1, '$originalTimestamp')";
+        if (!$conn->query($insertRegistrarLogsSql)) {
+            echo "Error inserting into registrar_logs: " . $conn->error;
         }
 
         if (isset($tableName)) {

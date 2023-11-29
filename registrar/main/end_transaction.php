@@ -23,8 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
 
-        // Insert the data into the registrar_done table
-        $insertSql = "INSERT INTO registrar_logs (queue_number, student_id, endorsed_from, transaction, remarks, status, timeout, timestamp) VALUES (
+        // Insert the data into the registrar_logs table
+        $insertRegistrarLogsSql = "INSERT INTO registrar_logs (queue_number, student_id, endorsed_from, transaction, remarks, status, timeout, timestamp) VALUES (
             '" . $row['queue_number'] . "',
             '" . $row['student_id'] . "',
             'REGISTRAR',  -- Set endorsed_from to 'REGISTRAR'
@@ -35,19 +35,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             '" . $row['timestamp'] . "'
         )";
 
-        if ($conn->query($insertSql) === true) {
-            // Delete the record from the registrar table
-            $deleteSql = "DELETE FROM registrar WHERE queue_number = '$queueNumber'";
-            if ($conn->query($deleteSql) === true) {
-                // Update the status in the display table
-                $updateDisplaySql = "UPDATE display SET status = 1 WHERE queue_number = '$queueNumber' AND officeName = 'REGISTRAR'";
-                $conn->query($updateDisplaySql);
+        if ($conn->query($insertRegistrarLogsSql) === true) {
+            // Insert the data into the queue_logs table
+            $insertQueueLogsSql = "INSERT INTO queue_logs (student_id, queue_number, office, program, timestamp, status, remarks, endorsed) VALUES (
+                '" . $row['student_id'] . "',
+                '" . $row['queue_number'] . "',
+                'REGISTRAR',
+                '',  -- Set program to empty or modify accordingly
+                CURRENT_TIMESTAMP,
+                1, 
+                '$comments',
+                'COMPLETED'
+            )";
 
-                // Set the notification message
-                $_SESSION['notification_message'] = "Transaction Completed for Queue Number: $queueNumber";
-                echo json_encode(array('success' => true));
+            if ($conn->query($insertQueueLogsSql) === true) {
+                // Delete the record from the registrar table
+                $deleteSql = "DELETE FROM registrar WHERE queue_number = '$queueNumber'";
+                if ($conn->query($deleteSql) === true) {
+                    // Update the status in the display table
+                    $updateDisplaySql = "UPDATE display SET status = 1 WHERE queue_number = '$queueNumber' AND officeName = 'REGISTRAR'";
+                    $conn->query($updateDisplaySql);
+
+                    // Set the notification message
+                    $_SESSION['notification_message'] = "Transaction Completed for Queue Number: $queueNumber";
+                    echo json_encode(array('success' => true));
+                } else {
+                    echo json_encode(array('success' => false, 'message' => "Error deleting record from registrar table: " . $conn->error));
+                }
             } else {
-                echo json_encode(array('success' => false, 'message' => "Error deleting record from registrar table: " . $conn->error));
+                echo json_encode(array('success' => false, 'message' => "Error inserting record into queue_logs table: " . $conn->error));
             }
         } else {
             echo json_encode(array('success' => false, 'message' => "Error inserting record into registrar_logs table: " . $conn->error));

@@ -82,6 +82,9 @@ if ($conn->connect_error) {
         </div>
 
         <div class="output-div">
+        <div class="new-queue-button-container">
+            <button id="addqueuenumber" button class="new-queue-button" onclick="openNewQueueTab()">Add Queue No:</button>
+        </div>
     <div class="outinfo-div">
         <div class="btn-div">
             <button id="notifyButton" class="right-button" onclick="notifyQueueNumber()">Notify</button>
@@ -121,10 +124,10 @@ if ($conn->connect_error) {
             <h1>End Transaction Form</h1>
             <p><b>Queue Number: </b><span id="commentFormQueueNumber"></span></p>
             <div class="form-group">
-    <label for="commentTextArea">Feedback:</label>
-    <textarea id="commentTextArea" rows="10" cols="255" style="border: 2px solid #34418E; resize: none;"></textarea>
-</div>
-
+                <label for="commentTextArea">Feedback:</label>
+                <textarea id="commentTextArea" name="commentTextArea" rows="10" cols="255" style="border: 2px solid #34418E; resize: none;" required></textarea>
+            </div>
+            <!-- Add 'required' attribute to the input field -->
             <div class="button-group">
                 <button id="cancelCommentButton" class="button">CANCEL</button>
                 <button id="submitCommentButton" class="right-button">SUBMIT</button>
@@ -132,6 +135,7 @@ if ($conn->connect_error) {
         </div>
     </div>
 </div>
+
     <div class="modal" id="endorseModal">
   <div class="center-container">
     <div class="f-modal">
@@ -181,11 +185,11 @@ if ($conn->connect_error) {
         <!-- End of additional fields for Academics -->
         <div class="form-group">
           <label for="transaction">Transaction:</label>
-          <input type="text" id="transaction" name="transaction"/>
+          <input type="text" id="transaction" name="transaction" required/>
         </div>
         <div class="form-group">
           <label for="remarks">Remarks:</label>
-          <textarea id="remarks" name="remarks" rows="10" cols="255" style="border: 2px solid #34418E; resize: none;" ></textarea>
+          <textarea id="remarks" name="remarks" rows="10" cols="255" style="border: 2px solid #34418E; resize: none;" required></textarea>
         </div>
         <div class="button-group">
         <button id="cancelButton" type="reset" class="button" onclick="document.getElementById('endorseModal').style.display = 'none';">CANCEL</button>
@@ -215,7 +219,7 @@ if ($conn->connect_error) {
                 const response = JSON.parse(xhr.responseText);
 
                 if (response.success) {
-                    const message = `${queueNumber} Please Proceed to Window ${windowNumber} in the Registrar Office`;
+                    const message = ` ${queueNumber} has been notified for processing at Window ${windowNumber}`;
                     if ('speechSynthesis' in window) {
                         const speech = new SpeechSynthesisUtterance(message);
                         window.speechSynthesis.speak(speech);
@@ -262,7 +266,7 @@ function endTransaction() {
     } else {
         console.error("Queue number is missing.");
     }
-}
+}   
 
 function openCommentFormModal(queueNumber) {
     // Set the queue number in the comment form modal
@@ -279,34 +283,38 @@ document.getElementById('cancelCommentButton').addEventListener('click', functio
 });
 
 document.getElementById('submitCommentButton').addEventListener('click', function () {
-    
     const comments = document.getElementById('commentTextArea').value;
-    // Get the queue number
     const queueNumber = document.getElementById('commentFormQueueNumber').textContent;
 
-    // Perform AJAX request to submit comments to the server
+    // Check if the comments (feedback) is not empty before submitting
+    if (comments.trim() === "") {
+        alert("Please enter feedback before submitting.");
+        return; // Stop the function if feedback is empty
+    }
+
+    // Continue with the AJAX request to submit comments to the server
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
 
             if (response.success) {
-                // Close the comment form modal
                 document.getElementById('commentFormModal').style.display = 'none';
-                // Optionally, you can update the output-div to display a message or clear the information
                 updateOutputDiv(""); // Assuming this function exists to update the output-div
             } else {
                 console.error("Failed to submit comments:", response.message);
             }
         }
     };
-    
+
     xhr.open('POST', 'end_transaction.php', true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     const data = "queueNumber=" + queueNumber + "&comments=" + encodeURIComponent(comments);
     xhr.send(data);
+
     location.reload();
 });
+
 
 
 function removeQueueNumberFromSidebar(queueNumber) {
@@ -315,6 +323,8 @@ function removeQueueNumberFromSidebar(queueNumber) {
         queueItem.remove();
     }
 }
+</script>
+<script>
 
 function openEndorseModal() {
     var endorseModal = document.getElementById("endorseModal");
@@ -643,11 +653,28 @@ changeQueueInfo(queueOrder[activeIndex]);
 }
 </script>
 <script>
+
+function playTingSoundEffect() {
+    const tingSound = new Audio('ting.mp3');  // Replace 'path/to/ting.mp3' with the actual path to your sound file
+    tingSound.play();
+}
+
+// Modify the fetchNewQueueNumbers function to check for new queue numbers
 function fetchNewQueueNumbers() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var sortedQueueNumbers = JSON.parse(xhr.responseText);
+
+            // Check for new queue numbers
+            for (const queueNumber of sortedQueueNumbers) {
+                if (!queueNumbers.includes(queueNumber)) {
+                    // New queue number found
+                    playTingSoundEffect();  // Play the "ting...." sound effect
+                    queueNumbers.push(queueNumber); // Add to the existing queue numbers
+                }
+            }
+
             // Update the sidebar with the sorted queue numbers
             queueNumbers = sortedQueueNumbers;
             showQueueNumbers();
@@ -656,9 +683,10 @@ function fetchNewQueueNumbers() {
     xhr.open('GET', 'fetch_new_queue_numbers.php', true);
     xhr.send();
 }
+
+
 // Fetch new queue numbers every 3 seconds
 setInterval(fetchNewQueueNumbers, 1000);
-
 
 </script>
 
@@ -699,12 +727,16 @@ setTimeout(function () {
       day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
-      second: 'numeric',
       hour12: true,
     };
 
     return new Date().toLocaleString('en-US', options);
   }
+</script>
+<script>
+       function openNewQueueTab() {
+            window.open('http://localhost/Main', '_blank');
+        }   
 </script>
     </body>
     </html>
