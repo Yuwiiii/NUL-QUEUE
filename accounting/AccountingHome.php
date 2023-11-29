@@ -15,11 +15,24 @@ if ($conn->connect_error) {
 
 session_start();
 
-// Check if the user is not logged in, then redirect to the login page
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('Location: AccountingLogin.php');
     exit();
 }
+
+// Fetch the full name from the database based on the user_id (adjust this query based on your database structure)
+$userID = $_SESSION['username'];
+$sqlFullName = "SELECT full_name FROM user_accounts WHERE username = '$userID'";
+$resultFullName = $conn->query($sqlFullName);
+
+if ($resultFullName->num_rows > 0) {
+    $rowFullName = $resultFullName->fetch_assoc();
+    $_SESSION['full_name'] = $rowFullName['full_name'];
+} else {
+    // Handle the case where no full name was found
+    $_SESSION['full_name'] = 'Unknown User';
+}
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
     $selectedQueueNumber = $_POST['queue_number'];
@@ -38,11 +51,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
     // Initialize SQL statements
     $sqlInsert = "";
     $selectedProgram = "";
+    
 
     if ($formattedSelectedOffice === 'Academics') {
         // If the selected office is 'Academics', also save data in the 'academics' table
         $selectedProgram = $_POST['program'];
         $selectedConcern = $_POST['concern'];
+        $selectedTransaction = isset($_POST['transaction']) ? $_POST['transaction'] : '';
 
         // Fetch the course value from the program_chairs table based on the selected concern
         $courseSql = "SELECT course FROM program_chairs WHERE full_name = '$selectedConcern'";
@@ -55,7 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
             // Include the selected course in your SQL query
             $sqlInsert = "INSERT INTO academics_queue (queue_number, timestamp, student_id, program, concern, course, remarks, endorsed_from, transaction) 
             VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedConcern', '$selectedCourse', '$selectedRemarks', 'Accounting', '$selectedTransaction')";
-
             if ($conn->query($sqlInsert) !== TRUE) {
                 echo "Error inserting data into academics table: " . $conn->error;
             }
@@ -67,7 +81,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         $selectedProgram = $_POST['program'];
 
         // Add your query to insert data into the 'admission' table
-        $sqlInsert = "INSERT INTO admission (queue_number, timestamp, student_id, program, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedRemarks', 'Accounting', '$selectedTransaction')";
+        $sqlInsert = "INSERT INTO admission (queue_number, timestamp, student_id, program, remarks, endorsed_from, transaction) 
+        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedRemarks', 'Accounting', '$selectedTransaction')";
 
         if ($conn->query($sqlInsert) !== TRUE) {
             echo "Error inserting data into admission table: " . $conn->error;
@@ -76,54 +91,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         // If the selected office is not 'Academics' or 'Admission', save data in the respective table
         $sqlInsert = "INSERT INTO $tableName (queue_number, timestamp, student_id, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'Accounting', '$selectedTransaction')";
 
+
         if ($conn->query($sqlInsert) !== TRUE) {
             echo "Error inserting data into $tableName table: " . $conn->error;
         }
     }
 
-// ... (Your existing code)
+// Fetch endorsed_from value from the Accounting table
+$sqlFetchEndorsedFrom = "SELECT endorsed_from FROM accounting WHERE queue_number = '$selectedQueueNumber'";
+$resultFetchEndorsedFrom = $conn->query($sqlFetchEndorsedFrom);
 
-// Insert the data into the 'accounting_logs' table
-$sqlInsertIntoAccountingLogs = "INSERT INTO accounting_logs (queue_number, timestamp, student_id, remarks, endorsed_from, transaction)
-VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', '$formattedSelectedOffice', '$selectedTransaction')";
+if ($resultFetchEndorsedFrom->num_rows > 0) {
+    $rowFetchEndorsedFrom = $resultFetchEndorsedFrom->fetch_assoc();
+    $selectedEndorsedFrom = $rowFetchEndorsedFrom['endorsed_from'];
 
-// Execute the insert query
-if ($conn->query($sqlInsertIntoAccountingLogs) === TRUE) {
-    // If insert is successful, update the 'endorsed_to' column in the 'accounting_logs' table
-    $sqlUpdateEndorsedToLogs = "UPDATE accounting_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
-    
-    // Execute the update query for the 'accounting_logs' table
-    if ($conn->query($sqlUpdateEndorsedToLogs) !== TRUE) {
-        echo "Error updating endorsed_to column in accounting_logs: " . $conn->error;
-    }
+    // Insert the data into the 'accounting_logs' table
+    $sqlInsertIntoAccountingLogs = "INSERT INTO accounting_logs (queue_number, timestamp, student_id, remarks, endorsed_from, transaction)
+    VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', '$selectedEndorsedFrom', '$selectedTransaction')";
 
-    // Update status column in the 'accounting' table and display table
-    $sqlUpdateStatusAndDisplay = "UPDATE accounting, display
-    SET accounting.status = 1,
-        display.status = 1
-    WHERE accounting.queue_number = '$selectedQueueNumber'
-        AND display.queue_number = '$selectedQueueNumber'
-        AND accounting.endorsed_to = '$formattedSelectedOffice'
-        AND display.officeName = 'Accounting'";
+    // Execute the insert query
+    if ($conn->query($sqlInsertIntoAccountingLogs) === TRUE) {
+        // If insert is successful, update the 'endorsed_to' column in the 'accounting_logs' table
+        $sqlUpdateEndorsedToLogs = "UPDATE accounting_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
+        
+        // Execute the update query for the 'accounting_logs' table
+        if ($conn->query($sqlUpdateEndorsedToLogs) !== TRUE) {
+            echo "Error updating endorsed_to column in accounting_logs: " . $conn->error;
+        }
 
-    if ($conn->query($sqlUpdateStatusAndDisplay) !== TRUE) {
-        echo "Error updating status and display table: " . $conn->error;
-    }
+        // Update status column in the 'accounting' table and display table
+        $sqlUpdateStatusAndDisplay = "UPDATE accounting, display
+        SET accounting.status = 1,
+            display.status = 1
+        WHERE accounting.queue_number = '$selectedQueueNumber'
+            AND display.queue_number = '$selectedQueueNumber'
+            AND display.officeName = 'Accounting'";
 
-    // Delete the data from the 'accounting' table
-    $sqlDeleteFromAccounting = "DELETE FROM accounting WHERE queue_number = '$selectedQueueNumber'";
+        if ($conn->query($sqlUpdateStatusAndDisplay) !== TRUE) {
+            echo "Error updating status and display table: " . $conn->error;
+        }
 
-    // Execute the delete query for the 'accounting' table
-    if ($conn->query($sqlDeleteFromAccounting) !== TRUE) {
-        echo "Error deleting data from accounting table: " . $conn->error;
+        // Delete the data from the 'accounting' table
+        $sqlDeleteFromAccounting = "DELETE FROM accounting WHERE queue_number = '$selectedQueueNumber'";
+
+        // Execute the delete query for the 'accounting' table
+        if ($conn->query($sqlDeleteFromAccounting) !== TRUE) {
+            echo "Error deleting data from accounting table: " . $conn->error;
+        }
+    } else {
+        echo "Error inserting data into accounting_logs table: " . $conn->error;
     }
 } else {
-    echo "Error inserting data into accounting_logs table: " . $conn->error;
+    echo "Error fetching endorsed_from value for queue number $selectedQueueNumber";
 }
-
-// ... (Any remaining code)
-
-
 }
 
 
@@ -257,22 +277,28 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 
 </head>
 <header>
-<div class="header">
-    <img src="assets/nu logo.webp" alt="Image" class=""
-    style="max-height: auto; max-width: 10%; padding: 1%;">
-    <div class="mt-4">
-        <h1 class="fw-bolder text-light text-center">NU LAGUNA</h1>
-        <h4 class="fw-bold text-light text-center">QUEUING SYSTEM</h4>
+    <div class="header">
+        <img src="assets/nu logo.webp" alt="Image" class="" style="max-height: auto; max-width: 10%; padding: 1%;">
+        <div class="mt-4">
+            <h1 class="fw-bolder text-light text-center">NU LAGUNA</h1>
+            <h4 class="fw-bold text-light text-center">QUEUING SYSTEM</h4>
+        </div>
+        
+        <!-- Display the full name in the header -->
+        <p id="greeting" class="fw-bold text-light text-center" style="margin-top: 3%;">Hi there, <?php echo $_SESSION['full_name']; ?>!</p>
+        
+        <button class="icon" onclick="exit()"><p style="font-size:20px; margin-top: 60%;">Logout</p></button>
+        
+        <button class="round" id="newqueue" style="position: absolute; right: 0; margin-top:11%; margin-right:1%" onclick="openQue()">New Queue  <i class="fa fa-plus-square"></i></button>
+        
+        <!-- Include jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        
+        <!-- Your button -->
+        <button class="round" style="position: absolute; left: 80; margin-top:11%; margin-left:20%" onclick="returnToQueue()"><i class="fa fa-chevron-left"></i> Back to Queue</button>
     </div>
-    <button class="icon" onclick="exit()"><i class="fa fa-user" aria-hidden="true" ></i><p style="font-size:20px;">Logout</p></button>
-    <button class="button" style="position: absolute; right: 0; margin-top:11%; margin-right:1%" onclick="openQue()">Add New Queue</button>
-    <!-- Include jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-<!-- Your button -->
-<button class="button" style="position: absolute; left: 80; margin-top:11%; margin-left:18%" onclick="returnToQueue()">Return Current Transaction To Queue</button>
-</div>
 </header>
+
     
 <style>
         
@@ -291,7 +317,18 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
             border-radius: 5px;
             padding-bottom: 60px;
             background-color: lightgrey;
+
         }
+
+        #greeting {
+    font-weight: bold;
+    color: #ffffff; /* Text color (white in this example) */
+    text-align: center;
+    margin-top: 30px; /* Adjust the top margin as needed */
+    font-size: 18px; /* Adjust the font size as needed */
+    margin-left: 65%;
+}
+
         .txtque{
             font-size: 65px;
             font-weight: bold;
@@ -306,28 +343,16 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
         }
         /* Custom styles for the side navigation */
         .sidenav {
-            height: 82vh;
+            height: 74vh;
             width: 340px; 
             position: absolute;
-            top: 100;
+            margin-top: 3.4%;
             left: 0;
             background-color: #EDEDED;
             overflow-y: auto;
             
         }
-        .side_navtxt{
-            background-color: #FFD41C;
-            padding-left: 2%;
-            padding-right: 2%;
-            padding-bottom: .1%;
-            padding-top: 2%;
-            text-align: center;
-            font-size: 24px;
-            font-family: sans-serif;
-            position: absolute;
-            z-index: 1;
-            
-        }
+
         .sidetxt{
            font-weight: bold;
            color: black;
@@ -370,6 +395,127 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
         .drop-item:focus{
             background-color: red;
         }
+
+        /* Center the Popup */
+        #endorsementPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            width: 600px;
+            height: 650px;
+            background-color: #fefefe;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            font-size: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        /* Style the Popup Content */
+        #endorsementPopup p {
+            margin-bottom: 10px;
+            margin-left: 35px;
+        }
+
+        /* Style the Dropdowns */
+        .drop {
+            width: 65%;
+            padding: 8px;
+            font-size: 20px;
+            margin: 4px 0;
+            box-sizing: border-box;
+        }
+
+        .transaction-textbox {
+            width: 65%;
+            padding: 4px;
+            font-size: 20px;
+            margin: 4px 0;
+            box-sizing: border-box;
+        }
+
+        /* Style the Textarea */
+        .remarkac {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+
+        }
+
+
+        /* Apply Responsive Styling */
+        @media screen and (max-width: 600px) {
+            /* Adjust styles for smaller screens if needed */
+            #endorsementPopup {
+                width: 80%;
+            }
+        }
+
+        /* Center the Popup */
+        #doneendorsementPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            width: 600px;
+            height: 500px;
+            background-color: #fefefe;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            font-size: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        /* Style the Popup Content */
+        #doneendorsementPopup p {
+            margin-bottom: 10px;
+            margin-left: 35px;
+        }
+
+        /* Style the Dropdowns */
+        .drop {
+            width: 65%;
+            padding: 8px;
+            font-size: 20px;
+            margin: 4px 0;
+            box-sizing: border-box;
+        }
+
+        .transaction-textbox {
+            width: 65%;
+            padding: 4px;
+            font-size: 20px;
+            margin: 4px 0;
+            box-sizing: border-box;
+        }
+
+        /* Style the Textarea */
+        .remarkac {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+
+        }
+
+
+        /* Apply Responsive Styling */
+        @media screen and (max-width: 600px) {
+            /* Adjust styles for smaller screens if needed */
+            #endorsementPopup {
+                width: 80%;
+            }
+        }
+
+
+
         .popup {
             z-index: 2;
             top: 50%; 
@@ -377,7 +523,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
             transform: translate(-50%, -50%) scale(0.1); 
             background-color: white;
             padding: 2%; 
-            width: 45%; 
+            width: 30%; 
             height: 75%; 
             border-radius: 35px;
             display: none;
@@ -490,15 +636,98 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
             border: none;
             cursor: pointer;
         }
-        
- 
 
+        .side_navtxt {
+            background-color: #FFD41C;
+            padding: .1% 2.2% .1% 2.3%;
+            text-align: center;
+            font-size: 24px;
+            font-family: sans-serif;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .side_navtxt p {
+             margin-top: 10px;  
+          
+        }
+
+        .sidenav::-webkit-scrollbar {
+            width: 12px; /* width of the scrollbar */
+        }
+
+        .sidenav::-webkit-scrollbar-thumb {
+             background-color: #6a6a6a; /* color of the thumb */
+            border-radius: 5px; /* roundness of the thumb */
+        }
+
+        .sidenav::-webkit-scrollbar-track {
+            background-color: #e0e0e0; /* color of the track */
+        }
+
+        #confirmationModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        #confirmationModal .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 20%; /* Adjust the width as needed */
+            height: 15%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center; /* Center the text */
+        }
+
+        #confirmationModal .confirmation-message {
+            font-size: 20px; /* Adjust the font size */
+            margin-bottom: 15px;
+        }
+
+        /* Style for the textarea with the remarkac class */
+        textarea.remarkac {
+            width: 90%;
+            padding: 8px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical; /* Allow vertical resizing */
+        }
+        
+        .round{
+            border-radius: 5px;
+            background-color: green;
+            color: white;
+            border: none;
+            font-family: sans-serif;
+            font-size: 15px;
+            padding: .5%;
+            font-weight: bold;
+            
+        }
+       
     </style>
 
 <body>
+    
 
-<!-- Side navigation -->   
+<!-- Side navigation --> 
+<div class="side_navtxt">
+    <p>ACCOUNTING QUEUE</p>
+</div>  
 <!-- Side navigation for combined data -->
+
 
 <div class="sidenav" id="sidenav">
 
@@ -529,6 +758,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 
 <!-- Side navigation -->
 
+
+<!-- Center Content -->
 <?php if (isset($_POST['show_details'])): ?>
     <?php
     $selectedQueueNumber = $_POST['queue_number'];
@@ -567,38 +798,75 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
         <?php endif; ?>
 
         <!-- Notify button -->
-        <button class="button" type="button" onclick="fetchUserWindowAndNotify()"><i class="fa fa-bell"></i> NOTIFY</button>
+        <button style="margin-left: 8%;" class="button" type="button" onclick="openConfirmationModal()"><i class="fa fa-bell"></i> NOTIFY</button>
+
+        <!-- Add this code within the PHP if statement -->
+        <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+        <p class="confirmation-message">Are you sure you want to notify?</p>
+        <div class="confirmation-buttons">
+        <button class="button confirm-button" onclick="confirmNotify()"><i class="fa fa-check"> YES </i></button>
+        <button class="button cancel-button" onclick="closeConfirmationModal()"><i class="fa fa-close"> NO </i></button>
+        </div>
+        </div>
+        </div>
+
+        
 
         <!-- Endorse button -->
-        <button style="margin-left: 10%;" class="button" type="button" onclick="openEndorsementPopup()">ENDORSE</button>
+        <button style="margin-left: 2%;" class="button" type="button" onclick="openEndorsementPopup()"><i class="fa fa-paper-plane"></i> ENDORSE</button>
 
-        <!-- Done button -->
-        <button style="margin-left: 10%;" class="button" type="button" onclick="markAsDone()">DONE</button>
+        <!-- End button (disable it initially) -->
+        <button id="endButton" style="margin-left: 2%;" class="button" type="button" onclick="openDoneEndorsementPopup()" disabled>
+            <i class="fa fa-times-circle"></i> END (0s)
+        </button>
+    </div>
+
+    <!-- JavaScript to update the button text and enable the button after a delay -->
+    <script>
+
+    function openConfirmationModal() {
+        var modal = document.getElementById('confirmationModal');
+        modal.style.display = 'block';
+    }
+
+    function closeConfirmationModal() {
+        var modal = document.getElementById('confirmationModal');
+        modal.style.display = 'none';
+    }
+
+    function confirmNotify() {
+        // Add logic for confirming notification here
+
+        // Close the confirmation modal
+        closeConfirmationModal();
+
+        // Perform the Notify action (replace this with your existing logic)
+        fetchUserWindowAndNotify();
+    }
+
+
+        var countdownSeconds = 120; // Set the initial countdown value
+        var endButton = document.getElementById('endButton');
+
+        function updateButtonCountdown() {
+            endButton.innerHTML = '<i class="fa fa-times-circle"></i> END (' + countdownSeconds + 's)';
+            countdownSeconds--;
+
+            if (countdownSeconds >= 0) {
+                setTimeout(updateButtonCountdown, 1000); // Update every 1 second (1000 milliseconds)
+            } else {
+                endButton.disabled = false;
+                endButton.innerHTML = '<i class="fa fa-times-circle"></i> END'; // Reset button text
+            }
+        }
+
+        // Start the countdown
+        updateButtonCountdown();
+    </script>
     </div>
 
     <script>
-        function markAsDone() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "AccountingBackendScript.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log(xhr.responseText);
-                    // Refresh the content of the center div
-                    document.getElementById('center').innerHTML = xhr.responseText;
-                }
-            };
-
-            var data =
-                "queue_number=" + encodeURIComponent('<?php echo $selectedQueueNumber; ?>') +
-                "&timestamp=" + encodeURIComponent('<?php echo $selectedTimestamp; ?>') +
-                "&student_id=" + encodeURIComponent('<?php echo $selectedStudentID; ?>') +
-                "&endorsed_from=" + encodeURIComponent('<?php echo $selectedEndorsed; ?>') +
-                "&transaction=" + encodeURIComponent('<?php echo $selectedTransaction; ?>') +
-                "&remarks=" + encodeURIComponent('<?php echo $selectedRemarks; ?>');
-
-            xhr.send(data);
-        }
 
         function fetchUserWindowAndNotify() {
             var xhr = new XMLHttpRequest();
@@ -639,12 +907,11 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 
 <?php endif; ?>
 
-
-
-<!-- Popup HTML -->
+<!-- Done Popup HTML -->
 <?php if (isset($_POST['show_details'])): ?>
     <div id="backgroundOverlay" class="background-overlay"></div>
-    <div class="popup" id="endorsementPopup">
+    <div class="popup" id="doneendorsementPopup">
+    <p style="text-align: center; font-size: 35px; margin-right: 70px; font-weight: 700; color: #34418E;"> END TRANSACTION </p>
         <p style="margin-top:20px;"><strong>Student ID:</strong> <?php echo $selectedStudentID; ?></p>
         <p><strong>Transaction:</strong> <?php echo $selectedTransaction; ?></p>
 
@@ -654,11 +921,124 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
             <input type="hidden" name="timestamp" value="<?php echo $selectedTimestamp; ?>">
             <input type="hidden" name="student_id" value="<?php echo $selectedStudentID; ?>">
             <input type="hidden" name="transaction" value="<?php echo $selectedTransaction; ?>">
-            <input type="hidden" name="course" id="course" value="">
+            <input type="hidden" name="course" id="course" value="" required>
 
+            <p><strong>Remarks:</strong><br>
+                <textarea class="remarkac" rows="2" cols="27" id="remarks" name="remarks" required></textarea><br><br>
+
+             <!-- Apply the same button class as the "Cancel" button, set a fixed width, and add some margin -->
+             <button class="button" type="button" style="width: 115px; margin-right: 15px; margin-left:20%; margin-top: -50px;" onclick="closeDoneEndorsementPopup()">CANCEL</button>
+
+            <!-- Apply the same button class, set a fixed width, and style as the "Cancel" button -->
+            <button class="button" style="width: 115px; margin-left: 10px; margin-top: -50px;" id="doneButton" onclick="markAsDone()">DONE</button>
+        </form>
+    </div>
+
+    <script>
+        function markAsDone() {
+            var endButton = document.getElementById('endButton');
+            // Disable the "End" button to prevent intentional clicks
+            endButton.disabled = true;
+
+            var endorsedFrom = '<?php echo $selectedEndorsed; ?>';
+            var transaction = document.getElementById('transaction').value; // Get the transaction value
+            var remarks = document.getElementById('remarks').value; // Get the user input from the remarks textarea
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "AccountingBackendScript.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                    document.getElementById('center').innerHTML = xhr.responseText;
+                }
+            };
+
+            var data =
+                "queue_number=" + encodeURIComponent('<?php echo $selectedQueueNumber; ?>') +
+                "&timestamp=" + encodeURIComponent('<?php echo $selectedTimestamp; ?>') +
+                "&student_id=" + encodeURIComponent('<?php echo $selectedStudentID; ?>') +
+                "&endorsed_from=" + encodeURIComponent(endorsedFrom) +
+                "&transaction=" + encodeURIComponent(transaction) +
+                "&remarks=" + encodeURIComponent(remarks); // Use the user input from the remarks textarea
+
+            xhr.send(data);
+        }
+
+        function openDoneEndorsementPopup() {
+        var doneendorsementPopup = document.getElementById('doneendorsementPopup');
+        var backgroundOverlay = document.getElementById('backgroundOverlay');
+
+        if (doneendorsementPopup && backgroundOverlay) {
+            doneendorsementPopup.style.display = "block"; // Show the popup form
+            doneendorsementPopup.classList.add("open-popup");
+            backgroundOverlay.style.display = "block"; // Show the background overlay
+        }
+    }
+
+    // JavaScript to close the endorsement popup
+    function closeDoneEndorsementPopup() {
+        var doneendorsementPopup = document.getElementById('doneendorsementPopup');
+        var backgroundOverlay = document.getElementById('backgroundOverlay');
+
+        if (doneendorsementPopup && backgroundOverlay) {
+            doneendorsementPopup.style.display = "none"; // Hide the popup form
+            doneendorsementPopup.classList.remove("open-popup");
+            backgroundOverlay.style.display = "none"; // Hide the background overlay
+        }
+    }
+
+   // JavaScript to open the endorsement popup
+function openEndorsementPopup() {
+    var endorsementPopup = document.getElementById('endorsementPopup');
+    var backgroundOverlay = document.getElementById('backgroundOverlay');
+
+    if (endorsementPopup && backgroundOverlay) {
+        endorsementPopup.style.display = "block"; // Show the popup form
+        endorsementPopup.classList.add("open-popup");
+        backgroundOverlay.style.display = "block"; // Show the background overlay
+    }
+}
+
+
+    // JavaScript to close the endorsement popup
+function closeEndorsementPopup() {
+    var endorsementPopup = document.getElementById('endorsementPopup');
+    var backgroundOverlay = document.getElementById('backgroundOverlay');
+
+    if (endorsementPopup && backgroundOverlay) {
+        endorsementPopup.style.display = "none"; // Hide the popup form
+        endorsementPopup.classList.remove("open-popup");
+        backgroundOverlay.style.display = "none"; // Hide the background overlay
+    }
+}
+
+    </script>
+
+<?php endif; ?>
+
+
+
+
+<!-- Popup HTML -->
+<?php if (isset($_POST['show_details'])): ?>
+    <div id="backgroundOverlay" class="background-overlay"></div>
+    <div class="popup" id="endorsementPopup">
+        <p style="text-align: center; font-size: 35px; margin-right: 70px; font-weight: 700; color: #34418E;"> ENDORSEMENT FORM </p>
+        
+        <p style="margin-top:20px; text-align:left;"><strong>Student ID:</strong> <?php echo $selectedStudentID; ?></p>
+        <p><strong>Transaction:</strong> <?php echo $selectedTransaction; ?></p>
+
+        <!-- Office selection and remarks form -->
+        <form method="post" action="" id="endorsementForm">
+            <input type="hidden" name="queue_number" value="<?php echo $selectedQueueNumber; ?>">
+            <input type="hidden" name="timestamp" value="<?php echo $selectedTimestamp; ?>">
+            <input type="hidden" name="student_id" value="<?php echo $selectedStudentID; ?>">
+            <input type="hidden" name="transaction" value="<?php echo $selectedTransaction; ?>">
+            <input type="hidden" name="course" id="course" value="" required>
 
             <p><strong>Endorse To:</strong> 
-                <select id="office" name="office" class="drop" onchange="handleOfficeChange()">
+                <select id="office" name="office" class="drop" onchange="handleOfficeChange()" required>
                     <option value="" disabled selected>Choose a program</option>
                     <?php
                     // Fetch options from the database
@@ -674,84 +1054,87 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
                 </select>
             </p>
 
-     <!-- Additional dropdown options for Academics -->
-<div id="academicsDropdown" style="display: none; margin-right: 70%">
-    <p><strong>Program:</strong> 
-        <select name="program" class="drop" id="program" onchange="updateConcernDropdown()">
-            <option value="" disabled selected>Choose a program</option>
-            <?php
-            // Fetch program options from the colleges table under acronym column
-            $programSql = "SELECT acronym FROM colleges";
-            $programResult = $conn->query($programSql);
+            <!-- Additional textbox for transaction -->
+            <p><strong>Transaction:</strong> 
+                <input type="text" name="transaction" id="transaction" class="transaction-textbox" required>
+            </p>
 
-            if ($programResult->num_rows > 0) {
-                while ($programRow = $programResult->fetch_assoc()) {
-                    // Convert to uppercase using strtoupper
-                    echo "<option value='" . strtoupper($programRow['acronym']) . "'>" . strtoupper($programRow['acronym']) . "</option>";
-                }
-            }
-            ?>
-        </select>
-    </p>
+            <!-- Additional dropdown options for Academics -->
+            <div id="academicsDropdown" style="display: none;">
+                <p><strong>Program:</strong> 
+                    <select name="program" class="drop" id="program" onchange="updateConcernDropdown()">
+                        <option value="" disabled selected>Choose a program</option>
+                        <?php
+                        // Fetch program options from the colleges table under acronym column
+                        $programSql = "SELECT acronym FROM colleges";
+                        $programResult = $conn->query($programSql);
 
-    <p id="concernDropdownContainer" style="display: none;"><strong>Concern:</strong> 
-        <select name="concern" class="drop" id="concern">
-            <option value="" disabled selected>Choose a concern</option>
-            <?php
-          // Fetch concern options from the program_chairs table where status is "available"
-$concernSql = "SELECT full_name, course FROM program_chairs";
-$concernResult = $conn->query($concernSql);
+                        if ($programResult->num_rows > 0) {
+                            while ($programRow = $programResult->fetch_assoc()) {
+                                echo "<option value='" . strtoupper($programRow['acronym']) . "'>" . strtoupper($programRow['acronym']) . "</option>";
+                            }
+                        }
+                        ?>
+                    </select>
+                </p>
 
-if ($concernResult->num_rows > 0) {
-    while ($concernRow = $concernResult->fetch_assoc()) {
-        // Convert to uppercase using strtoupper
-        $fullName = strtoupper($concernRow['full_name']);
-        $course = strtoupper($concernRow['course']);
-        echo "<option value='" . $fullName . "' data-course='" . $course . "'>" . $fullName . "</option>";
-    }
-} else {
-    // If no available concerns, display a default option or handle it as needed
-    echo "<option value=''>No available concerns</option>";
-}
+                <p id="concernDropdownContainer" style="display: none;"><strong>Concern:</strong> 
+                    <select name="concern" class="drop" id="concern">
+                        <option value="" disabled selected>Choose a concern</option>
+                        <?php
+                        // Fetch concern options from the program_chairs table where status is "available"
+                        $concernSql = "SELECT full_name, course FROM program_chairs";
+                        $concernResult = $conn->query($concernSql);
 
-// Include the hidden input field for course in the form
-echo '<input type="hidden" name="course" id="course" value="">';
-            ?>
-        </select>
-    </p>
-</div>
+                        if ($concernResult->num_rows > 0) {
+                            while ($concernRow = $concernResult->fetch_assoc()) {
+                                // Convert to uppercase using strtoupper
+                                $fullName = strtoupper($concernRow['full_name']);
+                                $course = strtoupper($concernRow['course']);
+                                echo "<option value='" . $fullName . "' data-course='" . $course . "'>" . $fullName . "</option>";
+                            }
+                        } else {
+                            // If no available concerns, display a default option or handle it as needed
+                            echo "<option value=''>No available concerns</option>";
+                        }
+                        ?>
+                    </select>
+                </p>
+            </div>
 
-<!-- Additional dropdown options for Admission -->
-<div id="admissionOptionsDropdownContainer" style="display: none; margin-right: 70%">
-<p><strong>Program:</strong> 
-        <select name="program" class="drop" id="program" onchange="updateConcernDropdown()">
-            <option value="" disabled selected>Choose a program</option>
-            <?php
-            // Fetch program options from the colleges table under acronym column
-            $programSql = "SELECT acronym FROM colleges";
-            $programResult = $conn->query($programSql);
+            <!-- Additional dropdown options for Admission -->
+            <div id="admissionOptionsDropdownContainer" style="display: none;">
+                <p><strong>Program:</strong> 
+                    <select name="program" class="drop" id="program" onchange="updateConcernDropdown()">
+                        <option value="" disabled selected>Choose a program</option>
+                        <?php
+                        // Fetch program options from the colleges table under acronym column
+                        $programSql = "SELECT acronym FROM colleges";
+                        $programResult = $conn->query($programSql);
 
-            if ($programResult->num_rows > 0) {
-                while ($programRow = $programResult->fetch_assoc()) {
-                    // Convert to uppercase using strtoupper
-                    echo "<option value='" . strtoupper($programRow['acronym']) . "'>" . strtoupper($programRow['acronym']) . "</option>";
-                }
-            }
-            ?>
-        </select>
-    </p>
-</div>
+                        if ($programResult->num_rows > 0) {
+                            while ($programRow = $programResult->fetch_assoc()) {
+                                // Convert to uppercase using strtoupper
+                                echo "<option value='" . strtoupper($programRow['acronym']) . "'>" . strtoupper($programRow['acronym']) . "</option>";
+                            }
+                        }
+                        ?>
+                    </select>
+                </p>
+            </div>
 
             <p><strong>Remarks:</strong><br>
-                <textarea class="remarkac" rows="2" cols="27" id="remarks" name="remarks"></textarea><br><br>
+                <textarea class="remarkac" rows="2" cols="27" id="remarks" name="remarks" required></textarea><br><br>
 
             <!-- Apply the same button class as the "Cancel" button, set a fixed width, and add some margin -->
-            <button class="btn" type="button" style="width: 115px; margin-right: 85px; margin-left:16%;" onclick="closeEndorsementPopup()">Cancel</button>
+            <button class="btn" type="button" style="width: 115px; margin-right: 15px; margin-left:20%; margin-top: -50px; font-weight: bold; padding:2%;" onclick="closeEndorsementPopup()"> CANCEL</button>
 
             <!-- Apply the same button class, set a fixed width, and style as the "Cancel" button -->
-            <button class="btn" style="width: 115px;" onclick="submitFormAndOpenNestedPopup()">DONE</button>
+            <button class="btn" style="width: 115px; margin-left: 10px; margin-top: -50px; font-weight: bold; padding:2%;" id="doneButton" onclick="submitFormPopup()"> DONE</button>
         </form>
     </div>
+
+
 
     <!-- Nested popup -->
     <div class="backgroundOverlay" id="backgroundOverlayNested">
@@ -765,6 +1148,38 @@ echo '<input type="hidden" name="course" id="course" value="">';
 
     <!-- JavaScript to handle the visibility of the Concern dropdown -->
     <script>
+
+    // Add this function to your existing JavaScript code
+function submitFormPopup() {
+    // Your existing code for form submission
+
+    // Add the following AJAX code to send a request to the server
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", ".php", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    // Additional data to send to the server, if needed
+    var formData = "done_button_clicked=true";
+
+    // Set up the callback function to handle the server's response
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.status === 'success') {
+                // The server-side action was successful, you can handle it here
+                console.log(response.message);
+            } else {
+                // Handle errors or other cases
+                console.error(response.message);
+            }
+        }
+    };
+
+
+    xhr.send(formData);
+
+}
+
     function updateConcernDropdown() {
         var selectedProgram = document.getElementById("program").value;
         var concernDropdownContainer = document.getElementById("concernDropdownContainer");
@@ -872,24 +1287,15 @@ echo '<input type="hidden" name="course" id="course" value="">';
     
 
 
-    // Redirect to Que main
-    function openQue() {
-        window.open('../academicsinterface.php', '_blank');
-        }
+     // Redirect to Que main
+    document.getElementById('newqueue').addEventListener('click', function() {
+    // URL for the new tab
+    var newTabUrl = 'http://localhost/Queue/';
 
-    // JavaScript to open the endorsement popup
-    function openEndorsementPopup() {
-        endorsementPopup.style.display = "block"; // Show the popup form
-        endorsementPopup.classList.add("open-popup");
-        backgroundOverlay.style.display = "block"; // Show the background overlay
-    }
+    // Open a new tab/window with the specified URL
+    window.open(newTabUrl, '_blank');
+    });
 
-    // JavaScript to close the endorsement popup
-    function closeEndorsementPopup() {
-        endorsementPopup.style.display = "none"; // Hide the popup form
-        endorsementPopup.classList.remove("open-popup");
-        backgroundOverlay.style.display = "none"; // Hide the background overlay
-    }
 
     // JavaScript to open nested popup and close endorsement popup
     function openNestedpopup(event) {

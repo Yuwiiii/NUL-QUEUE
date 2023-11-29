@@ -4,8 +4,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $timestamp = $_POST['timestamp'];
     $studentID = $_POST['student_id'];
     $endorsedFrom = $_POST['endorsed_from'];
+
+    // Check if the key 'endorsed_to' exists in the $_POST array
+    $endorsedTo = isset($_POST['endorsed_to']) ? $_POST['endorsed_to'] : 'None';
+    
     $transaction = $_POST['transaction'];
-    $remarks = $_POST['remarks'];
+    $remarks = isset($_POST['remarks']) ? $_POST['remarks'] : '';
 
     // Database credentials
     $servername = "localhost";
@@ -22,8 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Insert data into accounting_logs table
-    $sqlInsert = "INSERT INTO accounting_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', '$transaction', '$remarks')";
+    $sqlInsert = "INSERT INTO accounting_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks, endorsed_to) 
+            VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', 'Payment', '$remarks', 'None')";
 
     if ($conn->query($sqlInsert) === TRUE) {
         // Update status in the accounting table
@@ -31,13 +35,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($conn->query($sqlUpdateStatus) !== TRUE) {
             echo "Error updating status: " . $conn->error;
         } else {
-
             // Additional query to update the display table based on the queue_number and officeName condition
             $sqlUpdateDisplay = "UPDATE display SET status = 1 WHERE queue_number = '$queueNumber' AND officeName = 'Accounting'";
             if ($conn->query($sqlUpdateDisplay) !== TRUE) {
                 echo "Error updating display table: " . $conn->error;
             } else {
-                
+                // Query to delete the record from the accounting table
+                $sqlDeleteAccounting = "DELETE FROM accounting WHERE queue_number = '$queueNumber'";
+                if ($conn->query($sqlDeleteAccounting) !== TRUE) {
+                    echo "Error deleting record from accounting table: " . $conn->error;
+                }
             }
         }
     } else {
