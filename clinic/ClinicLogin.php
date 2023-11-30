@@ -60,7 +60,7 @@ $conn->close();
     <div class="container-fluid">
         <div class="row">
             <div class="rounded-end-5 col-4 blue-bg">
-                <img src="assets/nu logo.webp" alt="Image" class="img-fluid img_logo"
+                <img src="clinic/nu logo.webp" alt="Image" class="img-fluid img_logo"
                     style="max-height: auto; max-width: 40%;">
                 <div class="mt-4">
                     <h1 class="fw-bolder text-light text-center">NU LAGUNA</h1>
