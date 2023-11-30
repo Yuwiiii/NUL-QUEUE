@@ -1,8 +1,8 @@
 <?php
 @include '../database.php';
 
-$sql = "INSERT INTO queue_logs (student_id, queue_number, office, program, timestamp, status, remarks, endorsed)
-        SELECT student_id, queue_number, office, program, timestamp, status, remarks, endorsed FROM queue;";
+$sql = "INSERT INTO queue_logs (student_id, queue_number, office, timestamp, status, remarks, endorsed)
+        SELECT student_id, queue_number, office, timestamp, status, remarks, endorsed FROM queue;";
 
 $result = $conn->query($sql);
 
