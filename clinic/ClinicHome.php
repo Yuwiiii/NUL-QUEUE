@@ -120,7 +120,7 @@ if ($resultFetchEndorsedFrom->num_rows > 0) {
         }
 
     // Execute the insert query
-    if ($conn->query($sqlInsertIntoassetsLogs) === TRUE) {
+    if ($conn->query($sqlInsertIntoClinicLogs) === TRUE) {
         // If insert is successful, update the 'endorsed_to' column in the 'assets_logs' table
         $sqlUpdateEndorsedToLogs = "UPDATE clinic_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
         
@@ -287,7 +287,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 </head>
 <header>
     <div class="header">
-        <img src="Clinic/nu logo.webp" alt="Image" class="" style="max-height: auto; max-width: 10%; padding: 1%;">
+        <img src="clinic/nu logo.webp" alt="Image" class="" style="max-height: auto; max-width: 10%; padding: 1%;">
         <div class="mt-4">
             <h1 class="fw-bolder text-light text-center">NU LAGUNA</h1>
             <h4 class="fw-bold text-light text-center">QUEUING SYSTEM</h4>
