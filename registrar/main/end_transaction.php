@@ -37,16 +37,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($conn->query($insertRegistrarLogsSql) === true) {
             // Insert the data into the queue_logs table
-            $insertQueueLogsSql = "INSERT INTO queue_logs (student_id, queue_number, office, program, timestamp, status, remarks, endorsed) VALUES (
-                '" . $row['student_id'] . "',
-                '" . $row['queue_number'] . "',
-                'REGISTRAR',
-                '',  -- Set program to empty or modify accordingly
-                CURRENT_TIMESTAMP,
-                1, 
-                '$comments',
-                'COMPLETED'
-            )";
+            $insertQueueLogsSql = "INSERT INTO queue_logs (student_id, queue_number, office, timestamp, status, remarks, endorsed) VALUES (
+                '" . $row['student_id'] . "','" . $row['queue_number'] . "', 'REGISTRAR', CURRENT_TIMESTAMP, 1, '$comments', 'COMPLETED')";
 
             if ($conn->query($insertQueueLogsSql) === true) {
                 // Delete the record from the registrar table
