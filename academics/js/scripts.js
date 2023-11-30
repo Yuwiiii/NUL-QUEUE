@@ -254,7 +254,7 @@ endorseButton.addEventListener('click', () => {
 // end for endorse and confirmation modal
 
 queuebutton.addEventListener('click', () => {
-  window.open('../academicsinterface.php', '_blank');
+  window.open('../index.php', '_blank');
 });
 
 // start of endorse function START START START
