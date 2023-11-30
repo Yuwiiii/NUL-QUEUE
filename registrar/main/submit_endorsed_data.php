@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                              exit;
         }
 
-        $insertQueueLogsSql = "INSERT INTO queue_logs (student_id, queue_number, office, program, timestamp, status, remarks, endorsed) VALUES ('$studentId', '$queueNumber', 'REGISTRAR', '$program', '$originalTimestamp', 1, '$remarks', '$endorsedTo')";
+        $insertQueueLogsSql = "INSERT INTO queue_logs (student_id, queue_number, office, timestamp, status, remarks, endorsed) VALUES ('$studentId', '$queueNumber', 'REGISTRAR', '$originalTimestamp', 1, '$remarks', '$endorsedTo')";
         if (!$conn->query($insertQueueLogsSql)) {
             echo "Error inserting into queue_logs: " . $conn->error;
         }
