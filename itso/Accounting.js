@@ -45,7 +45,7 @@ let endorsementPopup = document.getElementById("endorsementPopup");
     // Function to handle the AJAX request
     function sendAjaxRequest() {
         $.ajax({
-            url: "AccountingHome.php", // Change to your PHP script file
+            url: "ITSOHome.php", // Change to your PHP script file
             method: "POST",
             data: {
                 key: 'value' // Add your data here
@@ -74,6 +74,6 @@ let endorsementPopup = document.getElementById("endorsementPopup");
                 console.log(this.responseText); // You can handle the response here
             }
         };
-        xhttp.open("GET", "AccountingHome.php", true); // Use the correct path to your PHP file
+        xhttp.open("GET", "ITSOHome.php", true); // Use the correct path to your PHP file
         xhttp.send();
     }

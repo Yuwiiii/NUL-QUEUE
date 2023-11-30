@@ -3,7 +3,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $queueNumber = $_POST['queue_number'];
     $timestamp = $_POST['timestamp'];
     $studentID = $_POST['student_id'];
-    $endorsedFrom = $_POST['endorsed_from'];
+    $endorsedTo = $_POST['endorsed_to'];
     $transaction = $_POST['transaction'];
     $remarks = $_POST['remarks'];
 
@@ -22,8 +22,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Insert data into accounting_logs table
-    $sqlInsert = "INSERT INTO itso_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks) 
+    $sqlInsertITSO = "INSERT INTO itso_logs (queue_number, timestamp, student_id, endorsed_to, transaction, remarks) 
             VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', '$transaction', '$remarks')";
+            if (!$conn->query($sqlInsertITSO)) {
+                echo "Error inserting into queue_logs: " . $conn->error;
+            }
+
+    // Insert data into queue_logs table
+    $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, program, remarks, endorsed) 
+            VALUES ('$queueNumber', '$timestamp', '$studentID', 'ITSO', '$program', '$remarks', 'COMPLETED')";
+            if (!$conn->query($sqlInsert)) {
+            echo "Error inserting into queue_logs: " . $conn->error;
+        }
+
 
     if ($conn->query($sqlInsert) === TRUE) {
         // Update status in the accounting table

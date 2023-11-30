@@ -3,7 +3,7 @@ session_start();
 
 // Check if the user is already logged in, and redirect to AccountingHome.php if necessary
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-    header('Location: AccountingHome.php'); // Redirect to the dashboard or another page
+    header('Location: ClinicHome.php'); // Redirect to the dashboard or another page
     exit();
 }
 
@@ -45,7 +45,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NU Accounting Office</title>
+    <title>NU Clinic Office</title>
     <link href='http://fonts.googleapis.com/css?family=' rel='stylesheet' type='text/css'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">

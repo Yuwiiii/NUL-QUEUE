@@ -3,7 +3,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $queueNumber = $_POST['queue_number'];
     $timestamp = $_POST['timestamp'];
     $studentID = $_POST['student_id'];
-    $endorsedFrom = $_POST['endorsed_from'];
+    $endorsedTo = $_POST['endorsed_to'];
     $transaction = $_POST['transaction'];
     $remarks = $_POST['remarks'];
 
@@ -21,11 +21,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Insert data into accounting_logs table
-    $sqlInsert = "INSERT INTO clinic_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks) 
+    // Insert data into assets_logs table
+    $sqlInsertClinic = "INSERT INTO clinic_logs (queue_number, timestamp, student_id, endorsed_to, transaction, remarks) 
             VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', '$transaction', '$remarks')";
+            if (!$conn->query($sqlInsertClinic)) {
+                echo "Error inserting into queue_logs: " . $conn->error;
+            }
 
-    if ($conn->query($sqlInsert) === TRUE) {
+    // Insert data into queue_logs table
+    $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, program, remarks, endorsed) 
+            VALUES ('$queueNumber', '$timestamp', '$studentID', 'CLINIC', '$program', '$remarks', 'COMPLETED')";
+            if (!$conn->query($sqlInsert)) {
+            echo "Error inserting into queue_logs: " . $conn->error;
+        }
+
+    if ($conn->query($sqlInsertClinic) === TRUE) {
         // Update status in the accounting table
         $sqlUpdateStatus = "UPDATE clinic SET status = 1 WHERE queue_number = '$queueNumber'";
         if ($conn->query($sqlUpdateStatus) !== TRUE) {
@@ -39,6 +49,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             } else {
                 
             }
+
+        
         }
     } else {
         echo "Error inserting data: " . $conn->error;

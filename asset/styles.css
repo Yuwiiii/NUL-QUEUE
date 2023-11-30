@@ -213,6 +213,7 @@ background-color: grey;
 .sidenav {
   height: 100vh;
   width: 260px; /* Adjust the width as needed */
+  padding-right: 15%;
   position: absolute;
   top: 100;
   left: 0;
@@ -303,4 +304,6 @@ background-color: grey;
   top:50%;
   transform: translate(-50%, -50%) scale(1);
 }
+
+
 
