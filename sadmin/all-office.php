@@ -48,7 +48,7 @@ include '../database.php';
                         $query = "     SELECT
                         queue_number,
                         MAX(student_id) AS student_id,
-                        MAX(program) AS program,
+                        MAX(office) AS office,
                         MAX(timestamp) AS timestamp
                     FROM
                         queue_logs
@@ -69,7 +69,7 @@ include '../database.php';
                         echo '<tr class="header fixed-header">';
                         echo '<th>Queue Number</th>';
                         echo '<th>Student ID</th>';
-                        echo '<th>Program</th>';
+                        echo '<th>Office</th>';
                         echo '<th>Timestamp</th>';
                         echo '</tr>';
 
@@ -78,7 +78,7 @@ include '../database.php';
                             echo '<tr class="clickable-row" data-bs-toggle="modal" data-bs-target="#queueModal">';
                             echo '<td>' . $row['queue_number'] . '</td>';
                             echo '<td>' . $row['student_id'] . '</td>';
-                            echo '<td>' . $row['program'] . '</td>';
+                            echo '<td>' . $row['office'] . '</td>';
                             echo '<td>' . $row['timestamp'] . '</td>';
                             echo '</tr>';
                         }
