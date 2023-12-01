@@ -17,9 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $endorsedFrom = $_POST["endorsementInfo"];
     $remarks = $_POST["remarks"];
     $academicsStr = "ACADEMICS";
+
+    $endorsedFromStr = strtoupper($endorsedFrom);
     // Perform the SQL query to update the database
-    $sql = "INSERT INTO academics_logs (queue_number, student_id, endorsed_from, timestamp, timeout, remarks, transaction, status)
-        VALUES ('$queueNumber', '$studentInfo', '$endorsedFrom', '$queueTime' , NOW(), '$remarks', '$transaction','1')";
+    $sql = "INSERT INTO academics_logs (queue_number, student_id, endorsed_from, endorsed_to, timestamp, timeout, remarks, transaction, status)
+        VALUES ('$queueNumber', '$studentInfo', '$endorsedFromStr', '$academicsStr', '$queueTime' , NOW(), '$remarks', '$transaction','1')";
 
     $sql3 = "INSERT INTO queue_logs (queue_number, student_id, endorsed, office, timestamp, remarks)
     VALUES ('$queueNumber', '$studentInfo', '$academicsStr', '$academicsStr', '$queueTime', '$remarks')";

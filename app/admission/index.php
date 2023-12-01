@@ -49,12 +49,12 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
         </div>
         <div>
           <h1 class=""><strong>NU LAGUNA</strong></h1>
-          <h4>QUEUEING SYSTEM</h4>
+          <h4>QUEUING SYSTEM</h4>
         </div>
 
       </div>
       <div class="d-flex flex-column">
-        <h5 id="user-data" data-office="<?= $_SESSION['user']['office'] ?>" data-window="<?= $_SESSION['user']['window'] ?>" data-user-id="<?= $_SESSION['user']['ID'] ?>" data-user-name="<?= $_SESSION['user']['full_name'] ?>"><?= $_SESSION['user']['full_name'] ?></h5>
+        <h5 id="user-data" data-office="<?= $_SESSION['user']['office'] ?>" data-window="<?= $_SESSION['user']['window'] ?>" data-user-id="<?= $_SESSION['user']['ID'] ?>" data-user-name="<?= $_SESSION['user']['full_name'] ?>">Welcome, <?= $_SESSION['user']['full_name'] ?></h5>
         <span id="logout-btn" class="cursor-pointer">Logout</span>
       </div>
     </div>
