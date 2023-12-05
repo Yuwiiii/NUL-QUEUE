@@ -105,45 +105,54 @@ if ($resultFetchEndorsedFrom->num_rows > 0) {
     $rowFetchEndorsedFrom = $resultFetchEndorsedFrom->fetch_assoc();
     $selectedEndorsedFrom = $rowFetchEndorsedFrom['endorsed_from'];
 
-    // Insert the data into the 'accounting_logs' table
-    $sqlInsertIntoAccountingLogs = "INSERT INTO accounting_logs (queue_number, timestamp, student_id, remarks, endorsed_from, transaction)
-    VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', '$selectedEndorsedFrom', '$selectedTransaction')";
-
-    // Execute the insert query
-    if ($conn->query($sqlInsertIntoAccountingLogs) === TRUE) {
-        // If insert is successful, update the 'endorsed_to' column in the 'accounting_logs' table
-        $sqlUpdateEndorsedToLogs = "UPDATE accounting_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
-        
-        // Execute the update query for the 'accounting_logs' table
-        if ($conn->query($sqlUpdateEndorsedToLogs) !== TRUE) {
-            echo "Error updating endorsed_to column in accounting_logs: " . $conn->error;
-        }
-
-        // Update status column in the 'accounting' table and display table
-        $sqlUpdateStatusAndDisplay = "UPDATE accounting, display
-        SET accounting.status = 1,
-            display.status = 1
-        WHERE accounting.queue_number = '$selectedQueueNumber'
-            AND display.queue_number = '$selectedQueueNumber'
-            AND display.officeName = 'Accounting'";
-
-        if ($conn->query($sqlUpdateStatusAndDisplay) !== TRUE) {
-            echo "Error updating status and display table: " . $conn->error;
-        }
-
-        // Delete the data from the 'accounting' table
-        $sqlDeleteFromAccounting = "DELETE FROM accounting WHERE queue_number = '$selectedQueueNumber'";
-
-        // Execute the delete query for the 'accounting' table
-        if ($conn->query($sqlDeleteFromAccounting) !== TRUE) {
-            echo "Error deleting data from accounting table: " . $conn->error;
-        }
-    } else {
-        echo "Error inserting data into accounting_logs table: " . $conn->error;
-    }
-} else {
-    echo "Error fetching endorsed_from value for queue number $selectedQueueNumber";
-}
+     // Insert data into accounting_logs table
+     $sqlInsertIntoAccountingLogs = "INSERT INTO accounting_logs (queue_number, timestamp, student_id, remarks, endorsed_from, transaction)
+     VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', '$selectedEndorsedFrom', '$selectedTransaction')";
+ 
+     // Execute the insert query for accounting_logs table
+     if ($conn->query($sqlInsertIntoAccountingLogs) === TRUE) {
+         // If insert is successful, update the 'endorsed_to' column in the 'accounting_logs' table
+         $sqlUpdateEndorsedToLogs = "UPDATE accounting_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
+         
+         // Execute the update query for the 'accounting_logs' table
+         if ($conn->query($sqlUpdateEndorsedToLogs) !== TRUE) {
+             echo "Error updating endorsed_to column in accounting_logs: " . $conn->error;
+         }
+ 
+         // Update status column in the 'accounting' table and display table
+         $sqlUpdateStatusAndDisplay = "UPDATE accounting, display
+         SET accounting.status = 1,
+             display.status = 1
+         WHERE accounting.queue_number = '$selectedQueueNumber'
+             AND display.queue_number = '$selectedQueueNumber'
+             AND display.officeName = 'Accounting'";
+ 
+         if ($conn->query($sqlUpdateStatusAndDisplay) !== TRUE) {
+             echo "Error updating status and display table: " . $conn->error;
+         }
+ 
+         // Delete the data from the 'accounting' table
+         $sqlDeleteFromAccounting = "DELETE FROM accounting WHERE queue_number = '$selectedQueueNumber'";
+ 
+         // Execute the delete query for the 'accounting' table
+         if ($conn->query($sqlDeleteFromAccounting) !== TRUE) {
+             echo "Error deleting data from accounting table: " . $conn->error;
+         }
+ 
+         // Insert data into queue_logs table
+         $sqlInsertIntoQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+             VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'Accounting', '$selectedRemarks', 'Completed')";
+ 
+         // Execute the insert query for queue_logs table
+         if ($conn->query($sqlInsertIntoQueueLogs) !== TRUE) {
+             echo "Error inserting data into queue_logs: " . $conn->error;
+         }
+     } else {
+         echo "Error inserting data into accounting_logs table: " . $conn->error;
+     }
+ } else {
+     echo "Invalid request method";
+ }
 }
 
 
@@ -846,7 +855,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
     }
 
 
-        var countdownSeconds = 120; // Set the initial countdown value
+        var countdownSeconds = 5; // Set the initial countdown value
         var endButton = document.getElementById('endButton');
 
         function updateButtonCountdown() {

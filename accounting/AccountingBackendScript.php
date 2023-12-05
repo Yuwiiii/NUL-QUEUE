@@ -26,10 +26,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Insert data into accounting_logs table
-    $sqlInsert = "INSERT INTO accounting_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks, endorsed_to) 
+    $sqlInsertAccountingLogs = "INSERT INTO accounting_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks, endorsed_to) 
             VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', 'Payment', '$remarks', 'None')";
 
-    if ($conn->query($sqlInsert) === TRUE) {
+    if ($conn->query($sqlInsertAccountingLogs) === TRUE) {
+        // Insert data into queue_logs table after successful insertion into accounting_logs
+        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+                               VALUES ('$queueNumber', '$timestamp', '$studentID', 'Accounting', '$remarks', 'Completed')";
+
+        if ($conn->query($sqlInsertQueueLogs) !== TRUE) {
+            echo "Error inserting data into queue_logs: " . $conn->error;
+        }
+
         // Update status in the accounting table
         $sqlUpdateStatus = "UPDATE accounting SET status = 1 WHERE queue_number = '$queueNumber'";
         if ($conn->query($sqlUpdateStatus) !== TRUE) {
@@ -48,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
     } else {
-        echo "Error inserting data: " . $conn->error;
+        echo "Error inserting data into accounting_logs: " . $conn->error;
     }
 
     // Close connection
