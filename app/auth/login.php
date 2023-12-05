@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($USER) {
     $_SESSION['user'] = $USER;
 
-    header('Location: /queue/app/admission');
+    header('Location: /nul-queue/app/admission');
   } else {
     echo '<script>alert("Invalid input!");</script>';
     echo '<script>window.history.back();</script>';

@@ -82,6 +82,9 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
       </section>
 
       <section class="d-flex flex-column align-items-center w-75 p-0 border">
+        <div class="qbtn position-absolute end-0 p-1">
+        <button class="btn btn-blue" id="qbtn">New Queue</button>
+        </div>
         <div class="m-auto">
           <h1 id="queue-number" data-key="">Select Queue Number</h1>
           <i id="timestamp"></i>

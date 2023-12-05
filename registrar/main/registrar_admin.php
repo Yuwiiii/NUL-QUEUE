@@ -735,7 +735,7 @@ setTimeout(function () {
 </script>
 <script>
        function openNewQueueTab() {
-            window.open('http://localhost/Main', '_blank');
+            window.open('http://localhost/nul-queue', '_blank');
         }   
 </script>
     </body>

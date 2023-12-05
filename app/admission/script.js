@@ -1,6 +1,6 @@
-const CONTROLLER_URL = `${window.location.protocol}//${window.location.host}/queue/app/admission/process.php`;
-const LOGOUT_URL = `${window.location.protocol}//${window.location.host}/queue/app/auth/logout.php`;  
-const LOGIN_URL = `${window.location.protocol}//${window.location.host}/queue/app/auth`;
+const CONTROLLER_URL = `${window.location.protocol}//${window.location.host}/nul-queue/app/admission/process.php`;
+const LOGOUT_URL = `${window.location.protocol}//${window.location.host}/nul-queue/app/auth/logout.php`;  
+const LOGIN_URL = `${window.location.protocol}//${window.location.host}/nul-queue/app/auth`;
 
 const USER_OFFICE = $("#user-data").data("office").toUpperCase();
 const USER_WINDOW = $("#user-data").data("window");
@@ -228,6 +228,9 @@ $("#college").on('change', function () {
       $("#modalTitle2").text($("#queue-number").text());
     }
 
+  })
+  $("#qbtn").click(async ()=>{
+    window.open('../../index.php')
   })
 
   $("#end-transaction-btn").click(async () => {
