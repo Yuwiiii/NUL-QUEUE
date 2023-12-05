@@ -78,11 +78,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         }
     } elseif ($formattedSelectedOffice === 'Admission') {
         // If the selected office is 'Admission', get the selected program from the dropdown
-        $selectedProgram = $_POST['program'];
+      
 
         // Add your query to insert data into the 'admission' table
-        $sqlInsert = "INSERT INTO admission (queue_number, timestamp, student_id, program, remarks, endorsed_from, transaction) 
-        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedRemarks', 'Accounting', '$selectedTransaction')";
+        $sqlInsert = "INSERT INTO admission (queue_number, timestamp, student_id,  remarks, endorsed_from, transaction) 
+        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'Accounting', '$selectedTransaction')";
 
         if ($conn->query($sqlInsert) !== TRUE) {
             echo "Error inserting data into admission table: " . $conn->error;
@@ -1113,22 +1113,7 @@ function closeEndorsementPopup() {
 
             <!-- Additional dropdown options for Admission -->
             <div id="admissionOptionsDropdownContainer" style="display: none;">
-                <p><strong>Program:</strong> 
-                    <select name="program" class="drop" id="program" onchange="updateConcernDropdown()">
-                        <option value="" disabled selected>Choose a program</option>
-                        <?php
-                        // Fetch program options from the colleges table under acronym column
-                        $programSql = "SELECT acronym FROM colleges";
-                        $programResult = $conn->query($programSql);
-
-                        if ($programResult->num_rows > 0) {
-                            while ($programRow = $programResult->fetch_assoc()) {
-                                // Convert to uppercase using strtoupper
-                                echo "<option value='" . strtoupper($programRow['acronym']) . "'>" . strtoupper($programRow['acronym']) . "</option>";
-                            }
-                        }
-                        ?>
-                    </select>
+               
                 </p>
             </div>
 

@@ -21,21 +21,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Insert data into assets_logs table
+    // Insert data into itso_logs table
     $sqlInsertGuidance = "INSERT INTO guidance_logs (queue_number, timestamp, student_id, endorsed_to, transaction, remarks) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', '$transaction', '$remarks')";
-            if (!$conn->query($sqlInsertGuidance)) {
-                echo "Error inserting into queue_logs: " . $conn->error;
-            }
-
-    // Insert data into queue_logs table
-    $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, program, remarks, endorsed) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', 'GUIDANCE', '$program', '$remarks', 'COMPLETED')";
+            VALUES ('$queueNumber', '$timestamp', '$studentID', 'GUIDANCE', 'End Transaction', '$remarks')";
+    if ($conn->query($sqlInsertGuidance) === TRUE) {
+        // Insert data into queue_logs table
+        $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+            VALUES ('$queueNumber', '$timestamp', '$studentID', 'GUIDANCE', '$remarks', 'GUIDANCE')";
             if (!$conn->query($sqlInsert)) {
             echo "Error inserting into queue_logs: " . $conn->error;
         }
-
-    if ($conn->query($sqlInsertGuidance) === TRUE) {
         // Update status in the accounting table
         $sqlUpdateStatus = "UPDATE guidance SET status = 1 WHERE queue_number = '$queueNumber'";
         if ($conn->query($sqlUpdateStatus) !== TRUE) {
@@ -43,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
 
             // Additional query to update the display table based on the queue_number and officeName condition
-            $sqlUpdateDisplay = "UPDATE display SET status = 1 WHERE queue_number = '$queueNumber' AND officeName = 'Guidance'";
+            $sqlUpdateDisplay = "UPDATE display SET status = 1 WHERE queue_number = '$queueNumber' AND officeName = 'GUIDANCE'";
             if ($conn->query($sqlUpdateDisplay) !== TRUE) {
                 echo "Error updating display table: " . $conn->error;
             } else {

@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
 
             // Include the selected course in your SQL query
             $sqlInsert = "INSERT INTO academics_queue (queue_number, timestamp, student_id, program, concern, course, remarks, endorsed_from, transaction) 
-            VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedConcern', '$selectedCourse', '$selectedRemarks', 'itso', '$selectedTransaction')";
+            VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedConcern', '$selectedCourse', '$selectedRemarks', 'ITSO', '$selectedTransaction')";
             if ($conn->query($sqlInsert) !== TRUE) {
                 echo "Error inserting data into academics table: " . $conn->error;
             }
@@ -81,15 +81,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         $selectedProgram = $_POST['program'];
 
         // Add your query to insert data into the 'admission' table
-        $sqlInsert = "INSERT INTO admission (queue_number, timestamp, student_id, program, remarks, endorsed_from, transaction) 
-        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedRemarks', 'itso', '$selectedTransaction')";
+        $sqlInsert = "INSERT INTO admission (queue_number, timestamp, student_id,  remarks, endorsed_from, transaction) 
+        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID',  '$selectedRemarks', 'ITSO', '$selectedTransaction')";
 
         if ($conn->query($sqlInsert) !== TRUE) {
             echo "Error inserting data into admission table: " . $conn->error;
         }
     } else {
         // If the selected office is not 'Academics' or 'Admission', save data in the respective table
-        $sqlInsert = "INSERT INTO $tableName (queue_number, timestamp, student_id, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'itso', '$selectedTransaction')";
+        $sqlInsert = "INSERT INTO $tableName (queue_number, timestamp, student_id, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'ITSO', '$selectedTransaction')";
 
 
         if ($conn->query($sqlInsert) !== TRUE) {
@@ -98,25 +98,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
     }
 
 // Fetch endorsed_from value from the itso table
+// Fetch endorsed_from value from the itso table
 $sqlFetchEndorsedFrom = "SELECT endorsed_from FROM itso WHERE queue_number = '$selectedQueueNumber'";
 $resultFetchEndorsedFrom = $conn->query($sqlFetchEndorsedFrom);
 
 if ($resultFetchEndorsedFrom->num_rows > 0) {
     $rowFetchEndorsedFrom = $resultFetchEndorsedFrom->fetch_assoc();
     $selectedEndorsedFrom = $rowFetchEndorsedFrom['endorsed_from'];
-
+    
     // Insert the data into the 'itso_logs' table
-    $sqlInsertIntoitsoLogs = "INSERT INTO itso_logs (queue_number, timestamp, student_id, remarks, endorsed_to, transaction)
+    $sqlInsertIntoitsoLogs1 = "INSERT INTO itso_logs (queue_number, timestamp, student_id, remarks, endorsed_to, transaction)
     VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', '$selectedEndorsedFrom', '$selectedTransaction')";
-    if (!$conn->query($sqlInsertIntoitsoLogs)) {
-        echo "Error inserting into itso_logs: " . $conn->error;
-        }
-
-    // Insert data into queue_logs table
-    $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
-    VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'ASSETS', '$selectedRemarks', '$selectedOffice')";
-    if (!$conn->query($sqlInsert)) {
-        echo "Error inserting into queue_logs: " . $conn->error;
+    if ($conn->query($sqlInsertIntoitsoLogs1) === TRUE) {
+        // If insert is successful, update the 'endorsed_to' column in the 'itso_logs' table
+        $sqlUpdateEndorsedToLogs = "UPDATE itso_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
+        
+        // Execute the update query for the 'itso_logs' table
+        if ($conn->query($sqlUpdateEndorsedToLogs) !== TRUE) {
+            echo "Error updating endorsed_to column in itso_logs: " . $conn->error;
         }
 
         // Update status column in the 'itso' table and display table
@@ -131,6 +130,11 @@ if ($resultFetchEndorsedFrom->num_rows > 0) {
             echo "Error updating status and display table: " . $conn->error;
         }
 
+        $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'ITSO', '$selectedRemarks', '$selectedOffice')";
+        if (!$conn->query($sqlInsert)) {
+            echo "Error inserting into queue_logs: " . $conn->error;
+            };
         // Delete the data from the 'itso' table
         $sqlDeleteFromitso = "DELETE FROM itso WHERE queue_number = '$selectedQueueNumber'";
 
@@ -141,6 +145,12 @@ if ($resultFetchEndorsedFrom->num_rows > 0) {
     } else {
         echo "Error inserting data into itso_logs table: " . $conn->error;
     }
+    // Insert data into queue_logs table
+    
+
+    // Execute the insert query
+    
+} 
 } 
 
 
@@ -1102,22 +1112,6 @@ function closeEndorsementPopup() {
 
             <!-- Additional dropdown options for Admission -->
             <div id="admissionOptionsDropdownContainer" style="display: none;">
-                <p><strong>Program:</strong> 
-                    <select name="program" class="drop" id="program" onchange="updateConcernDropdown()">
-                        <option value="" disabled selected>Choose a program</option>
-                        <?php
-                        // Fetch program options from the colleges table under acronym column
-                        $programSql = "SELECT acronym FROM colleges";
-                        $programResult = $conn->query($programSql);
-
-                        if ($programResult->num_rows > 0) {
-                            while ($programRow = $programResult->fetch_assoc()) {
-                                // Convert to uppercase using strtoupper
-                                echo "<option value='" . strtoupper($programRow['acronym']) . "'>" . strtoupper($programRow['acronym']) . "</option>";
-                            }
-                        }
-                        ?>
-                    </select>
                 </p>
             </div>
 

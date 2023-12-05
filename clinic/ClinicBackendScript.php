@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = "root";
     $password = "";
     $database = "queuing_system";
-
+    $endtransact ="End Transaction";
     // Create connection
     $conn = new mysqli($servername, $username, $password, $database);
 
@@ -21,21 +21,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Insert data into assets_logs table
+    // Insert data into itso_logs table
     $sqlInsertClinic = "INSERT INTO clinic_logs (queue_number, timestamp, student_id, endorsed_to, transaction, remarks) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', '$transaction', '$remarks')";
-            if (!$conn->query($sqlInsertClinic)) {
-                echo "Error inserting into queue_logs: " . $conn->error;
-            }
-
-    // Insert data into queue_logs table
-    $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, program, remarks, endorsed) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', 'CLINIC', '$program', '$remarks', 'COMPLETED')";
+            VALUES ('$queueNumber', '$timestamp', '$studentID', 'CLINIC', '$endtransact', '$remarks')";
+    if ($conn->query($sqlInsertClinic) === TRUE) {
+        // Insert data into queue_logs table
+        $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+            VALUES ('$queueNumber', '$timestamp', '$studentID', 'CLINIC', '$remarks', 'CLINIC')";
             if (!$conn->query($sqlInsert)) {
             echo "Error inserting into queue_logs: " . $conn->error;
         }
-
-    if ($conn->query($sqlInsertClinic) === TRUE) {
         // Update status in the accounting table
         $sqlUpdateStatus = "UPDATE clinic SET status = 1 WHERE queue_number = '$queueNumber'";
         if ($conn->query($sqlUpdateStatus) !== TRUE) {
@@ -43,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
 
             // Additional query to update the display table based on the queue_number and officeName condition
-            $sqlUpdateDisplay = "UPDATE display SET status = 1 WHERE queue_number = '$queueNumber' AND officeName = 'Clinic'";
+            $sqlUpdateDisplay = "UPDATE display SET status = 1 WHERE queue_number = '$queueNumber' AND officeName = 'CLINIC'";
             if ($conn->query($sqlUpdateDisplay) !== TRUE) {
                 echo "Error updating display table: " . $conn->error;
             } else {

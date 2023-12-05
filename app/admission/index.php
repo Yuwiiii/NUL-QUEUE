@@ -45,7 +45,7 @@ $programChairsSCS = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
     <div class="nav container-fluid d-flex align-items-center justify-content-between px-2">
       <div class="d-flex align-items-center">
         <div class="logo p-2">
-          <img src="/queue/assets/NU_shield.svg" alt="logo" id="logo">
+          <img src="/nul-queue/assets/NU_shield.svg" alt="logo" id="logo">
         </div>
         <div>
           <h1 class=""><strong>NU LAGUNA</strong></h1>

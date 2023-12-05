@@ -48,4 +48,4 @@ function arraysEqual(arr1, arr2) {
 }
 
 // Initialize audio
-const audio = new Audio('../queue/sound/queue_notification.mp3');
+const audio = new Audio('../nul-queue/sound/queue_notification.mp3');

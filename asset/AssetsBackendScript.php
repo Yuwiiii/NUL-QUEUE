@@ -23,19 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Insert data into itso_logs table
     $sqlInsertAssets = "INSERT INTO assets_logs (queue_number, timestamp, student_id, endorsed_to, transaction, remarks) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', '$transaction', '$remarks')";
-            if (!$conn->query($sqlInsertAssets)) {
-                echo "Error inserting into queue_logs: " . $conn->error;
-            }
-
-    // Insert data into queue_logs table
-    $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, program, remarks, endorsed) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', 'Assets', '$program', '$remarks', 'COMPLETED')";
+            VALUES ('$queueNumber', '$timestamp', '$studentID', 'ASSETS', 'End Transaction', '$remarks')";
+    if ($conn->query($sqlInsertAssets) === TRUE) {
+        // Insert data into queue_logs table
+        $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+            VALUES ('$queueNumber', '$timestamp', '$studentID', 'ASSETS', '$remarks', 'ASSETS')";
             if (!$conn->query($sqlInsert)) {
             echo "Error inserting into queue_logs: " . $conn->error;
         }
-
-    if ($conn->query($sqlInsertAssets) === TRUE) {
         // Update status in the accounting table
         $sqlUpdateStatus = "UPDATE assets SET status = 1 WHERE queue_number = '$queueNumber'";
         if ($conn->query($sqlUpdateStatus) !== TRUE) {

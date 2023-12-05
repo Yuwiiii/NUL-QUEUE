@@ -102,7 +102,7 @@ $result = $conn->query($sql);
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 
-        const audio = new Audio('../queue/sound/queue_notification.mp3');
+        const audio = new Audio('../nul-queue/sound/queue_notification.mp3');
         document.getElementById('playButton').addEventListener('click', () => {
         audio.play();
         });
