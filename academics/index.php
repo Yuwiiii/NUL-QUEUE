@@ -305,13 +305,13 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
 </div>
 
 <!-- Please select both 'Endorsed To' and 'Transaction' options modal -->
-<div id="select-options-modal" class="modal-bg">
+<!-- <div id="select-options-modal" class="modal-bg">
     <div class="confirm-end-div">
         <h1>Fill out all fields</h1>
         <p>Do not leave any options or text areas blank, fill them out.</p><br>
         <button id="select-options-ok-btn"><b>OK</b></button>
     </div>
-</div>
+</div> -->
 
 <div id="reason-modal" class="reason-modal">
     <div class="reason-modal-div">

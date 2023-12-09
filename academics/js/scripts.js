@@ -275,7 +275,7 @@ queuebutton.addEventListener('click', () => {
             
             if (office === 'select' || transaction === 'select' || remarks.trim() === '') {
                 // Instead of alert, show the new modal
-                showOptionsModal();
+                alert("Fill out all fields");
             } else {
                 // Continue with your code
                 document.getElementById('Confirm-modal').textContent = office.toUpperCase();
@@ -289,31 +289,31 @@ queuebutton.addEventListener('click', () => {
         });
 });
 
-function hideFormModal() {
-  const formModal = document.getElementById('formModal');
-  formModal.style.display = 'none';
-}
+// function hideFormModal() {
+//   const formModal = document.getElementById('formModal');
+//   formModal.style.display = 'none';
+// }
 
-function showFormModal() {
-  const formModal = document.getElementById('formModal');
-  formModal.style.display = 'flex';
-}
+// function showFormModal() {
+//   const formModal = document.getElementById('formModal');
+//   formModal.style.display = 'flex';
+// }
 
-function showOptionsModal() {
-    // Hide the form-modal
-    hideFormModal();
-    // Display the modal for informing the user to select options
-    const optionsModal = document.getElementById('select-options-modal');
-    optionsModal.style.display = 'block';
-    // Add an event listener to the OK button in the modal
-    const okButton = document.getElementById('select-options-ok-btn');
-    okButton.addEventListener('click', function () {
-        // Close the modal when the OK button is clicked
-        optionsModal.style.display = 'none';
-        // Show the form-modal again
-        showFormModal();
-    });
-}
+// function showOptionsModal() {
+//     // Hide the form-modal
+//     hideFormModal();
+//     // Display the modal for informing the user to select options
+//     const optionsModal = document.getElementById('select-options-modal');
+//     optionsModal.style.display = 'block';
+//     // Add an event listener to the OK button in the modal
+//     const okButton = document.getElementById('select-options-ok-btn');
+//     okButton.addEventListener('click', function () {
+//         // Close the modal when the OK button is clicked
+//         optionsModal.style.display = 'none';
+//         // Show the form-modal again
+//         showFormModal();
+//     });
+// }
 
 document.getElementById("confirm-done-btn").addEventListener("click", function () {
   const queueNumber = document.getElementById("form-queue-number").value;
