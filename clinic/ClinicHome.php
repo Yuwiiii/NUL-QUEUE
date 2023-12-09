@@ -1280,7 +1280,7 @@ function submitFormPopup() {
      // Redirect to Que main
     document.getElementById('newqueue').addEventListener('click', function() {
     // URL for the new tab
-    var newTabUrl = 'http://localhost/Queue/';
+    var newTabUrl = '../index.php';
 
     // Open a new tab/window with the specified URL
     window.open(newTabUrl, '_blank');
