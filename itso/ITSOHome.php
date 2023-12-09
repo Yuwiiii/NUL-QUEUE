@@ -1047,7 +1047,7 @@ function closeEndorsementPopup() {
 
             <p><strong>Endorse To:</strong> 
                 <select id="office" name="office" class="drop" onchange="handleOfficeChange()" required>
-                    <option value="" disabled selected>Choose a program</option>
+                    <option value="" disabled selected>Choose an Office</option>
                     <?php
                     // Fetch options from the database
                     $sql = "SELECT officeName FROM offices";
