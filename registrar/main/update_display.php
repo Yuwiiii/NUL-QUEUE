@@ -16,14 +16,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $windowNumber = $_POST["windowNumber"];
     $officeName = $_POST["officeName"];
 
-    // Insert a new row into the display table
-    $insertSql = "INSERT INTO `display` (`queue_number`, `window`, `officeName`) VALUES ('$queueNumber', $windowNumber, '$officeName')";
-    $insertResult = $conn->query($insertSql);
+    // Check if the queue number is already displayed
+    $checkSql = "SELECT * FROM display WHERE queue_number = '$queueNumber' AND status = 0";
+    $checkResult = $conn->query($checkSql);
 
-    if ($insertResult) {
-        echo json_encode(["success" => true]);
+    if ($checkResult->num_rows > 0) {
+        // If the queue number is already displayed, update the existing record
+        $updateSql = "UPDATE display SET window = $windowNumber, officeName = '$officeName' WHERE queue_number = '$queueNumber' AND status = 0";
+        $updateResult = $conn->query($updateSql);
+
+        if ($updateResult) {
+            echo json_encode(["success" => true]);
+        } else {
+            echo json_encode(["success" => false, "message" => "Failed to update display table."]);
+        }
     } else {
-        echo json_encode(["success" => false, "message" => "Failed to update display table."]);
+        // If the queue number is not displayed, insert a new record
+        $insertSql = "INSERT INTO display (queue_number, window, officeName, status) VALUES ('$queueNumber', $windowNumber, '$officeName', 0)";
+        $insertResult = $conn->query($insertSql);
+
+        if ($insertResult) {
+            echo json_encode(["success" => true]);
+        } else {
+            echo json_encode(["success" => false, "message" => "Failed to update display table."]);
+        }
     }
 }
 
