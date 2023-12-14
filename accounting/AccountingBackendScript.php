@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Insert data into accounting_logs table
     $sqlInsertAccountingLogs = "INSERT INTO accounting_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks, endorsed_to) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', 'Payment', '$remarks', 'None')";
+            VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', 'Payment', '$remarks', 'Completed')";
 
     if ($conn->query($sqlInsertAccountingLogs) === TRUE) {
         // Insert data into queue_logs table after successful insertion into accounting_logs

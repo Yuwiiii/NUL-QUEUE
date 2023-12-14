@@ -3,7 +3,7 @@ session_start();
 
 // Check if the user is already logged in, and redirect to AccountingHome.php if necessary
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-    header('Location: ITSOHome.php'); // Redirect to the dashboard or another page
+    header('Location: ItsoHome.php'); // Redirect to the dashboard or another page
     exit();
 }
 
@@ -20,18 +20,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Query to check if the user exists in the database and is in the Accounting office
-    $sql = "SELECT * FROM user_accounts WHERE username = '$username' AND password = '$password' AND office = 'ITSO'";
+    $sql = "SELECT * FROM user_accounts WHERE username = '$username' AND password = '$password' AND office = 'Itso'";
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
         // Successful login
         $_SESSION['loggedin'] = true;
         $_SESSION['username'] = $username;
-        header('Location: ITSOHome.php'); // Redirect to a dashboard page
+        header('Location: ItsoHome.php'); // Redirect to a dashboard page
     } else {
         // Invalid credentials or wrong office
         $message = "Login failed. Please check your username, password, or office.";
-        echo '<script>alert("' . $message . '"); window.location.href="ITSOLogin.php";</script>';
+        echo '<script>alert("' . $message . '"); window.location.href="ItsoLogin.php";</script>';
         exit(); // Terminate the script
     }
 }
@@ -45,7 +45,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NU ITSO Office</title>
+    <title>NU Itso Office</title>
     <link href='http://fonts.googleapis.com/css?family=' rel='stylesheet' type='text/css'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
@@ -60,7 +60,7 @@ $conn->close();
     <div class="container-fluid">
         <div class="row">
             <div class="rounded-end-5 col-4 blue-bg">
-                <img src="itso/nu logo.webp" alt="Image" class="img-fluid img_logo"
+                <img src="assets/nu logo.webp" alt="Image" class="img-fluid img_logo"
                     style="max-height: auto; max-width: 40%;">
                 <div class="mt-4">
                     <h1 class="fw-bolder text-light text-center">NU LAGUNA</h1>
@@ -69,12 +69,12 @@ $conn->close();
 
             </div>
             <div class="col-8 p-5">
-                <h4 class="fst-italic fs-3 p-5 fw-bold text-center nu_color">ITSO Office.</h4>
+                <h4 class="fst-italic fs-3 p-5 fw-bold text-center nu_color">Itso Office.</h4>
               
 <!-- log in page goes here-->
 
 <div class="login">
-    <form id="login" method="post" action="ITSOLogin.php">
+    <form id="login" method="post" action="ItsoLogin.php">
         <h2 class="fst-italic fw-bold">Admin Access</h2>
         <label><b>Username</b></label>
         <input type="text" name="username" id="email" placeholder="Username">

@@ -10,13 +10,12 @@
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    font-weight: lighter;
-    font-family: sans-serif;
+    font-weight: bold;
 }
 .btn:hover{
     background-color: #ffd358;
     color: #34418E;
-    font-weight: lighter;
+    font-weight: bold;
 
 }
 .button {

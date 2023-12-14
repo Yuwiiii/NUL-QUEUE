@@ -40,7 +40,7 @@ if ($rowTableName) {
     // Validate the result
     if ($result) {
         // FOR FETCHING THE COMPLETED QUEUE
-        $sqlCompleted = "SELECT COUNT(*) AS completed_count FROM `$officeTableName` WHERE status = 1";
+        $sqlCompleted = "SELECT COUNT(*) AS completed_count FROM `" . $officeTableName . "_logs` WHERE DATE(timestamp) = CURDATE()";
         $stmtCompleted = mysqli_prepare($conn, $sqlCompleted);
         mysqli_stmt_execute($stmtCompleted);
         $resultCompleted = mysqli_stmt_get_result($stmtCompleted);
@@ -193,7 +193,7 @@ if ($rowTableName) {
                                             $officeTableName = $rowTableName['officeName'];
 
                                             // Fetch all columns for the selected office's table
-                                            $query = "SELECT * FROM `$officeTableName` where status = 1";
+                                            $query = "SELECT * FROM  `" . $officeTableName . "_logs`";
                                             $result = mysqli_query($conn, $query);
 
                                             // Display the selected office information
@@ -201,17 +201,27 @@ if ($rowTableName) {
 
                                             // Display header row
                                             echo '<tr class="header">';
-                                            while ($fieldInfo = mysqli_fetch_field($result)) {
-                                                echo '<th>' . $fieldInfo->name . '</th>';
-                                            }
+                                            echo '<th>Queue Number</th>';
+                                            echo '<th>Student ID</th>';
+                                            echo '<th>Transaction</th>';
+                                            echo '<th>Remarks</th>';
+                                            echo '<th>Endorsed From</th>';
+                                            echo '<th>Endorsed To</th>';
+                                            echo '<th>Time Started</th>';
+                                            echo '<th>Time Ended</th>';
                                             echo '</tr>';
 
                                             // Display data rows
                                             while ($row = mysqli_fetch_assoc($result)) {
                                                 echo '<tr>';
-                                                foreach ($row as $value) {
-                                                    echo '<td>' . $value . '</td>';
-                                                }
+                                                echo '<td>' . $row['queue_number'] . '</td>';
+                                                echo '<td>' . $row['student_id'] . '</td>';
+                                                echo '<td>' . $row['transaction'] . '</td>';
+                                                echo '<td>' . $row['remarks'] . '</td>';
+                                                echo '<td>' . $row['endorsed_from'] . '</td>';
+                                                echo '<td>' . $row['endorsed_to'] . '</td>';
+                                                echo '<td>' . $row['timestamp'] . '</td>';
+                                                echo '<td>' . $row['timeout'] . '</td>';
                                                 echo '</tr>';
                                             }
 
@@ -265,20 +275,26 @@ if ($rowTableName) {
 
                                             // Display header row
                                             echo '<tr class="header">';
-                                            while ($fieldInfo = mysqli_fetch_field($result)) {
-                                                echo '<th>' . $fieldInfo->name . '</th>';
-                                            }
+                                            echo '<th>Queue Number</th>';
+                                            echo '<th>Student ID</th>';
+                                            echo '<th>Transaction</th>';
+                                            echo '<th>Remarks</th>';
+                                            echo '<th>Endorsed From</th>';
+                                            echo '<th>Time Started</th>';
+                                            echo '</tr>';
                                             echo '</tr>';
 
-                                            // Display data rows
+                                          // Display data rows
                                             while ($row = mysqli_fetch_assoc($result)) {
                                                 echo '<tr>';
-                                                foreach ($row as $value) {
-                                                    echo '<td>' . $value . '</td>';
-                                                }
+                                                echo '<td>' . ($row['queue_number'] ? $row['queue_number'] : 'None') . '</td>';
+                                                echo '<td>' . ($row['student_id'] ? $row['student_id'] : 'None') . '</td>';
+                                                echo '<td>' . ($row['transaction'] ? $row['transaction'] : 'None') . '</td>';
+                                                echo '<td>' . ($row['remarks'] ? $row['remarks'] : 'None') . '</td>';
+                                                echo '<td>' . ($row['endorsed_from'] ? $row['endorsed_from'] : 'None') . '</td>';
+                                                echo '<td>' . ($row['timestamp'] ? $row['timestamp'] : 'None') . '</td>';
                                                 echo '</tr>';
                                             }
-
                                             echo '</table>';
                                         } else {
                                             echo '<p>No data found for the selected office.</p>';
@@ -307,7 +323,7 @@ if ($rowTableName) {
                         // Check if the selected office exists in the 'offices' table
                         if ($rowTableName) {
                             // FOR TABLE WITH _LOGS
-                            $officeTableName = $rowTableName['officeName'] . '_logs';
+                            $officeTableName = $rowTableName['officeName'];
 
                             // Fetch all columns excluding 'availability' and 'window'
                             $queryColumns = "SHOW COLUMNS FROM `$officeTableName`";
@@ -337,7 +353,6 @@ if ($rowTableName) {
                             echo '<th>Remarks</th>';
                             echo '<th>Status</th>';
                             echo '<th>Timestamp</th>';
-                            echo '<th>Timeout</th>';
                             echo '</tr>';
 
                             // Display data rows
@@ -349,7 +364,6 @@ if ($rowTableName) {
                                 echo '<td>' . $row['remarks'] . '</td>';
                                 echo '<td>' . $row['status'] . '</td>';
                                 echo '<td>' . $row['timestamp'] . '</td>';
-                                echo '<td>' . $row['timeout'] . '</td>';
                                 echo '</tr>';
                             }
                             echo '</table>';

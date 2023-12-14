@@ -3,9 +3,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $queueNumber = $_POST['queue_number'];
     $timestamp = $_POST['timestamp'];
     $studentID = $_POST['student_id'];
-    $endorsedTo = $_POST['endorsed_to'];
+    $endorsedFrom = $_POST['endorsed_from'];
+
+    // Check if the key 'endorsed_to' exists in the $_POST array
+    $endorsedTo = isset($_POST['endorsed_to']) ? $_POST['endorsed_to'] : 'None';
+    
     $transaction = $_POST['transaction'];
-    $remarks = $_POST['remarks'];
+    $remarks = isset($_POST['remarks']) ? $_POST['remarks'] : '';
 
     // Database credentials
     $servername = "localhost";
@@ -21,34 +25,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Insert data into itso_logs table
-    $sqlInsertGuidance = "INSERT INTO guidance_logs (queue_number, timestamp, student_id, endorsed_to, transaction, remarks) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', 'GUIDANCE', 'End Transaction', '$remarks')";
-    if ($conn->query($sqlInsertGuidance) === TRUE) {
-        // Insert data into queue_logs table
-        $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
-            VALUES ('$queueNumber', '$timestamp', '$studentID', 'GUIDANCE', '$remarks', 'GUIDANCE')";
-            if (!$conn->query($sqlInsert)) {
-            echo "Error inserting into queue_logs: " . $conn->error;
+    // Insert data into accounting_logs table
+    $sqlInsertAccountingLogs = "INSERT INTO guidance_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks, endorsed_to) 
+            VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', 'Payment', '$remarks', 'Completed')";
+
+    if ($conn->query($sqlInsertAccountingLogs) === TRUE) {
+        // Insert data into queue_logs table after successful insertion into accounting_logs
+        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+                               VALUES ('$queueNumber', '$timestamp', '$studentID', 'Guidance', '$remarks', 'Completed')";
+
+        if ($conn->query($sqlInsertQueueLogs) !== TRUE) {
+            echo "Error inserting data into queue_logs: " . $conn->error;
         }
+
         // Update status in the accounting table
         $sqlUpdateStatus = "UPDATE guidance SET status = 1 WHERE queue_number = '$queueNumber'";
         if ($conn->query($sqlUpdateStatus) !== TRUE) {
             echo "Error updating status: " . $conn->error;
         } else {
-
             // Additional query to update the display table based on the queue_number and officeName condition
-            $sqlUpdateDisplay = "UPDATE display SET status = 1 WHERE queue_number = '$queueNumber' AND officeName = 'GUIDANCE'";
+            $sqlUpdateDisplay = "UPDATE display SET status = 1 WHERE queue_number = '$queueNumber' AND officeName = 'Guidance'";
             if ($conn->query($sqlUpdateDisplay) !== TRUE) {
                 echo "Error updating display table: " . $conn->error;
             } else {
-                
+                // Query to delete the record from the accounting table
+                $sqlDeleteAccounting = "DELETE FROM guidance WHERE queue_number = '$queueNumber'";
+                if ($conn->query($sqlDeleteAccounting) !== TRUE) {
+                    echo "Error deleting record from accounting table: " . $conn->error;
+                }
             }
-
-        
         }
     } else {
-        echo "Error inserting data: " . $conn->error;
+        echo "Error inserting data into accounting_logs: " . $conn->error;
     }
 
     // Close connection

@@ -30,6 +30,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                   VALUES ('$selectedQueueNumber', '$userWindow', 'Clinic')
                                   ON DUPLICATE KEY UPDATE window = '$userWindow'";
 
+        // Update the status column of the selected queue number in the queue table back to 0
+        $sqlUpdateQueueStatus = "UPDATE queue SET status = 1 WHERE queue_number = '$selectedQueueNumber'";
+        if ($conn->query($sqlUpdateQueueStatus) !== TRUE) {
+        echo "Error updating status in queue table: " . $conn->error;
+        }
+
+
         if ($conn->query($sqlUpdateDisplayTable) === TRUE) {
             echo "Display table updated successfully";
 

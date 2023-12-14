@@ -141,12 +141,18 @@ if ($resultFetchEndorsedFrom->num_rows > 0) {
  
          // Insert data into queue_logs table
          $sqlInsertIntoQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
-             VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'Accounting', '$selectedRemarks', 'Completed')";
+             VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'Accounting', '$selectedRemarks', '$selectedOffice')";
  
          // Execute the insert query for queue_logs table
          if ($conn->query($sqlInsertIntoQueueLogs) !== TRUE) {
              echo "Error inserting data into queue_logs: " . $conn->error;
          }
+
+         // Update status of the selected queue number in the queue table back to 0
+        $sqlUpdateQueueStatus = "UPDATE queue SET status = 0 WHERE queue_number = '$selectedQueueNumber'";
+        if ($conn->query($sqlUpdateQueueStatus) !== TRUE) {
+            echo "Error updating status in queue table: " . $conn->error;
+        }
      } else {
          echo "Error inserting data into accounting_logs table: " . $conn->error;
      }
@@ -302,9 +308,11 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
         
         <!-- Include jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+         <!-- Your button -->
+         <button class="round" style="position: absolute; left: 80; margin-top:11%; margin-left:20%" onclick="returnToQueue()"><i class="fa fa-chevron-left"></i> Back to Queue</button>
         
-        <!-- Your button -->
-        <button class="round" style="position: absolute; left: 80; margin-top:11%; margin-left:20%" onclick="returnToQueue()"><i class="fa fa-chevron-left"></i> Back to Queue</button>
+       
     </div>
 </header>
 
@@ -778,11 +786,23 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
     $selectedTransaction = isset($_POST['transaction']) ? $_POST['transaction'] : '';
     $selectedEndorsed = isset($_POST['endorsed_from']) ? $_POST['endorsed_from'] : '';
 
-    // Update availability to 1 in the database
-    $sqlUpdateAvailability = "UPDATE accounting SET availability = 1 WHERE queue_number = '$selectedQueueNumber'";
-    if ($conn->query($sqlUpdateAvailability) !== TRUE) {
-        echo "Error updating availability: " . $conn->error;
-    }
+     // Retrieve the previously selected queue number from the session
+     $previouslySelectedQueueNumber = isset($_SESSION['previouslySelectedQueueNumber']) ? $_SESSION['previouslySelectedQueueNumber'] : null;
+
+     // Update the "availability" column only for the selected queue number
+     $sqlUpdateAvailability = "UPDATE accounting SET availability = 1 WHERE queue_number = '$selectedQueueNumber'";
+     $conn->query($sqlUpdateAvailability);
+ 
+     // Reset the "availability" column to 0 for the previously selected queue number
+     if ($previouslySelectedQueueNumber !== null && $previouslySelectedQueueNumber !== $selectedQueueNumber) {
+         $sqlResetAvailability = "UPDATE accounting SET availability = 0 WHERE queue_number = '$previouslySelectedQueueNumber'";
+         $conn->query($sqlResetAvailability);
+     }
+ 
+     // Store the currently selected queue number in the session for future reference
+     $_SESSION['previouslySelectedQueueNumber'] = $selectedQueueNumber;
+
+     
 
     // Fetch the "endorsed" data from the "accounting" table
     $sqlFetchEndorsed = "SELECT endorsed_from FROM accounting WHERE queue_number = '$selectedQueueNumber'";

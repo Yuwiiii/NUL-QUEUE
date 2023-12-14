@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 session_start();
 
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('Location: itsoLogin.php');
+    header('Location: ItsoLogin.php');
     exit();
 }
 
@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
 
             // Include the selected course in your SQL query
             $sqlInsert = "INSERT INTO academics_queue (queue_number, timestamp, student_id, program, concern, course, remarks, endorsed_from, transaction) 
-            VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedConcern', '$selectedCourse', '$selectedRemarks', 'ITSO', '$selectedTransaction')";
+            VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedConcern', '$selectedCourse', '$selectedRemarks', 'Itso', '$selectedTransaction')";
             if ($conn->query($sqlInsert) !== TRUE) {
                 echo "Error inserting data into academics table: " . $conn->error;
             }
@@ -78,18 +78,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         }
     } elseif ($formattedSelectedOffice === 'Admission') {
         // If the selected office is 'Admission', get the selected program from the dropdown
-        $selectedProgram = $_POST['program'];
+      
 
         // Add your query to insert data into the 'admission' table
         $sqlInsert = "INSERT INTO admission (queue_number, timestamp, student_id,  remarks, endorsed_from, transaction) 
-        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID',  '$selectedRemarks', 'ITSO', '$selectedTransaction')";
+        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'Itso', '$selectedTransaction')";
 
         if ($conn->query($sqlInsert) !== TRUE) {
             echo "Error inserting data into admission table: " . $conn->error;
         }
     } else {
         // If the selected office is not 'Academics' or 'Admission', save data in the respective table
-        $sqlInsert = "INSERT INTO $tableName (queue_number, timestamp, student_id, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'ITSO', '$selectedTransaction')";
+        $sqlInsert = "INSERT INTO $tableName (queue_number, timestamp, student_id, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'Itso', '$selectedTransaction')";
 
 
         if ($conn->query($sqlInsert) !== TRUE) {
@@ -97,84 +97,91 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         }
     }
 
-// Fetch endorsed_from value from the itso table
-// Fetch endorsed_from value from the itso table
-$sqlFetchEndorsedFrom = "SELECT endorsed_from FROM itso WHERE queue_number = '$selectedQueueNumber'";
+// Fetch endorsed_from value from the Accounting table
+$sqlFetchEndorsedFrom = "SELECT endorsed_from FROM Itso WHERE queue_number = '$selectedQueueNumber'";
 $resultFetchEndorsedFrom = $conn->query($sqlFetchEndorsedFrom);
 
 if ($resultFetchEndorsedFrom->num_rows > 0) {
     $rowFetchEndorsedFrom = $resultFetchEndorsedFrom->fetch_assoc();
     $selectedEndorsedFrom = $rowFetchEndorsedFrom['endorsed_from'];
-    
-    // Insert the data into the 'itso_logs' table
-    $sqlInsertIntoitsoLogs1 = "INSERT INTO itso_logs (queue_number, timestamp, student_id, remarks, endorsed_to, transaction)
-    VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', '$selectedEndorsedFrom', '$selectedTransaction')";
-    if ($conn->query($sqlInsertIntoitsoLogs1) === TRUE) {
-        // If insert is successful, update the 'endorsed_to' column in the 'itso_logs' table
-        $sqlUpdateEndorsedToLogs = "UPDATE itso_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
-        
-        // Execute the update query for the 'itso_logs' table
-        if ($conn->query($sqlUpdateEndorsedToLogs) !== TRUE) {
-            echo "Error updating endorsed_to column in itso_logs: " . $conn->error;
+
+     // Insert data into accounting_logs table
+     $sqlInsertIntoAccountingLogs = "INSERT INTO Itso_logs (queue_number, timestamp, student_id, remarks, endorsed_from, transaction)
+     VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', '$selectedEndorsedFrom', '$selectedTransaction')";
+ 
+     // Execute the insert query for accounting_logs table
+     if ($conn->query($sqlInsertIntoAccountingLogs) === TRUE) {
+         // If insert is successful, update the 'endorsed_to' column in the 'accounting_logs' table
+         $sqlUpdateEndorsedToLogs = "UPDATE Itso_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
+         
+         // Execute the update query for the 'accounting_logs' table
+         if ($conn->query($sqlUpdateEndorsedToLogs) !== TRUE) {
+             echo "Error updating endorsed_to column in Itso_logs: " . $conn->error;
+         }
+ 
+         // Update status column in the 'accounting' table and display table
+         $sqlUpdateStatusAndDisplay = "UPDATE Itso, display
+         SET Itso.status = 1,
+             display.status = 1
+         WHERE Itso.queue_number = '$selectedQueueNumber'
+             AND display.queue_number = '$selectedQueueNumber'
+             AND display.officeName = 'Itso'";
+ 
+         if ($conn->query($sqlUpdateStatusAndDisplay) !== TRUE) {
+             echo "Error updating status and display table: " . $conn->error;
+         }
+ 
+         // Delete the data from the 'accounting' table
+         $sqlDeleteFromAccounting = "DELETE FROM Itso WHERE queue_number = '$selectedQueueNumber'";
+ 
+         // Execute the delete query for the 'accounting' table
+         if ($conn->query($sqlDeleteFromAccounting) !== TRUE) {
+             echo "Error deleting data from accounting table: " . $conn->error;
+         }
+ 
+         // Insert data into queue_logs table
+         $sqlInsertIntoQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+             VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'Itso', '$selectedRemarks', '$selectedOffice')";
+ 
+         // Execute the insert query for queue_logs table
+         if ($conn->query($sqlInsertIntoQueueLogs) !== TRUE) {
+             echo "Error inserting data into queue_logs: " . $conn->error;
+         }
+
+         // Update status of the selected queue number in the queue table back to 0
+        $sqlUpdateQueueStatus = "UPDATE queue SET status = 0 WHERE queue_number = '$selectedQueueNumber'";
+        if ($conn->query($sqlUpdateQueueStatus) !== TRUE) {
+            echo "Error updating status in queue table: " . $conn->error;
         }
-
-        // Update status column in the 'itso' table and display table
-        $sqlUpdateStatusAndDisplay = "UPDATE itso, display
-        SET itso.status = 1,
-            display.status = 1
-        WHERE itso.queue_number = '$selectedQueueNumber'
-            AND display.queue_number = '$selectedQueueNumber'
-            AND display.officeName = 'itso'";
-
-        if ($conn->query($sqlUpdateStatusAndDisplay) !== TRUE) {
-            echo "Error updating status and display table: " . $conn->error;
-        }
-
-        $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
-        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'ITSO', '$selectedRemarks', '$selectedOffice')";
-        if (!$conn->query($sqlInsert)) {
-            echo "Error inserting into queue_logs: " . $conn->error;
-            };
-        // Delete the data from the 'itso' table
-        $sqlDeleteFromitso = "DELETE FROM itso WHERE queue_number = '$selectedQueueNumber'";
-
-        // Execute the delete query for the 'itso' table
-        if ($conn->query($sqlDeleteFromitso) !== TRUE) {
-            echo "Error deleting data from itso table: " . $conn->error;
-        }
-    } else {
-        echo "Error inserting data into itso_logs table: " . $conn->error;
-    }
-    // Insert data into queue_logs table
-    
-
-    // Execute the insert query
-    
-} 
-} 
-
+     } else {
+         echo "Error inserting data into accounting_logs table: " . $conn->error;
+     }
+ } else {
+     echo "Invalid request method";
+ }
+}
 
 
 // Add this code at the beginning of your PHP script to define $selectedQueueNumber
 $selectedQueueNumber = isset($_POST['queue_number']) ? $_POST['queue_number'] : '';
 
-// Fetch data from the "itso" table where status is 0 and availability is 0, ordered by timestamp in descending order
-$sqlitso = "SELECT queue_number, timestamp, student_id, transaction, endorsed_from, remarks FROM itso WHERE status = 0 AND availability = 0 ORDER BY timestamp DESC";
-$resultitso = $conn->query($sqlitso);
+// Fetch data from the "accounting" table where status is 0 and availability is 0, ordered by timestamp in descending order
+$sqlAccounting = "SELECT queue_number, timestamp, student_id, transaction, endorsed_from, remarks FROM Itso WHERE status = 0 AND availability = 0 ORDER BY timestamp DESC";
+$resultAccounting = $conn->query($sqlAccounting);
 
-// Initialize an array to store the fetched itso data
-$itso_data = [];
+// Initialize an array to store the fetched accounting data
+$accounting_data = [];
 
-if ($resultitso->num_rows > 0) {
-    while ($rowitso = $resultitso->fetch_assoc()) {
-        $itso_data[] = $rowitso;
+if ($resultAccounting->num_rows > 0) {
+    while ($rowAccounting = $resultAccounting->fetch_assoc()) {
+        $accounting_data[] = $rowAccounting;
     }
 }
 
 
 
 
-// Fetch data from the "queue" table where office is "itso" and status is 0, ordered by timestamp in descending order
+// Fetch data from the "queue" table where office is "ACCOUNTING" and status is 0, ordered by timestamp in descending order
 $sqlQueue = "SELECT queue_number, student_id, timestamp, remarks, endorsed FROM queue WHERE office = 'A' AND status = 0 ORDER BY timestamp DESC";
 $resultQueue = $conn->query($sqlQueue);
 
@@ -188,8 +195,8 @@ if ($resultQueue->num_rows > 0) {
 }
 
 
-// Combine the data into a single array, with data from "itso" at the top
-$combined_data = array_merge($itso_data, $queue_data);
+// Combine the data into a single array, with data from "accounting" at the top
+$combined_data = array_merge($accounting_data, $queue_data);
 
 // Sort the combined data based on the queued time or date (assuming 'timestamp' is the key)
 usort($combined_data, function ($a, $b) {
@@ -205,7 +212,7 @@ if (isset($_POST['update_button'])) {
     $selectedQueueNumber = $_POST['queue_number'];
 
     // Update the database (replace 'your_table_name' and 'your_column_name' with your actual table and column names)
-    $sqlUpdate = "UPDATE itso SET window = 1 WHERE queue_number = '$selectedQueueNumber'";
+    $sqlUpdate = "UPDATE Itso SET window = 1 WHERE queue_number = '$selectedQueueNumber'";
 
     if ($conn->query($sqlUpdate) === TRUE) {
         echo "Database updated successfully!";
@@ -271,7 +278,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NU ITSO Office</title>
+    <title>NU Itso Office</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
@@ -286,24 +293,26 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 </head>
 <header>
     <div class="header">
-        <img src="itso/nu logo.webp" alt="Image" class="" style="max-height: auto; max-width: 10%; padding: 1%;">
+        <img src="assets/nu logo.webp" alt="Image" class="" style="max-height: auto; max-width: 10%; padding: 1%;">
         <div class="mt-4">
             <h1 class="fw-bolder text-light text-center">NU LAGUNA</h1>
             <h4 class="fw-bold text-light text-center">QUEUING SYSTEM</h4>
         </div>
         
         <!-- Display the full name in the header -->
-        <p id="greeting" class="fw-bold text-light text-center" style="margin-top: 3%;">Howdy, <?php echo $_SESSION['full_name']; ?>!</p>
+        <p id="greeting" class="fw-bold text-light text-center" style="margin-top: 3%;">Hi there, <?php echo $_SESSION['full_name']; ?>!</p>
         
-        <button class="icon" onclick="exit()"><p style="font-size:20px; margin-top: 60%;">Log Out</p></button>
+        <button class="icon" onclick="exit()"><p style="font-size:20px; margin-top: 60%;">Logout</p></button>
         
         <button class="round" id="newqueue" style="position: absolute; right: 0; margin-top:11%; margin-right:1%" onclick="openQue()">New Queue  <i class="fa fa-plus-square"></i></button>
         
         <!-- Include jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+         <!-- Your button -->
+         <button class="round" style="position: absolute; left: 80; margin-top:11%; margin-left:20%" onclick="returnToQueue()"><i class="fa fa-chevron-left"></i> Back to Queue</button>
         
-        <!-- Your button -->
-        <button class="round" style="position: absolute; left: 80; margin-top:11%; margin-left:20%" onclick="returnToQueue()"><i class="fa fa-chevron-left"></i> Back to Queue</button>
+       
     </div>
 </header>
 
@@ -368,7 +377,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
            font-family: sans-serif ;
         }
         .sidenav button {
-            width: 100%;
+            width: 650%;
             text-align: left;
             padding: 8px;
             background-color: transparent;
@@ -647,7 +656,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 
         .side_navtxt {
             background-color: #FFD41C;
-            padding: .1% 2.2% .1% 2.3%;
+            padding: .1% 5% .1% 5%;
             text-align: center;
             font-size: 24px;
             font-family: sans-serif;
@@ -740,7 +749,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 <div class="sidenav" id="sidenav">
 
     
-    <!-- Display queue numbers from both "queue" and "itso" tables where status is 0 -->
+    <!-- Display queue numbers from both "queue" and "accounting" tables where status is 0 -->
     <?php foreach ($combined_data as $itemCombined): ?>
     <form method="post" action="" id="">
         <input type="hidden" name="queue_number" value="<?php echo $itemCombined['queue_number']; ?>">
@@ -777,14 +786,26 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
     $selectedTransaction = isset($_POST['transaction']) ? $_POST['transaction'] : '';
     $selectedEndorsed = isset($_POST['endorsed_from']) ? $_POST['endorsed_from'] : '';
 
-    // Update availability to 1 in the database
-    $sqlUpdateAvailability = "UPDATE itso SET availability = 1 WHERE queue_number = '$selectedQueueNumber'";
-    if ($conn->query($sqlUpdateAvailability) !== TRUE) {
-        echo "Error updating availability: " . $conn->error;
-    }
+     // Retrieve the previously selected queue number from the session
+     $previouslySelectedQueueNumber = isset($_SESSION['previouslySelectedQueueNumber']) ? $_SESSION['previouslySelectedQueueNumber'] : null;
 
-    // Fetch the "endorsed" data from the "itso" table
-    $sqlFetchEndorsed = "SELECT endorsed_from FROM itso WHERE queue_number = '$selectedQueueNumber'";
+     // Update the "availability" column only for the selected queue number
+     $sqlUpdateAvailability = "UPDATE Itso SET availability = 1 WHERE queue_number = '$selectedQueueNumber'";
+     $conn->query($sqlUpdateAvailability);
+ 
+     // Reset the "availability" column to 0 for the previously selected queue number
+     if ($previouslySelectedQueueNumber !== null && $previouslySelectedQueueNumber !== $selectedQueueNumber) {
+         $sqlResetAvailability = "UPDATE Itso SET availability = 0 WHERE queue_number = '$previouslySelectedQueueNumber'";
+         $conn->query($sqlResetAvailability);
+     }
+ 
+     // Store the currently selected queue number in the session for future reference
+     $_SESSION['previouslySelectedQueueNumber'] = $selectedQueueNumber;
+
+     
+
+    // Fetch the "endorsed" data from the "accounting" table
+    $sqlFetchEndorsed = "SELECT endorsed_from FROM Itso WHERE queue_number = '$selectedQueueNumber'";
     $resultEndorsed = $conn->query($sqlFetchEndorsed);
 
     if ($resultEndorsed->num_rows > 0) {
@@ -854,7 +875,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
     }
 
 
-        var countdownSeconds = 10; // Set the initial countdown value
+        var countdownSeconds = 5; // Set the initial countdown value
         var endButton = document.getElementById('endButton');
 
         function updateButtonCountdown() {
@@ -885,8 +906,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
                     var userWindow = xhr.responseText;
                     console.log("Fetched Window:", userWindow);
 
-                    // Now, you can use the fetched window value to update the itso table
-                    updateitsoTable(userWindow);
+                    // Now, you can use the fetched window value to update the accounting table
+                    updateAccountingTable(userWindow);
                 }
             };
 
@@ -894,10 +915,10 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
             xhr.send();
         }
 
-        function updateitsoTable(userWindow) {
-            // Add your code to update the itso table with the fetched window value
+        function updateAccountingTable(userWindow) {
+            // Add your code to update the accounting table with the fetched window value
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "UpdateitsoWindow.php", true);
+            xhr.open("POST", "UpdateItsoWindow.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
@@ -953,7 +974,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
             var remarks = document.getElementById('remarks').value; // Get the user input from the remarks textarea
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "itsoBackendScript.php", true);
+            xhr.open("POST", "ItsoBackendScript.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
@@ -1112,6 +1133,7 @@ function closeEndorsementPopup() {
 
             <!-- Additional dropdown options for Admission -->
             <div id="admissionOptionsDropdownContainer" style="display: none;">
+               
                 </p>
             </div>
 
@@ -1195,7 +1217,7 @@ function submitFormPopup() {
         concernDropdown.innerHTML = '';
 
         // Fetch data from the server using AJAX or fetch API
-        fetch('./itsoServerScript.php', {
+        fetch('./ItsoServerScript.php', {
             method: 'POST',
             body: new URLSearchParams('concernSql=' + encodeURIComponent(concernSql)),
             headers: {
@@ -1262,7 +1284,7 @@ function submitFormPopup() {
         // Send AJAX request to update availability
         $.ajax({
             type: 'POST',
-            url: 'itsoBackAvailability.php', // adjust the URL based on your file structure
+            url: 'ItsoBackAvailability.php', // adjust the URL based on your file structure
             data: { queue_number: selectedQueueNumber },
             success: function(response) {
                 // Handle the success response
@@ -1303,7 +1325,7 @@ function submitFormPopup() {
     }
     //logout the user
     function exit() {
-        window.location.href = "itsoLogout.php";
+        window.location.href = "ItsoLogout.php";
     }
     function updateSideNav(data) {
     // Assuming your data is in JSON format, parse the data
@@ -1399,7 +1421,7 @@ function submitFormPopup() {
     // Function to send the AJAX request
     function sendAjaxRequest() {
     $.ajax({
-        url: "itsoHome.php", // Change to your PHP script file
+        url: "ItsoHome.php", // Change to your PHP script file
         method: "POST",
         contentType: "application/x-www-form-urlencoded",
         data: {

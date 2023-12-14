@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
 
             // Include the selected course in your SQL query
             $sqlInsert = "INSERT INTO academics_queue (queue_number, timestamp, student_id, program, concern, course, remarks, endorsed_from, transaction) 
-            VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedConcern', '$selectedCourse', '$selectedRemarks', 'CLINIC', '$selectedTransaction')";
+            VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedProgram', '$selectedConcern', '$selectedCourse', '$selectedRemarks', 'Clinic', '$selectedTransaction')";
             if ($conn->query($sqlInsert) !== TRUE) {
                 echo "Error inserting data into academics table: " . $conn->error;
             }
@@ -78,18 +78,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         }
     } elseif ($formattedSelectedOffice === 'Admission') {
         // If the selected office is 'Admission', get the selected program from the dropdown
-       
+      
 
         // Add your query to insert data into the 'admission' table
         $sqlInsert = "INSERT INTO admission (queue_number, timestamp, student_id,  remarks, endorsed_from, transaction) 
-        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'CLINIC', '$selectedTransaction')";
+        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'Clinic', '$selectedTransaction')";
 
         if ($conn->query($sqlInsert) !== TRUE) {
             echo "Error inserting data into admission table: " . $conn->error;
         }
     } else {
         // If the selected office is not 'Academics' or 'Admission', save data in the respective table
-        $sqlInsert = "INSERT INTO $tableName (queue_number, timestamp, student_id, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'CLINIC', '$selectedTransaction')";
+        $sqlInsert = "INSERT INTO $tableName (queue_number, timestamp, student_id, remarks, endorsed_from, transaction) VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', 'Clinic', '$selectedTransaction')";
 
 
         if ($conn->query($sqlInsert) !== TRUE) {
@@ -97,82 +97,91 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['office'])) {
         }
     }
 
-// Fetch endorsed_from value from the clinic table
-$sqlFetchEndorsedFrom = "SELECT endorsed_from FROM clinic WHERE queue_number = '$selectedQueueNumber'";
+// Fetch endorsed_from value from the Accounting table
+$sqlFetchEndorsedFrom = "SELECT endorsed_from FROM Clinic WHERE queue_number = '$selectedQueueNumber'";
 $resultFetchEndorsedFrom = $conn->query($sqlFetchEndorsedFrom);
 
 if ($resultFetchEndorsedFrom->num_rows > 0) {
     $rowFetchEndorsedFrom = $resultFetchEndorsedFrom->fetch_assoc();
     $selectedEndorsedFrom = $rowFetchEndorsedFrom['endorsed_from'];
 
-    // Insert the data into the 'assets_logs' table
-    $sqlInsertIntoClinicLogs = "INSERT INTO clinic_logs (queue_number, timestamp, student_id, remarks, endorsed_to, transaction)
-    VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', '$selectedEndorsedFrom', '$selectedTransaction')";
-    // Execute the insert query
-    if ($conn->query($sqlInsertIntoClinicLogs) === TRUE) {
-        // If insert is successful, update the 'endorsed_to' column in the 'assets_logs' table
-        $sqlUpdateEndorsedToLogs = "UPDATE clinic_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
-        
-        // Execute the update query for the 'assets_logs' table
-        if ($conn->query($sqlUpdateEndorsedToLogs) !== TRUE) {
-            echo "Error updating endorsed_to column in clinic_logs: " . $conn->error;
+     // Insert data into accounting_logs table
+     $sqlInsertIntoAccountingLogs = "INSERT INTO Clinic_logs (queue_number, timestamp, student_id, remarks, endorsed_from, transaction)
+     VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', '$selectedRemarks', '$selectedEndorsedFrom', '$selectedTransaction')";
+ 
+     // Execute the insert query for accounting_logs table
+     if ($conn->query($sqlInsertIntoAccountingLogs) === TRUE) {
+         // If insert is successful, update the 'endorsed_to' column in the 'accounting_logs' table
+         $sqlUpdateEndorsedToLogs = "UPDATE Clinic_logs SET endorsed_to = '$formattedSelectedOffice' WHERE queue_number = '$selectedQueueNumber'";
+         
+         // Execute the update query for the 'accounting_logs' table
+         if ($conn->query($sqlUpdateEndorsedToLogs) !== TRUE) {
+             echo "Error updating endorsed_to column in Clinic_logs: " . $conn->error;
+         }
+ 
+         // Update status column in the 'accounting' table and display table
+         $sqlUpdateStatusAndDisplay = "UPDATE Clinic, display
+         SET Clinic.status = 1,
+             display.status = 1
+         WHERE Clinic.queue_number = '$selectedQueueNumber'
+             AND display.queue_number = '$selectedQueueNumber'
+             AND display.officeName = 'Clinic'";
+ 
+         if ($conn->query($sqlUpdateStatusAndDisplay) !== TRUE) {
+             echo "Error updating status and display table: " . $conn->error;
+         }
+ 
+         // Delete the data from the 'accounting' table
+         $sqlDeleteFromAccounting = "DELETE FROM Clinic WHERE queue_number = '$selectedQueueNumber'";
+ 
+         // Execute the delete query for the 'accounting' table
+         if ($conn->query($sqlDeleteFromAccounting) !== TRUE) {
+             echo "Error deleting data from accounting table: " . $conn->error;
+         }
+ 
+         // Insert data into queue_logs table
+         $sqlInsertIntoQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+             VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'Clinic', '$selectedRemarks', '$selectedOffice')";
+ 
+         // Execute the insert query for queue_logs table
+         if ($conn->query($sqlInsertIntoQueueLogs) !== TRUE) {
+             echo "Error inserting data into queue_logs: " . $conn->error;
+         }
+
+         // Update status of the selected queue number in the queue table back to 0
+        $sqlUpdateQueueStatus = "UPDATE queue SET status = 0 WHERE queue_number = '$selectedQueueNumber'";
+        if ($conn->query($sqlUpdateQueueStatus) !== TRUE) {
+            echo "Error updating status in queue table: " . $conn->error;
         }
-
-        // Update status column in the 'assets' table and display table
-        $sqlUpdateStatusAndDisplay = "UPDATE clinic, display
-        SET clinic.status = 1,
-            display.status = 1
-        WHERE clinic.queue_number = '$selectedQueueNumber'
-            AND display.queue_number = '$selectedQueueNumber'
-            AND display.officeName = 'clinic'";
-
-        if ($conn->query($sqlUpdateStatusAndDisplay) !== TRUE) {
-            echo "Error updating status and display table: " . $conn->error;
-        }
-
-
-        // Insert data into queue_logs table
-        $sqlInsert = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
-        VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'CLINIC', '$selectedRemarks', '$selectedOffice')";
-        if (!$conn->query($sqlInsert)) {
-            echo "Error inserting into queue_logs: " . $conn->error;
-            }
-
-        // Delete the data from the 'assets' table
-        $sqlDeleteFromassets = "DELETE FROM clinic WHERE queue_number = '$selectedQueueNumber'";
-
-        // Execute the delete query for the 'assets' table
-        if ($conn->query($sqlDeleteFromassets) !== TRUE) {
-            echo "Error deleting data from clinic table: " . $conn->error;
-        }
-    } else {
-        echo "Error inserting data into clinic_logs table: " . $conn->error;
-    }
-} 
+     } else {
+         echo "Error inserting data into accounting_logs table: " . $conn->error;
+     }
+ } else {
+     echo "Invalid request method";
+ }
 }
-
 
 
 // Add this code at the beginning of your PHP script to define $selectedQueueNumber
 $selectedQueueNumber = isset($_POST['queue_number']) ? $_POST['queue_number'] : '';
 
-// Fetch data from the "clinic" table where status is 0 and availability is 0, ordered by timestamp in descending order
-$sqlclinic = "SELECT queue_number, timestamp, student_id, transaction, endorsed_from, remarks FROM clinic WHERE status = 0 AND availability = 0 ORDER BY timestamp DESC";
-$resultclinic = $conn->query($sqlclinic);
+// Fetch data from the "accounting" table where status is 0 and availability is 0, ordered by timestamp in descending order
+$sqlAccounting = "SELECT queue_number, timestamp, student_id, transaction, endorsed_from, remarks FROM Clinic WHERE status = 0 AND availability = 0 ORDER BY timestamp DESC";
+$resultAccounting = $conn->query($sqlAccounting);
 
-// Initialize an array to store the fetched clinic data
-$clinic_data = [];
+// Initialize an array to store the fetched accounting data
+$accounting_data = [];
 
-if ($resultclinic->num_rows > 0) {
-    while ($rowclinic = $resultclinic->fetch_assoc()) {
-        $clinic_data[] = $rowclinic;
+if ($resultAccounting->num_rows > 0) {
+    while ($rowAccounting = $resultAccounting->fetch_assoc()) {
+        $accounting_data[] = $rowAccounting;
     }
 }
 
 
 
 
-// Fetch data from the "queue" table where office is "clinic" and status is 0, ordered by timestamp in descending order
+// Fetch data from the "queue" table where office is "ACCOUNTING" and status is 0, ordered by timestamp in descending order
 $sqlQueue = "SELECT queue_number, student_id, timestamp, remarks, endorsed FROM queue WHERE office = 'A' AND status = 0 ORDER BY timestamp DESC";
 $resultQueue = $conn->query($sqlQueue);
 
@@ -186,8 +195,8 @@ if ($resultQueue->num_rows > 0) {
 }
 
 
-// Combine the data into a single array, with data from "clinic" at the top
-$combined_data = array_merge($clinic_data, $queue_data);
+// Combine the data into a single array, with data from "accounting" at the top
+$combined_data = array_merge($accounting_data, $queue_data);
 
 // Sort the combined data based on the queued time or date (assuming 'timestamp' is the key)
 usort($combined_data, function ($a, $b) {
@@ -203,7 +212,7 @@ if (isset($_POST['update_button'])) {
     $selectedQueueNumber = $_POST['queue_number'];
 
     // Update the database (replace 'your_table_name' and 'your_column_name' with your actual table and column names)
-    $sqlUpdate = "UPDATE clinic SET window = 1 WHERE queue_number = '$selectedQueueNumber'";
+    $sqlUpdate = "UPDATE Clinic SET window = 1 WHERE queue_number = '$selectedQueueNumber'";
 
     if ($conn->query($sqlUpdate) === TRUE) {
         echo "Database updated successfully!";
@@ -284,24 +293,26 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 </head>
 <header>
     <div class="header">
-        <img src="clinic/nu logo.webp" alt="Image" class="" style="max-height: auto; max-width: 10%; padding: 1%;">
+        <img src="assets/nu logo.webp" alt="Image" class="" style="max-height: auto; max-width: 10%; padding: 1%;">
         <div class="mt-4">
             <h1 class="fw-bolder text-light text-center">NU LAGUNA</h1>
             <h4 class="fw-bold text-light text-center">QUEUING SYSTEM</h4>
         </div>
         
         <!-- Display the full name in the header -->
-        <p id="greeting" class="fw-bold text-light text-center" style="margin-top: 3%;">Howdy, <?php echo $_SESSION['full_name']; ?>!</p>
+        <p id="greeting" class="fw-bold text-light text-center" style="margin-top: 3%;">Hi there, <?php echo $_SESSION['full_name']; ?>!</p>
         
-        <button class="icon" onclick="exit()"><p style="font-size:20px; margin-top: 60%;">Log Out</p></button>
+        <button class="icon" onclick="exit()"><p style="font-size:20px; margin-top: 60%;">Logout</p></button>
         
         <button class="round" id="newqueue" style="position: absolute; right: 0; margin-top:11%; margin-right:1%" onclick="openQue()">New Queue  <i class="fa fa-plus-square"></i></button>
         
         <!-- Include jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+         <!-- Your button -->
+         <button class="round" style="position: absolute; left: 80; margin-top:11%; margin-left:20%" onclick="returnToQueue()"><i class="fa fa-chevron-left"></i> Back to Queue</button>
         
-        <!-- Your button -->
-        <button class="round" style="position: absolute; left: 80; margin-top:11%; margin-left:20%" onclick="returnToQueue()"><i class="fa fa-chevron-left"></i> Back to Queue</button>
+       
     </div>
 </header>
 
@@ -366,7 +377,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
            font-family: sans-serif ;
         }
         .sidenav button {
-            width: 100%;
+            width: 650%;
             text-align: left;
             padding: 8px;
             background-color: transparent;
@@ -645,7 +656,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 
         .side_navtxt {
             background-color: #FFD41C;
-            padding: .1% 2.2% .1% 2.3%;
+            padding: .1% 4.4% .1% 4.4%;
             text-align: center;
             font-size: 24px;
             font-family: sans-serif;
@@ -738,7 +749,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 <div class="sidenav" id="sidenav">
 
     
-    <!-- Display queue numbers from both "queue" and "clinic" tables where status is 0 -->
+    <!-- Display queue numbers from both "queue" and "accounting" tables where status is 0 -->
     <?php foreach ($combined_data as $itemCombined): ?>
     <form method="post" action="" id="">
         <input type="hidden" name="queue_number" value="<?php echo $itemCombined['queue_number']; ?>">
@@ -775,14 +786,26 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
     $selectedTransaction = isset($_POST['transaction']) ? $_POST['transaction'] : '';
     $selectedEndorsed = isset($_POST['endorsed_from']) ? $_POST['endorsed_from'] : '';
 
-    // Update availability to 1 in the database
-    $sqlUpdateAvailability = "UPDATE clinic SET availability = 1 WHERE queue_number = '$selectedQueueNumber'";
-    if ($conn->query($sqlUpdateAvailability) !== TRUE) {
-        echo "Error updating availability: " . $conn->error;
-    }
+     // Retrieve the previously selected queue number from the session
+     $previouslySelectedQueueNumber = isset($_SESSION['previouslySelectedQueueNumber']) ? $_SESSION['previouslySelectedQueueNumber'] : null;
 
-    // Fetch the "endorsed" data from the "clinic" table
-    $sqlFetchEndorsed = "SELECT endorsed_from FROM clinic WHERE queue_number = '$selectedQueueNumber'";
+     // Update the "availability" column only for the selected queue number
+     $sqlUpdateAvailability = "UPDATE Clinic SET availability = 1 WHERE queue_number = '$selectedQueueNumber'";
+     $conn->query($sqlUpdateAvailability);
+ 
+     // Reset the "availability" column to 0 for the previously selected queue number
+     if ($previouslySelectedQueueNumber !== null && $previouslySelectedQueueNumber !== $selectedQueueNumber) {
+         $sqlResetAvailability = "UPDATE Clinic SET availability = 0 WHERE queue_number = '$previouslySelectedQueueNumber'";
+         $conn->query($sqlResetAvailability);
+     }
+ 
+     // Store the currently selected queue number in the session for future reference
+     $_SESSION['previouslySelectedQueueNumber'] = $selectedQueueNumber;
+
+     
+
+    // Fetch the "endorsed" data from the "accounting" table
+    $sqlFetchEndorsed = "SELECT endorsed_from FROM Clinic WHERE queue_number = '$selectedQueueNumber'";
     $resultEndorsed = $conn->query($sqlFetchEndorsed);
 
     if ($resultEndorsed->num_rows > 0) {
@@ -852,7 +875,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
     }
 
 
-        var countdownSeconds = 10; // Set the initial countdown value
+        var countdownSeconds = 5; // Set the initial countdown value
         var endButton = document.getElementById('endButton');
 
         function updateButtonCountdown() {
@@ -883,8 +906,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
                     var userWindow = xhr.responseText;
                     console.log("Fetched Window:", userWindow);
 
-                    // Now, you can use the fetched window value to update the clinic table
-                    updateClinicTable(userWindow);
+                    // Now, you can use the fetched window value to update the accounting table
+                    updateAccountingTable(userWindow);
                 }
             };
 
@@ -892,8 +915,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
             xhr.send();
         }
 
-        function updateClinicTable(userWindow) {
-            // Add your code to update the clinic table with the fetched window value
+        function updateAccountingTable(userWindow) {
+            // Add your code to update the accounting table with the fetched window value
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "UpdateClinicWindow.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -1110,6 +1133,7 @@ function closeEndorsementPopup() {
 
             <!-- Additional dropdown options for Admission -->
             <div id="admissionOptionsDropdownContainer" style="display: none;">
+               
                 </p>
             </div>
 
