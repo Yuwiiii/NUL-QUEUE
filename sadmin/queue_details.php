@@ -21,7 +21,7 @@ if (isset($_POST['queueNumber'])) {
     $html .= '<th>Office</th>';
     $html .= '<th>Timestamp</th>';
     $html .= '<th>Remarks</th>';
-    $html .= '<th>Endorsed From</th>';
+    $html .= '<th>Endorsed To</th>';
     $html .= '</tr>';
 
     // Add data rows

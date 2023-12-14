@@ -275,17 +275,26 @@ if ($rowTableName) {
 
                                             // Display header row
                                             echo '<tr class="header">';
-                                            while ($fieldInfo = mysqli_fetch_field($result)) {
-                                                echo '<th>' . $fieldInfo->name . '</th>';
-                                            }
+                                            echo '<th>Queue Number</th>';
+                                            echo '<th>Student ID</th>';
+                                            echo '<th>Transaction</th>';
+                                            echo '<th>Remarks</th>';
+                                            echo '<th>Endorsed From</th>';
+                                            echo '<th>Endorsed To</th>';
+                                            echo '<th>Time Started</th>';
+                                            echo '</tr>';
                                             echo '</tr>';
 
                                             // Display data rows
                                             while ($row = mysqli_fetch_assoc($result)) {
                                                 echo '<tr>';
-                                                foreach ($row as $value) {
-                                                    echo '<td>' . $value . '</td>';
-                                                }
+                                                echo '<td>' . $row['queue_number'] . '</td>';
+                                                echo '<td>' . $row['student_id'] . '</td>';
+                                                echo '<td>' . $row['transaction'] . '</td>';
+                                                echo '<td>' . $row['remarks'] . '</td>';
+                                                echo '<td>' . $row['endorsed_from'] . '</td>';
+                                                echo '<td>' . $row['endorsed_to'] . '</td>';
+                                                echo '<td>' . $row['timestamp'] . '</td>';
                                                 echo '</tr>';
                                             }
 
