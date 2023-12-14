@@ -26,16 +26,13 @@ if (isset($_POST['queueNumber'])) {
 
     // Add data rows
     while ($row = mysqli_fetch_assoc($result)) {
-        // Capitalize the first letter of 'endorsed'
-        $endorsed = ucfirst($row['endorsed']);
-
         $html .= '<tr>';
         $html .= '<td>' . $row['queue_number'] . '</td>';
         $html .= '<td>' . $row['student_id'] . '</td>';
         $html .= '<td>' . $row['office'] . '</td>';
         $html .= '<td>' . $row['timestamp'] . '</td>';
         $html .= '<td>' . $row['remarks'] . '</td>';
-        $html .= '<td>' . $endorsed . '</td>';
+        $html .= '<td>' . $row['endorsed'] . '</td>';
         $html .= '</tr>';
     }
 

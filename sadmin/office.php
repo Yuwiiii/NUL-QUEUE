@@ -275,26 +275,20 @@ if ($rowTableName) {
 
                                             // Display header row
                                             echo '<tr class="header">';
-                                            echo '<th>Queue Number</th>';
-                                            echo '<th>Student ID</th>';
-                                            echo '<th>Transaction</th>';
-                                            echo '<th>Remarks</th>';
-                                            echo '<th>Endorsed From</th>';
-                                            echo '<th>Time Started</th>';
-                                            echo '</tr>';
+                                            while ($fieldInfo = mysqli_fetch_field($result)) {
+                                                echo '<th>' . $fieldInfo->name . '</th>';
+                                            }
                                             echo '</tr>';
 
-                                          // Display data rows
+                                            // Display data rows
                                             while ($row = mysqli_fetch_assoc($result)) {
                                                 echo '<tr>';
-                                                echo '<td>' . ($row['queue_number'] ? $row['queue_number'] : 'None') . '</td>';
-                                                echo '<td>' . ($row['student_id'] ? $row['student_id'] : 'None') . '</td>';
-                                                echo '<td>' . ($row['transaction'] ? $row['transaction'] : 'None') . '</td>';
-                                                echo '<td>' . ($row['remarks'] ? $row['remarks'] : 'None') . '</td>';
-                                                echo '<td>' . ($row['endorsed_from'] ? $row['endorsed_from'] : 'None') . '</td>';
-                                                echo '<td>' . ($row['timestamp'] ? $row['timestamp'] : 'None') . '</td>';
+                                                foreach ($row as $value) {
+                                                    echo '<td>' . $value . '</td>';
+                                                }
                                                 echo '</tr>';
                                             }
+
                                             echo '</table>';
                                         } else {
                                             echo '<p>No data found for the selected office.</p>';
