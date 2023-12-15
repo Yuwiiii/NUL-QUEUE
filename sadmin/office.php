@@ -193,7 +193,7 @@ if ($rowTableName) {
                                             $officeTableName = $rowTableName['officeName'];
 
                                             // Fetch all columns for the selected office's table
-                                            $query = "SELECT * FROM  `" . $officeTableName . "_logs`";
+                                            $query = "SELECT * FROM  `" . $officeTableName . "_logs` WHERE DATE(timestamp) = CURDATE()";
                                             $result = mysqli_query($conn, $query);
 
                                             // Display the selected office information
@@ -342,7 +342,7 @@ if ($rowTableName) {
                             }
 
                             // Fetch all data for the selected office
-                            $queryData = "SELECT " . implode(', ', $columnsToSelect) . " FROM `$officeTableName`";
+                            $queryData = "SELECT " . implode(', ', $columnsToSelect) . " FROM `$officeTableName` ORDER BY timestamp DESC";
                             $resultData = mysqli_query($conn, $queryData);
 
                             // Display the selected office information
