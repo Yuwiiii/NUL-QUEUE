@@ -1,5 +1,25 @@
 
 
+// function submitStudentId() {
+//   var studentId = document.getElementById("studentId").value;
+//   var program = document.getElementById("program").value;
+
+//   if (studentId === "") {
+//       document.getElementById("error-message").style.display = "block";
+//       return;
+//   }
+
+//   // Set the student ID in local storage
+//   localStorage.setItem("studentId", studentId);
+//   localStorage.setItem("program", program);
+
+//   if (studentId === "") {
+//       return;
+//   }
+
+//   window.location.href = "nulqueue.php";
+// }
+
 function submitStudentId() {
   var studentId = document.getElementById("studentId").value;
   var program = document.getElementById("program").value;
@@ -17,7 +37,29 @@ function submitStudentId() {
       return;
   }
 
-  window.location.href = "nulqueue.php";
+    // Make an AJAX request to check the queue status
+    $.ajax({
+        type: "POST",
+        url: "check_student.php", // Replace with the actual PHP file name
+        data: { studentId: studentId },
+        dataType: "json",
+        success: function (response) {
+            if (response.status === 'error') {
+                // Display a pop-up or show a message indicating an ongoing queue
+                $('#ongoingQueueAlert').fadeIn();
+            } else {
+                // Set the student ID in local storage
+                localStorage.setItem("studentId", studentId);
+                localStorage.setItem("program", program);
+
+                // Redirect to the queue page
+                
+            }
+        },
+        error: function () {
+            window.location.href = "nulqueue.php";
+        }
+    });
 }
 
 // queue student
