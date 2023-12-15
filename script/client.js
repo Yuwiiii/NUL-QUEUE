@@ -53,7 +53,7 @@ function submitStudentId() {
                 $('#ongoingQueueAlert').fadeIn();
 
                 // Close the alert after 5 seconds (5000 milliseconds)
-                setTimeout(closeAlert, 5000);
+                setTimeout(closeAlert, 10000);
             } else {
                 // Set the student ID in local storage
                 localStorage.setItem("studentId", studentId);

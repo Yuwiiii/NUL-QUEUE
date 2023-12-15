@@ -341,8 +341,12 @@ if ($rowTableName) {
                                 }
                             }
 
+                            // Fetch sorting order and column from the URL parameters
+                            $sortOrder = isset($_GET['sort']) && ($_GET['sort'] === 'asc' || $_GET['sort'] === 'desc') ? $_GET['sort'] : 'desc';
+                            $orderColumn = isset($_GET['order']) ? $_GET['order'] : 'timestamp ' . $sortOrder;
+
                             // Fetch all data for the selected office
-                            $queryData = "SELECT " . implode(', ', $columnsToSelect) . " FROM `$officeTableName` ORDER BY timestamp DESC";
+                            $queryData = "SELECT " . implode(', ', $columnsToSelect) . " FROM `$officeTableName` ORDER BY $orderColumn";
                             $resultData = mysqli_query($conn, $queryData);
 
                             // Display the selected office information
@@ -355,7 +359,7 @@ if ($rowTableName) {
                             echo '<th>Transaction</th>';
                             echo '<th>Remarks</th>';
                             echo '<th>Status</th>';
-                            echo '<th>Timestamp</th>';
+                            echo '<th class="clickable-row">Timestamp ↑ ↓</th>';
                             echo '</tr>';
 
                             // Display data rows
@@ -418,38 +422,65 @@ if ($rowTableName) {
         <script src="chart.js"></script>
         <script src="../script/script.js"></script>
         <script>
-        // Function to handle row click
-        function handleRowClick(queueNumber, timestamp) {
-            // Use AJAX to fetch data for the specific queue number
-            $.ajax({
-                type: 'POST',
-                url: 'queue_details.php', // Replace with the actual path to your PHP script
-                data: { queueNumber: queueNumber,
-                        timestamp: timestamp
-                 },
-                success: function (response) {
-                    // Update modal content with the fetched data
-                    $('#queueModal .modal-body').html(response);
-                },
-                error: function (error) {
-                    console.error('Error fetching data:', error);
+            document.addEventListener('DOMContentLoaded', function () {
+                // Function to toggle sorting order and reload the table
+                function toggleSortOrder() {
+                    // Get the current URL
+                    var currentUrl = new URL(window.location.href);
+
+                    // Check the current sorting order
+                    var sortOrder = currentUrl.searchParams.get('sort') || 'desc';
+
+                    // Toggle sorting order
+                    sortOrder = sortOrder === 'desc' ? 'asc' : 'desc';
+
+                    // Update the URL with the new sorting order
+                    currentUrl.searchParams.set('sort', sortOrder);
+
+                    // Update the 'order' query parameter in the URL
+                    currentUrl.searchParams.set('order', 'timestamp ' + sortOrder);
+
+                    // Reload the page with the updated URL
+                    window.location.href = currentUrl.href;
                 }
+
+                // Add click event listener to the timestamp header
+                var timestampHeader = document.querySelector('.clickable-row');
+                timestampHeader.addEventListener('click', toggleSortOrder);
             });
-        }
+            // Function to handle row click
+            function handleRowClick(queueNumber, timestamp) {
+                // Use AJAX to fetch data for the specific queue number
+                $.ajax({
+                    type: 'POST',
+                    url: 'queue_details.php', // Replace with the actual path to your PHP script
+                    data: {
+                        queueNumber: queueNumber,
+                        timestamp: timestamp
+                    },
+                    success: function (response) {
+                        // Update modal content with the fetched data
+                        $('#queueModal .modal-body').html(response);
+                    },
+                    error: function (error) {
+                        console.error('Error fetching data:', error);
+                    }
+                });
+            }
 
-        // Add click event listener to rows with class 'clickable-row'
-        document.addEventListener("DOMContentLoaded", function () {
-            var rows = document.querySelectorAll('.clickable-row');
+            // Add click event listener to rows with class 'clickable-row'
+            document.addEventListener("DOMContentLoaded", function () {
+                var rows = document.querySelectorAll('.clickable-row');
 
-            rows.forEach(function (row) {
-                row.addEventListener('click', function () {
-                    var queueNumber = row.cells[0].innerText; // Assuming queue_number is in the first column
-                    var timestamp = row.cells[5].innerText; // Assuming timestamp is in the fourth column
-                    handleRowClick(queueNumber, timestamp);
+                rows.forEach(function (row) {
+                    row.addEventListener('click', function () {
+                        var queueNumber = row.cells[0].innerText; // Assuming queue_number is in the first column
+                        var timestamp = row.cells[5].innerText; // Assuming timestamp is in the fourth column
+                        handleRowClick(queueNumber, timestamp);
+                    });
                 });
             });
-        });
-    </script>
+        </script>
 </body>
 
 </html>

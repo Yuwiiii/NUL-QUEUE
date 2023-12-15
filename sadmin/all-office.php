@@ -44,6 +44,7 @@ include '../database.php';
                     </div>
                     <div class="table-container" style="max-height: 620px; overflow-y: scroll; overflow-x: auto;">
                         <?php
+                        $orderColumn = isset($_GET['order']) ? $_GET['order'] : 'DATE(timestamp) DESC, TIME(timestamp) DESC';
 
                         $query = "     SELECT
                         queue_number,
@@ -55,9 +56,7 @@ include '../database.php';
                     GROUP BY
                         queue_number,
                         DATE(timestamp)
-                    ORDER BY
-                    DATE(timestamp) DESC,
-                    TIME(timestamp) DESC;
+                        ORDER BY $orderColumn;
                         ";
 
 
@@ -71,7 +70,7 @@ include '../database.php';
                         echo '<th>Queue Number</th>';
                         echo '<th>Student ID</th>';
                         echo '<th>Office</th>';
-                        echo '<th>Timestamp</th>';
+                        echo '<th class="clickable-row timestamp-header">Timestamp ↑ ↓</th>';
                         echo '</tr>';
 
                         // Display data rows
@@ -132,6 +131,41 @@ include '../database.php';
     <script src="../script/script.js"></script>
     <!-- Inside the <script> tag at the end of your file -->
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Function to toggle sorting order and reload the table
+            function toggleSortOrder(column) {
+                // Get the current URL
+                var currentUrl = new URL(window.location.href);
+
+                // Check the current sorting order
+                var sortOrder = currentUrl.searchParams.get('sort') || 'desc';
+
+                // Toggle sorting order
+                sortOrder = sortOrder === 'desc' ? 'asc' : 'desc';
+
+                // Update the URL with the new sorting order and column
+                currentUrl.searchParams.set('sort', sortOrder);
+                currentUrl.searchParams.set('order', column + ' ' + sortOrder);
+
+                // Reload the page with the updated URL
+                window.location.href = currentUrl.href;
+            }
+
+            // Add click event listener to the timestamp header
+            var timestampHeader = document.querySelector('.timestamp-header');
+
+            // Create up and down icons using Bootstrap classes
+            var sortIcon = document.createElement('i');
+            sortIcon.className = 'bi bi-sort';
+
+            // Add icon to the timestamp header
+            timestampHeader.appendChild(sortIcon);
+
+            // Add click event listener to the timestamp header
+            timestampHeader.addEventListener('click', function () {
+                toggleSortOrder('timestamp');
+            });
+        });
         // Function to handle row click
         function handleRowClick(queueNumber, timestamp) {
             // Use AJAX to fetch data for the specific queue number
