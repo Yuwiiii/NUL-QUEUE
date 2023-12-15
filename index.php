@@ -72,13 +72,17 @@
             </div>
         </div>
     </div> -->
-
+    <!-- Add this alert div at the top of your HTML body -->
 
     <!-- modals -->
     <div class="modal fade" id="exStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header d-block border-0 pb-0">
+                <div class="alert alert-warning fade show text-center" role="alert" id="ongoingQueueAlert"
+                    style="display: none;">
+                    You have an ongoing queue. Please wait for your turn.
+                </div>
                     <h1 class="modal-title fs-4 text-center custom-bold custom-primary-color" id="modalTitle2">
                         EXISTING STUDENT</h1>
                     <p class="modal-secondary fst-italic text-center custom-primary-color p-0 m-0">Please select your
