@@ -56,7 +56,8 @@ include '../database.php';
                         queue_number,
                         DATE(timestamp)
                     ORDER BY
-                        DATE(timestamp) DESC
+                    DATE(timestamp) DESC,
+                    TIME(timestamp) DESC;
                         ";
 
 
@@ -137,9 +138,10 @@ include '../database.php';
             $.ajax({
                 type: 'POST',
                 url: 'queue_details.php', // Replace with the actual path to your PHP script
-                data: { queueNumber: queueNumber,
-                        timestamp: timestamp
-                 },
+                data: {
+                    queueNumber: queueNumber,
+                    timestamp: timestamp
+                },
                 success: function (response) {
                     // Update modal content with the fetched data
                     $('#queueModal .modal-body').html(response);
