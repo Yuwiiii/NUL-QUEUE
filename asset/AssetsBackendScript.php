@@ -1,4 +1,7 @@
 <?php
+include '../database.php';
+
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $queueNumber = $_POST['queue_number'];
     $timestamp = $_POST['timestamp'];
@@ -11,19 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $transaction = $_POST['transaction'];
     $remarks = isset($_POST['remarks']) ? $_POST['remarks'] : '';
 
-    // Database credentials
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $database = "queuing_system";
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $database);
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
 
     // Insert data into assets_logs table
     $sqlInsertAssetsLogs = "INSERT INTO assets_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks, endorsed_to) 
@@ -31,8 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($conn->query($sqlInsertAssetsLogs) === TRUE) {
         // Insert data into queue_logs table after successful insertion into assets_logs
-        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, student_id, office, remarks, endorsed) 
-                               VALUES ('$queueNumber', '$studentID', 'Assets', '$remarks', 'Completed')";
+        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+                               VALUES ('$queueNumber', '$timestamp', '$studentID', 'Assets', '$remarks', 'Completed')";
 
         if ($conn->query($sqlInsertQueueLogs) !== TRUE) {
             echo "Error inserting data into queue_logs: " . $conn->error;

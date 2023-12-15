@@ -1,18 +1,6 @@
 <?php
+include '../database.php';
 
-// Include your database connection code here
-$db_host = "localhost"; // Change to your database host
-$db_username = "root"; // Change to your database username
-$db_password = ""; // Change to your database password
-$db_name = "queuing_system"; // Change to your database name
-
-// Create a connection to the database
-$conn = new mysqli($db_host, $db_username, $db_password, $db_name);
-
-// Check if the connection was successful
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 if (isset($_POST['queue_number'])) {
     $selectedQueueNumber = $_POST['queue_number'];
