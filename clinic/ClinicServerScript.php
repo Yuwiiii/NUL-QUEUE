@@ -1,19 +1,6 @@
 
 <?php
-
-// Database credentials
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "queuing_system";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $database);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include '../database.php';
 
 // Check if the 'concernSql' parameter is set in the POST request
 if (isset($_POST['concernSql'])) {
