@@ -8,7 +8,7 @@ $previouslySelectedQueueNumber = isset($_SESSION['previouslySelectedQueueNumber'
 // Reset the "availability" column to 0 for the previously selected queue number
 if ($previouslySelectedQueueNumber !== null) {
 
-    $conn = new mysqli($servername, $username, $password, $database);
+
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
