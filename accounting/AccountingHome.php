@@ -1,18 +1,5 @@
 <?php
-// Database connection parameters
-$db_host = "localhost"; // Change to your database host
-$db_username = "root"; // Change to your database username
-$db_password = ""; // Change to your database password
-$db_name = "queuing_system"; // Change to your database name PAPALITAN PA TO SAMPLE LANG DAMI KASI DB MAY 1, 2, AT 3 HAHAHAH
-
-// Create a connection to the database
-$conn = new mysqli($db_host, $db_username, $db_password, $db_name);
-
-// Check if the connection was successful
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
+include '../database.php';
 session_start();
 
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
@@ -140,8 +127,8 @@ if ($resultFetchEndorsedFrom->num_rows > 0) {
          }
  
          // Insert data into queue_logs table
-         $sqlInsertIntoQueueLogs = "INSERT INTO queue_logs (queue_number, student_id, office, remarks, endorsed) 
-             VALUES ('$selectedQueueNumber', '$selectedStudentID', 'Accounting', '$selectedRemarks', '$selectedOffice')";
+         $sqlInsertIntoQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+             VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'Accounting', '$selectedRemarks', '$selectedOffice')";
  
          // Execute the insert query for queue_logs table
          if ($conn->query($sqlInsertIntoQueueLogs) !== TRUE) {
