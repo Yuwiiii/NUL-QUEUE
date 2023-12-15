@@ -10,7 +10,10 @@ if ($result) {
     $truncateSql = "TRUNCATE TABLE queue";
     $truncateResult = $conn->query($truncateSql);
 
-    if ($truncateResult) {
+    $truncateDisplaySql = "TRUNCATE TABLE display";
+    $truncateDisplayResult = $conn->query($truncateDisplaySql);
+
+    if ($truncateResult && $truncateDisplayResult) {
         echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'error' => 'Error truncating queue table: ' . $conn->error]);
