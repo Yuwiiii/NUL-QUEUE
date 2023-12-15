@@ -25,20 +25,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Insert data into accounting_logs table
-    $sqlInsertAccountingLogs = "INSERT INTO clinic_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks, endorsed_to) 
+    // Insert data into clinic_logs table
+    $sqlInsertClinicLogs = "INSERT INTO clinic_logs (queue_number, timestamp, student_id, endorsed_from, transaction, remarks, endorsed_to) 
             VALUES ('$queueNumber', '$timestamp', '$studentID', '$endorsedFrom', 'Payment', '$remarks', 'Completed')";
 
-    if ($conn->query($sqlInsertAccountingLogs) === TRUE) {
-        // Insert data into queue_logs table after successful insertion into accounting_logs
-        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, student_id, office, remarks, endorsed) 
-                               VALUES ('$queueNumber', '$studentID', 'Clinic', '$remarks', 'Completed')";
+    if ($conn->query($sqlInsertClinicLogs) === TRUE) {
+        // Insert data into queue_logs table after successful insertion into clinic_logs
+        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+                               VALUES ('$queueNumber', '$timestamp', '$studentID', 'Clinic', '$remarks', 'Completed')";
 
         if ($conn->query($sqlInsertQueueLogs) !== TRUE) {
             echo "Error inserting data into queue_logs: " . $conn->error;
         }
 
-        // Update status in the accounting table
+        // Update status in the clinic table
         $sqlUpdateStatus = "UPDATE clinic SET status = 1 WHERE queue_number = '$queueNumber'";
         if ($conn->query($sqlUpdateStatus) !== TRUE) {
             echo "Error updating status: " . $conn->error;
@@ -48,15 +48,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($conn->query($sqlUpdateDisplay) !== TRUE) {
                 echo "Error updating display table: " . $conn->error;
             } else {
-                // Query to delete the record from the accounting table
-                $sqlDeleteAccounting = "DELETE FROM clinic WHERE queue_number = '$queueNumber'";
-                if ($conn->query($sqlDeleteAccounting) !== TRUE) {
-                    echo "Error deleting record from accounting table: " . $conn->error;
+                // Query to delete the record from the clinic table
+                $sqlDeleteClinic = "DELETE FROM clinic WHERE queue_number = '$queueNumber'";
+                if ($conn->query($sqlDeleteClinic) !== TRUE) {
+                    echo "Error deleting record from clinic table: " . $conn->error;
+                } else {
+                    // Query to update the studentstatus column in the queue table
+                    $sqlUpdateQueue = "UPDATE queue SET studentstatus = 1 WHERE queue_number = '$queueNumber'";
+                    if ($conn->query($sqlUpdateQueue) !== TRUE) {
+                        echo "Error updating studentstatus in the queue table: " . $conn->error;
+                    }
                 }
             }
         }
     } else {
-        echo "Error inserting data into accounting_logs: " . $conn->error;
+        echo "Error inserting data into clinic_logs: " . $conn->error;
     }
 
     // Close connection

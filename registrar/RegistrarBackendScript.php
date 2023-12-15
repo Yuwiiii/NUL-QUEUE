@@ -31,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($conn->query($sqlInsertAccountingLogs) === TRUE) {
         // Insert data into queue_logs table after successful insertion into accounting_logs
-        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, student_id, office, remarks, endorsed) 
-                               VALUES ('$queueNumber', '$studentID', 'Registrar', '$remarks', 'Completed')";
+        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
+                               VALUES ('$queueNumber', '$timestamp', '$studentID', 'Registrar', '$remarks', 'Completed')";
 
         if ($conn->query($sqlInsertQueueLogs) !== TRUE) {
             echo "Error inserting data into queue_logs: " . $conn->error;
@@ -52,6 +52,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $sqlDeleteAccounting = "DELETE FROM registrar WHERE queue_number = '$queueNumber'";
                 if ($conn->query($sqlDeleteAccounting) !== TRUE) {
                     echo "Error deleting record from accounting table: " . $conn->error;
+                } else {
+                    // Query to update the studentstatus column in the queue table
+                    $sqlUpdateQueue = "UPDATE queue SET studentstatus = 1 WHERE queue_number = '$queueNumber'";
+                    if ($conn->query($sqlUpdateQueue) !== TRUE) {
+                        echo "Error updating studentstatus in the queue table: " . $conn->error;
+                    }
                 }
             }
         }
