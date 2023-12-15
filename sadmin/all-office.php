@@ -48,7 +48,7 @@ include '../database.php';
                         $query = "     SELECT
                         queue_number,
                         MAX(student_id) AS student_id,
-                        MAX(office) AS office,
+                        office,
                         MAX(timestamp) AS timestamp
                     FROM
                         queue_logs
