@@ -65,24 +65,21 @@ $result = $conn->query($sql);
                         echo '</div>';
                         // echo '<div class="' . $officeName . '-queue-container" id="' . $officeName . 'QueueContainer">';
 
-                        if ($officeDataResult->num_rows > 0) {
+
                             // echo '<div class="' . $officeName . '-queue queue">'; // Open the queue div once
                             echo '<div class="' . $officeName . '-queue queue" id="' . $officeName . 'QueueContainer">';
 
-                            while ($officeRow = $officeDataResult->fetch_assoc()) {
-                                $window = $officeRow["window"];
-                                $queueNumber = $officeRow["queue_number"];
-
                                 echo '<h2 class="queue-text">' . $window . ': ' . $queueNumber . '</h2>';
-                            }
+
 
                             echo '</div>'; // Close the queue div
-                        } else {
-                            // Display an empty queue container if no data is found for the current office
-                            echo '<div class="' . $officeName . '-queue queue">';
-                            echo '<h2 class="queue-text">-</h2>';
-                            echo '</div>';
-                        }
+ 
+                        // else {
+                        //     // Display an empty queue container if no data is found for the current office
+                        //     echo '<div class="' . $officeName . '-queue queue">';
+                        //     echo '<h2 class="queue-text">-</h2>';
+                        //     echo '</div>';
+                        // }
 
                         //echo '</div>'; // Close queue container
                         echo '</div>'; // Close office container
@@ -146,7 +143,7 @@ $result = $conn->query($sql);
         // Fetch queue data on page load
         fetchQueueData();
 
-        setInterval(fetchQueueData, 5000);
+        setInterval(fetchQueueData, 3000);
 
         //FOR PENDING QUEUE
         function fetchPendingQueue() {
@@ -162,7 +159,7 @@ $result = $conn->query($sql);
         // Fetch pending queue data on page load
         fetchPendingQueue();
 
-        setInterval(fetchPendingQueue, 5000);
+        setInterval(fetchPendingQueue, 3000);
     </script>
     <script src="script/displayscript.js"></script>
 </body>
