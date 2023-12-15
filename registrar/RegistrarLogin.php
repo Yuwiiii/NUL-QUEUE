@@ -1,4 +1,5 @@
 <?php
+include '../database.php';
 session_start();
 
 // Check if the user is already logged in, and redirect to RegistrarHome.php if necessary
@@ -7,13 +8,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     exit();
 }
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "queuing_system";
 
-// Create a connection
-$conn = new mysqli($servername, $username, $password, $database);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
