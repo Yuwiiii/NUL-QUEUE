@@ -140,8 +140,8 @@ if ($resultFetchEndorsedFrom->num_rows > 0) {
          }
  
          // Insert data into queue_logs table
-         $sqlInsertIntoQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
-             VALUES ('$selectedQueueNumber', '$selectedTimestamp', '$selectedStudentID', 'Accounting', '$selectedRemarks', '$selectedOffice')";
+         $sqlInsertIntoQueueLogs = "INSERT INTO queue_logs (queue_number, student_id, office, remarks, endorsed) 
+             VALUES ('$selectedQueueNumber', '$selectedStudentID', 'Accounting', '$selectedRemarks', '$selectedOffice')";
  
          // Execute the insert query for queue_logs table
          if ($conn->query($sqlInsertIntoQueueLogs) !== TRUE) {

@@ -48,9 +48,10 @@ function insertQueueToTables($tabledata)
 
     // Build the SQL query
     $sql = "INSERT INTO $office (queue_number, student_id, endorsed_from, transaction) VALUES ('$queueNumber', '$studentId', 'Kiosk', '$transaction')";
+    $sql2 = "INSERT INTO queue_logs (queue_number, student_id, office, endorsed) VALUES ('$queueNumber', '$studentId', '$office', 'Kiosk')";
 
     // Execute the query
-    if ($conn->query($sql) === TRUE) {
+    if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE) {
         return true;
     } else {
         return false;
