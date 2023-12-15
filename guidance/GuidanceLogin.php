@@ -1,4 +1,5 @@
 <?php
+include '../database.php';
 session_start();
 
 // Check if the user is already logged in, and redirect to AccountingHome.php if necessary
@@ -6,14 +7,6 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     header('Location: GuidanceHome.php'); // Redirect to the dashboard or another page
     exit();
 }
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "queuing_system";
-
-// Create a connection
-$conn = new mysqli($servername, $username, $password, $database);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
