@@ -21,8 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($conn->query($sqlInsertGuidanceLogs) === TRUE) {
         // Insert data into queue_logs table after successful insertion into guidance_logs
-        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, timestamp, student_id, office, remarks, endorsed) 
-                               VALUES ('$queueNumber', '$timestamp', '$studentID', 'Guidance', '$remarks', 'Completed')";
+        $sqlInsertQueueLogs = "INSERT INTO queue_logs (queue_number, student_id, office, remarks, endorsed) 
+                               VALUES ('$queueNumber', '$studentID', 'Guidance', '$remarks', 'Completed')";
 
         if ($conn->query($sqlInsertQueueLogs) !== TRUE) {
             echo "Error inserting data into queue_logs: " . $conn->error;
