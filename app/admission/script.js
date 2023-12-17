@@ -10,7 +10,7 @@ let academicsCollegeSelected = 'SCS';
 let isDoneButtonOnCooldown = false;
 let latestPromise;
 
-const COOLDOWN = 8000;
+const COOLDOWN = 80000;
   
 //adjustment sa class 
 function refreshByInterval() {
