@@ -157,7 +157,10 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
           <!--Start of info-->
         <h1 id="info-queue-number">Welcome!</h1>
         <div class="time-div">
-            <p><i id="info-queue-time">please select queue number</i></p>
+            <p><i id="info-queue-time">please select queue number</i></p> 
+            <div id="timer-container" style="display: none;">
+            <p id="timer">Timer: 60 seconds</p>
+            </div>
             <p hidden><i id="info-queue-timestamp">please select queue number</i></p>
         </div>
         <br /><br />
@@ -189,7 +192,7 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
           <div class="btn-div">
             <button onclick="notifyFront()"><i class="fa-solid fa-bell"></i>NOTIFY</button>
             <button id="endorseButton"><i class="fa-solid fa-paper-plane"></i>ENDORSE</button>
-            <button id="end-button"><i class="fa-solid fa-times-circle"></i>END</button>
+            <button id="end-button" disabled><i class="fa-solid fa-times-circle"></i>END</button>
           </div>
         </div>
         <!--End of info-div-->

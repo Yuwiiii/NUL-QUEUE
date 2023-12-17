@@ -47,6 +47,11 @@ function updateAvailabilityIcon() {
 }
 
 function fetchInfo(queueNumber) {
+  // Nilagay kasi may bug na kapag natapos timer after notify, 
+  // pwedeng ma-end transaction ibang queue number. kaya eto, ma-disable ulit
+  // kapag lumipat kahit tapos na timer.
+  $("#end-button").prop("disabled", true); 
+
   // Send an AJAX request to fetch data for the clicked queue_number
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
@@ -125,6 +130,32 @@ function fetchInfo(queueNumber) {
     const confirmEndYesButton = document.getElementById('confirm-end-yes-btn');
     const confirmEndNoButton = document.getElementById('confirm-end-no-btn');
 
+// // Add a click event listener to the 'END' button
+// $("#end-button").on("click", function () {
+//   // Check if there is data in the info-div
+//   var isInfoDivEmpty =
+//       $("#info-queue-number").text().trim() === "Welcome!" &&
+//       $("#info-queue-time").text().trim() === "please select queue number" &&
+//       $("#info-student").text().trim() === "" &&
+//       $("#info-transaction").text().trim() === "" &&
+//       $("#info-endorse").text().trim() === "" &&
+//       $("#info-remarks").text().trim() === "";
+
+//   if (isInfoDivEmpty) {
+//       $("#select-queue-modal").css("display", "flex");
+//   } else {
+//       $("#end-button").prop("disabled", true);      
+//       $("#wait-modal").css("display", "flex");
+//       setTimeout(function() {
+//         $("#end-button").prop("disabled", false);
+//         $("#wait-modal").css("display", "none");
+//       }, 120000);
+//       setTimeout(function() {
+//         confirmEndModal.style.display = 'flex';
+//       }, 120000);
+//   }
+// });
+
 // Add a click event listener to the 'END' button
 $("#end-button").on("click", function () {
   // Check if there is data in the info-div
@@ -141,20 +172,21 @@ $("#end-button").on("click", function () {
   } else {
       $("#end-button").prop("disabled", true);      
       $("#wait-modal").css("display", "flex");
-      setTimeout(function() {
-        $("#end-button").prop("disabled", false);
-        $("#wait-modal").css("display", "none");
-      }, 120000);
-      setTimeout(function() {
-        confirmEndModal.style.display = 'flex';
-      }, 120000);
+      
+      // Code without delay
+      $("#end-button").prop("disabled", false);
+      $("#wait-modal").css("display", "none");
+      confirmEndModal.style.display = 'flex';
   }
 });
+
 
 // Add a click event listener to the Yes button in the select-queue-modal
 $("#select-queue-yes-btn").on("click", function () {
   // Close the 'Please select a queue number first!' modal
   $("#select-queue-modal").css("display", "none");
+  // Disable the "End" button again after processing
+  $("#end-button").prop("disabled", true);
 });
     // Add a click event listener to the Yes button in the confirmation modal
     confirmEndYesButton.addEventListener('click', function () {
@@ -204,6 +236,8 @@ $("#select-queue-yes-btn").on("click", function () {
         // Close the confirmation modal without performing the 'END' action
         confirmEndModal.style.display = 'none';
     });
+
+    
 });
 
 // REASON MODAL START
@@ -406,6 +440,7 @@ $(document).ready(function () {
 
 // For NOTIFY button
 let currentQueueNumber;
+let notificationTimer;
 
 function notifyFront() {
   // Get the queuenumber from somewhere, e.g., an input field or a variable
@@ -427,7 +462,41 @@ function notifyFront() {
       $("#statusModal").css("display", "flex");
       $("#statusMessage").text("This queue number will be displayed on the queuing screen.");
   }
+  // Store the timer interval ID in a variable accessible outside the setInterval scope
+  var timerInterval;
+
+  // Disable the "End" button
+  $("#end-button").prop("disabled", true);
+
+  // Show the timer container
+  $("#timer-container").show();
+
+  // Start a timer for 60 seconds (adjust as needed)
+  var remainingTime = 60; // Initial remaining time in seconds
+  timerInterval = setInterval(function () {
+      // Update the timer display
+      $("#timer").text("Timer: " + remainingTime + " seconds");
+
+      // Check if the timer has reached 0
+      if (remainingTime <= 0) {
+          // Enable the "End" button after the timer expires
+          $("#end-button").prop("disabled", false);
+          // Hide the timer container
+          $("#timer-container").hide();
+          // Clear the interval to stop the timer
+          clearInterval(timerInterval);
+      }
+
+      // Decrement the remaining time
+      remainingTime--;
+  }, 1000); // Update every 1 second (1000 milliseconds)
 }
+
+// Add an event listener to the "OK" button
+$("#ok-button").on("click", function () {
+  // Call the notifyFront function when the "OK" button is clicked
+  notifyFront();
+});
 
 function confirmStatus() {
   // Send an AJAX request to update the status
@@ -453,11 +522,16 @@ function confirmStatus() {
           $("#statusModal").css("display", "none");
       }
   });
+  // Clear the notification timer
+  clearTimeout(notificationTimer);
 }
 
 function cancelStatus() {
   // Hide the modal if the user cancels
   $("#statusModal").css("display", "none");
+
+  // Clear the notification timer
+  clearTimeout(notificationTimer);
 }
 
 function updateProgramOptions() {
