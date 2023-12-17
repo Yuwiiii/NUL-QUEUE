@@ -53,7 +53,7 @@ if ($rowTableName) {
         mysqli_stmt_execute($stmtPending);
         $resultPending = mysqli_stmt_get_result($stmtPending);
         $rowPending = mysqli_fetch_assoc($resultPending);
-        $pendingCount = $rowPending['pending_count'];
+        $pendingCount2 = $rowPending['pending_count'];
 
         // FOR Count all rows in the table
         $sqlCustomerCount = "SELECT COUNT(*) AS customer_count FROM `$officeTableName`";
@@ -154,7 +154,7 @@ if ($rowTableName) {
                                 </svg>
 
                                 <h2 class="mt-2 me-5  fw-bold nu_color float-end" id="pending-accounting-count">
-                                    <?php echo $pendingCount; ?>
+                                    <?php echo $pendingCount2; ?>
                                 </h2>
                                 <p class="fs-5 mt-n4 nu_color float-end">PENDING</p>
 
@@ -358,7 +358,6 @@ if ($rowTableName) {
                             echo '<th>Student ID</th>';
                             echo '<th>Transaction</th>';
                             echo '<th>Remarks</th>';
-                            echo '<th>Status</th>';
                             echo '<th class="clickable-row">Timestamp ↑ ↓</th>';
                             echo '</tr>';
 
@@ -369,7 +368,6 @@ if ($rowTableName) {
                                 echo '<td>' . $row['student_id'] . '</td>';
                                 echo '<td>' . $row['transaction'] . '</td>';
                                 echo '<td>' . $row['remarks'] . '</td>';
-                                echo '<td>' . $row['status'] . '</td>';
                                 echo '<td>' . $row['timestamp'] . '</td>';
                                 echo '</tr>';
                             }
@@ -475,7 +473,7 @@ if ($rowTableName) {
                 rows.forEach(function (row) {
                     row.addEventListener('click', function () {
                         var queueNumber = row.cells[0].innerText; // Assuming queue_number is in the first column
-                        var timestamp = row.cells[5].innerText; // Assuming timestamp is in the fourth column
+                        var timestamp = row.cells[4].innerText; // Assuming timestamp is in the fourth column
                         handleRowClick(queueNumber, timestamp);
                     });
                 });
