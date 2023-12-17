@@ -23,7 +23,7 @@
 
       </div>
       <div class="col-8 p-5">
-        <h4 class="fst-italic fs-3 p-5 fw-bold text-center nu_color">Admin Office</h4>
+        <h4 class="fst-italic fs-3 p-5 fw-bold text-center nu_color">Admission Office</h4>
 
         <!-- log in page goes here-->
 

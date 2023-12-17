@@ -118,7 +118,7 @@ border-radius: 3px;
 padding-left: 8px;
 }
 
-#password{
+#password, #username{
 width: 300px;
 height: 30px;
 border: none;

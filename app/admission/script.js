@@ -8,8 +8,9 @@ const USER_ID = $("#user-data").data("user-id");
 const USERNAME = $("#user-data").data("user-name");
 let academicsCollegeSelected = 'SCS';
 let isDoneButtonOnCooldown = false;
+let latestPromise;
 
-const TWO_MINUTES = 160000;
+const COOLDOWN = 8000;
   
 //adjustment sa class 
 function refreshByInterval() {
@@ -277,47 +278,7 @@ $("#college").on('change', function () {
               $('#secondModal').modal('hide');
 
               $("#queue-number").data("key", "");
-
-              isDoneButtonOnCooldown = true;
-
-              setTimeout(() => {
-                isDoneButtonOnCooldown = false;
-              }, TWO_MINUTES);
-
-              let timerInterval;
-              $("#transaction-complete-btn").prop("disabled", true);
-              Swal.fire({
-                title: "Finish transaction cooldown!",
-                html: "Can perform finish operation after <b></b> seconds.",
-                timer: TWO_MINUTES,
-                toast: true,
-                position: 'top-end',
-                timerProgressBar: true,
-                showCancelButton: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                  Swal.showLoading();
-                  const timer = Swal.getPopup().querySelector("b");
-                  timerInterval = setInterval(() => {
-                    const remainingTime = Math.ceil(Swal.getTimerLeft() / 1000); // Convert milliseconds to seconds
-                    timer.textContent = `${remainingTime}`;
-                  }, 100);
-                },
-                willClose: () => {
-                  clearInterval(timerInterval);
-                }
-        
-              }).then((result) => {
-                $("#transaction-complete-btn").prop("disabled", false);
-                /* Read more about handling dismissals below */
-                if (result.dismiss === Swal.DismissReason.timer) {
-                  console.log("I was closed by the timer");
-                }
-              });
             }
-
-      
-
           })
       }}
     })
@@ -339,7 +300,7 @@ async function insertQueueToDisplayTable(data) {
           reject(false);
         }
       },
-      error: function (xhr, status, error) {
+      error: function (status, error) {
         console.error("AJAX error:", status, error);
       },
     });
@@ -384,6 +345,7 @@ async function getQueue(office) {
               $("#queue-number").data("key", "active");
 
               console.log(clickedQueueNumber)
+              doneButtonCooldown();
             });
 
             // Append the created element
@@ -399,6 +361,57 @@ async function getQueue(office) {
         reject("AJAX error");
       },
     });
+  });
+}
+
+function doneButtonCooldown () {
+  isDoneButtonOnCooldown = true;
+
+  const cooldownPromise = new Promise((resolve, rejects) => {
+    setTimeout(() => {
+      isDoneButtonOnCooldown = false;
+      resolve(true);
+    })
+  })
+
+  latestPromise = cooldownPromise;
+
+  let timerInterval;
+
+  if (isDoneButtonOnCooldown) {
+    $("#transaction-complete-btn").prop("disabled", true);
+  }
+
+  Swal.fire({
+    title: "Finish transaction cooldown!",
+    html: "Can perform finish operation after <b></b> seconds.",
+    timer: COOLDOWN,
+    toast: true,
+    position: 'top-end',
+    timerProgressBar: true,
+    showCancelButton: false,
+    showConfirmButton: false,
+    didOpen: () => {
+      Swal.showLoading();
+      const timer = Swal.getPopup().querySelector("b");
+      timerInterval = setInterval(() => {
+        const remainingTime = Math.ceil(Swal.getTimerLeft() / 1000); // Convert milliseconds to seconds
+        timer.textContent = `${remainingTime}`;
+      }, 100);
+    },
+    willClose: () => {
+      clearInterval(timerInterval);
+    }
+
+  }).then((result) => {
+    if (cooldownPromise === latestPromise) {
+      $("#transaction-complete-btn").prop("disabled", false);
+
+      if (result.dismiss === Swal.DismissReason.timer) {
+        console.log("I was closed by the timer");
+      }
+    }
+   
   });
 }
 
