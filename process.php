@@ -4,6 +4,7 @@
 // clone data to admission table.
 function insertQueueToAdmission($data)
 {
+    date_default_timezone_set('Asia/Manila');
     global $conn;
     $studentId = $data['studentId'];
     $program = $data['program'] ?? null;
@@ -14,8 +15,9 @@ function insertQueueToAdmission($data)
     $endorsed = 'Kiosk';
 
     $sql = "INSERT INTO admission (queue_number, student_id, timestamp, transaction, remarks, program, endorsed_from) VALUES ('$queueNumber', '$studentId', '$timeStamp', '$transaction', '$remarks', '$program', '$endorsed')";
+    $sql2 = "INSERT INTO queue_logs (queue_number, student_id, office, endorsed) VALUES ('$queueNumber', '$studentId', 'admission', 'Kiosk')";
 
-    if ($conn->query($sql) === TRUE) {
+    if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE) {
         return true;
     } else {
         return false;

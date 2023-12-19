@@ -61,7 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             }
 
             $queueSql = "INSERT INTO queue (student_id, program, queue_number, office, endorsed) VALUES ('$studentId', '$program_queue', '$queueNumber', '$office', '$endorsed')";
-            if ($conn->query($queueSql) === TRUE) {
+            $queuelogssql = "INSERT INTO queue_logs (queue_number, student_id, office, endorsed) VALUES ('$queueNumber', '$studentId', '$office', 'Kiosk')";
+            if ($conn->query($queueSql) === TRUE && $conn->query($queuelogssql) === TRUE) {
                 echo json_encode(["success" => true, "queue_number" => $queueNumber]);
             } else {
                 echo json_encode(["success" => false, "message" => "Error inserting into queue table: " . $conn->error]);
