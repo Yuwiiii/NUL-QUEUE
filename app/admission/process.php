@@ -202,9 +202,12 @@ function finishTransaction($post_data) {
 
   $id = $data['id'];
 
-  $updateQueueQuery = "UPDATE queue SET status = 1 WHERE id = '$id'";
+  $updateQueueQuery = "UPDATE queue SET status = 1, studentstatus = 1 WHERE id = '$id'";
+  mysqli_query($conn, $updateQueueQuery);
   $updateQueueQuery = "UPDATE $currentOffice SET status = 1 WHERE  queue_number = '$queue_number'";
-  $result = $conn->query($updateQueueQuery);
+  $result = mysqli_query($conn, $updateQueueQuery);
+
+
 
   $sql = "UPDATE display SET `window` = '$WINDOW', `status` = 1 WHERE queue_number = '$queue_number' AND officeName = '$CURRENT_OFFICE'";
   $res = mysqli_query($conn, $sql);
@@ -228,7 +231,7 @@ function insertQueueLog($data) {
   $timeout = date('Y-m-d H:i:s');
   $endorsed_from = $data['endorsed_from'];
   $transaction = $data['transaction'];
-  $status = $data['status'];
+  $status = 1;
 
   if ($currentOffice == "REGISTRAR") {
     $insertIntoQueueLogQuery = "INSERT INTO registrar_done (queue_number, student_id, remarks, timestamp, timeout, endorsed_from, transaction, status) VALUES ('$queue_number', '$student_id', '$remarks', '$timestamp', '$timeout', '$endorsed_from', '$transaction', $status)";
