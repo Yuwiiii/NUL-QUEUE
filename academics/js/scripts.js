@@ -46,6 +46,11 @@ function updateAvailabilityIcon() {
     });
 }
 
+
+
+
+
+// Updated fetchInfo function
 function fetchInfo(queueNumber) {
   // Nilagay kasi may bug na kapag natapos timer after notify, 
   // pwedeng ma-end transaction ibang queue number. kaya eto, ma-disable ulit
@@ -71,6 +76,8 @@ function fetchInfo(queueNumber) {
           document.getElementById('form-queue-timestamp').value = data.timestamp;
           document.getElementById('form-queue-endoresedfrom').value = data.endorse;
           // Add more code to update other elements if needed
+
+         
       }
   };
   xhr.open('POST', 'fetch_info.php', true);
@@ -79,6 +86,7 @@ function fetchInfo(queueNumber) {
   // Prevent the default button behavior
   event.preventDefault();
 }
+
 
   function logout() {
       $.ajax({
@@ -583,3 +591,29 @@ document.addEventListener('DOMContentLoaded', function () {
       waitModal.style.display = 'none';
   });
 });
+
+function returnQueue() {
+  // Get the queue number from the form-queue-number element
+  var queueNumber = document.getElementById('form-queue-number').value;
+
+  // Log the selected queue number
+  console.log('Selected Queue Number:', queueNumber);
+
+  // Use AJAX to update the 'academics_queue' availability status
+  $.ajax({
+      type: "POST",
+      url: "update_database.php",
+      data: { queue_number: queueNumber },
+      success: function(response) {
+          // Handle success if needed
+          console.log(response);
+
+          // Reload the page after a successful update
+          location.reload();
+      },
+      error: function(error) {
+          // Handle errors if any
+          console.error(error);
+      }
+  });
+}

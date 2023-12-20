@@ -114,22 +114,22 @@ body{
 .newque-div{
     width: 100%;
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     
 }
 
 .newque-div button{
     background-color: rgb(24, 143, 24);
     height: 50px;
-    width: 155px;
     border: none;
     color: white;
     font-size: 20px;
     cursor: pointer;
     margin-top: 12px;
     margin-right: 12px;
+    margin-left: 12px;
     border-radius: 5px;
-    
+    padding: 10px;
 }
 
 .newque-div i{

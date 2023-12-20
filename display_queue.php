@@ -23,10 +23,11 @@ $displayedProgram = [];
 
                     // Start here
 
-                    $getcourseDataSql = "SELECT pc.program, pc.course
-                        FROM program_chairs AS pc
-                        JOIN colleges AS c ON pc.program = c.acronym
-                        WHERE c.acronym = '$acronym'";
+                    $getcourseDataSql = "SELECT pc.program, pc.course, pc.full_name
+                    FROM program_chairs AS pc
+                    JOIN colleges AS c ON pc.program = c.acronym
+                    WHERE c.acronym = '$acronym'";
+
                     $getcourseDataSqlresult = $conn->query($getcourseDataSql);
                     $displayedCourses = [];
                     $courseCount = 0;
@@ -36,6 +37,7 @@ $displayedProgram = [];
 
         while ($row = $getcourseDataSqlresult->fetch_assoc()) {
             $course = $row["course"];
+            $full_name = $row["full_name"];
             $getqueuenumerDataSql = "SELECT aq.queue_number
                 FROM academics_queue AS aq 
                 JOIN program_chairs AS pc ON aq.concern = pc.full_name 
@@ -53,7 +55,7 @@ $displayedProgram = [];
                 }
             
                 echo "'>";
-                echo "<p><b>" . $course . ":</b></p>";
+                echo "<p><b>" . $course ." - ". $full_name .":</b></p>";
             
                 $courseQueueNumbers = []; // Initialize an array to store previous queue numbers for each course
 
