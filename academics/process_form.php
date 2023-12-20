@@ -30,8 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql3 = "INSERT INTO queue_logs (queue_number, student_id, endorsed, office, timestamp, remarks)
         VALUES ('$queuenumbercolumn', '$studentId', '$OfficeStr', '$academicsStr', '$timenow', '$remarks')";
 
-        // Add another query to update the status column in the 'queue' table
-        $sql4 = "UPDATE queue SET status = 0 WHERE queue_number = '$queuenumbercolumn'";
+        $sql4 = "DELETE FROM academics_queue WHERE queue_number = '$queuenumbercolumn'";
 
         if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE && $conn->query($sql3) === TRUE && $conn->query($sql4) === TRUE) {
             echo "Data inserted successfully";
