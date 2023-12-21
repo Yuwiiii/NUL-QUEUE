@@ -49,7 +49,7 @@ include '../database.php';
                         $query = "     SELECT
                         queue_number,
                         MAX(student_id) AS student_id,
-                        office,
+                        endorsed,
                         MAX(timestamp) AS timestamp
                     FROM
                         queue_logs
@@ -65,7 +65,7 @@ include '../database.php';
                         // Display the selected office information
                         echo '<table id="myTable" class="myTable" border="1">';
 
-                        // Display header row
+                                                // Display header row
                         echo '<tr class="header fixed-header">';
                         echo '<th>Queue Number</th>';
                         echo '<th>Student ID</th>';
@@ -76,12 +76,14 @@ include '../database.php';
                         // Display data rows
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo '<tr class="clickable-row" data-bs-toggle="modal" data-bs-target="#queueModal">';
-                            echo '<td>' . $row['queue_number'] . '</td>';
-                            echo '<td>' . $row['student_id'] . '</td>';
-                            echo '<td>' . $row['office'] . '</td>';
+                            echo '<td>' . ($row['queue_number']) . '</td>';
+                            echo '<td>' . ucfirst(strtolower($row['student_id'])) . '</td>';
+                            echo '<td>' . ucfirst(strtolower($row['endorsed'])) . '</td>';
                             echo '<td>' . $row['timestamp'] . '</td>';
                             echo '</tr>';
                         }
+
+                        
 
                         echo '</table>';
                         ?>

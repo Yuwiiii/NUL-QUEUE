@@ -773,23 +773,21 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
     $selectedTransaction = isset($_POST['transaction']) ? $_POST['transaction'] : '';
     $selectedEndorsed = isset($_POST['endorsed_from']) ? $_POST['endorsed_from'] : '';
 
-     // Retrieve the previously selected queue number from the session
-     $previouslySelectedQueueNumber = isset($_SESSION['previouslySelectedQueueNumber']) ? $_SESSION['previouslySelectedQueueNumber'] : null;
+    // Retrieve the previously selected queue number from the session
+    $previouslySelectedQueueNumber = isset($_SESSION['previouslySelectedQueueNumber']) ? $_SESSION['previouslySelectedQueueNumber'] : null;
 
-     // Update the "availability" column only for the selected queue number
-     $sqlUpdateAvailability = "UPDATE accounting SET availability = 1 WHERE queue_number = '$selectedQueueNumber'";
-     $conn->query($sqlUpdateAvailability);
- 
-     // Reset the "availability" column to 0 for the previously selected queue number
-     if ($previouslySelectedQueueNumber !== null && $previouslySelectedQueueNumber !== $selectedQueueNumber) {
-         $sqlResetAvailability = "UPDATE accounting SET availability = 0 WHERE queue_number = '$previouslySelectedQueueNumber'";
-         $conn->query($sqlResetAvailability);
-     }
- 
-     // Store the currently selected queue number in the session for future reference
-     $_SESSION['previouslySelectedQueueNumber'] = $selectedQueueNumber;
+    // Update the "availability" column only for the selected queue number in the "accounting" table
+    $sqlUpdateAvailability = "UPDATE accounting SET availability = 1 WHERE queue_number = '$selectedQueueNumber'";
+    $conn->query($sqlUpdateAvailability);
 
-     
+    // Reset the "availability" column to 0 for the previously selected queue number in the "accounting" table
+    if ($previouslySelectedQueueNumber !== null && $previouslySelectedQueueNumber !== $selectedQueueNumber) {
+        $sqlResetAvailability = "UPDATE accounting SET availability = 0 WHERE queue_number = '$previouslySelectedQueueNumber'";
+        $conn->query($sqlResetAvailability);
+    }
+
+    // Store the currently selected queue number in the session for future reference
+    $_SESSION['previouslySelectedQueueNumber'] = $selectedQueueNumber;
 
     // Fetch the "endorsed" data from the "accounting" table
     $sqlFetchEndorsed = "SELECT endorsed_from FROM accounting WHERE queue_number = '$selectedQueueNumber'";
@@ -818,49 +816,53 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
 
         <!-- Add this code within the PHP if statement -->
         <div id="confirmationModal" class="modal">
-        <div class="modal-content">
-        <p class="confirmation-message">Are you sure you want to notify?</p>
-        <div class="confirmation-buttons">
-        <button class="button confirm-button" onclick="confirmNotify()"><i class="fa fa-check"> YES </i></button>
-        <button class="button cancel-button" onclick="closeConfirmationModal()"><i class="fa fa-close"> NO </i></button>
-        </div>
-        </div>
+            <div class="modal-content">
+                <p class="confirmation-message">Are you sure you want to notify?</p>
+                <div class="confirmation-buttons">
+                    <button class="button confirm-button" onclick="confirmNotify()"><i class="fa fa-check"> YES </i></button>
+                    <button class="button cancel-button" onclick="closeConfirmationModal()"><i class="fa fa-close"> NO </i></button>
+                </div>
+            </div>
         </div>
 
-        
-
-        <!-- Endorse button -->
-        <button style="margin-left: 2%;" class="button" type="button" onclick="openEndorsementPopup()"><i class="fa fa-paper-plane"></i> ENDORSE</button>
+        <!-- Endorse button (disable it initially) -->
+        <button style="margin-left: 2%;" class="button" type="button" id="endorseButton" onclick="openEndorsementPopup()" disabled>
+            <i class="fa fa-paper-plane"></i> ENDORSE
+        </button>
 
         <!-- End button (disable it initially) -->
         <button id="endButton" style="margin-left: 2%;" class="button" type="button" onclick="openDoneEndorsementPopup()" disabled>
-            <i class="fa fa-times-circle"></i> END (0s)
+            <i class="fa fa-times-circle"></i> END (5s)
         </button>
     </div>
 
     <!-- JavaScript to update the button text and enable the button after a delay -->
     <script>
+        function openConfirmationModal() {
+            var modal = document.getElementById('confirmationModal');
+            modal.style.display = 'block';
+        }
 
-    function openConfirmationModal() {
-        var modal = document.getElementById('confirmationModal');
-        modal.style.display = 'block';
-    }
+        function closeConfirmationModal() {
+            var modal = document.getElementById('confirmationModal');
+            modal.style.display = 'none';
+        }
 
-    function closeConfirmationModal() {
-        var modal = document.getElementById('confirmationModal');
-        modal.style.display = 'none';
-    }
+        function confirmNotify() {
+            // Add logic for confirming notification here
 
-    function confirmNotify() {
-        // Add logic for confirming notification here
+            // Close the confirmation modal
+            closeConfirmationModal();
 
-        // Close the confirmation modal
-        closeConfirmationModal();
+            // Enable the Endorse button
+            document.getElementById('endorseButton').disabled = false;
 
-        // Perform the Notify action (replace this with your existing logic)
-        fetchUserWindowAndNotify();
-    }
+            // Start the countdown for the End button
+            updateButtonCountdown();
 
+            // Perform the Notify action (replace this with your existing logic)
+            fetchUserWindowAndNotify();
+        }
 
         var countdownSeconds = 5; // Set the initial countdown value
         var endButton = document.getElementById('endButton');
@@ -876,13 +878,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
                 endButton.innerHTML = '<i class="fa fa-times-circle"></i> END'; // Reset button text
             }
         }
-
-        // Start the countdown
-        updateButtonCountdown();
-    </script>
-    </div>
-
-    <script>
 
         function fetchUserWindowAndNotify() {
             var xhr = new XMLHttpRequest();
@@ -903,7 +898,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
         }
 
         function updateAccountingTable(userWindow) {
-            // Add your code to update the accounting table with the fetched window value
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "UpdateAccountingWindow.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -920,8 +914,9 @@ if (isset($_POST['action']) && $_POST['action'] === 'post_combined_data') {
             xhr.send(data);
         }
     </script>
-
 <?php endif; ?>
+
+
 
 <!-- Done Popup HTML -->
 <?php if (isset($_POST['show_details'])): ?>

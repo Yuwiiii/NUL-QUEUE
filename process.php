@@ -15,7 +15,7 @@ function insertQueueToAdmission($data)
     $endorsed = 'Kiosk';
 
     $sql = "INSERT INTO admission (queue_number, student_id, timestamp, transaction, remarks, program, endorsed_from) VALUES ('$queueNumber', '$studentId', '$timeStamp', '$transaction', '$remarks', '$program', '$endorsed')";
-    $sql2 = "INSERT INTO queue_logs (queue_number, student_id, office, endorsed) VALUES ('$queueNumber', '$studentId', 'admission', 'Kiosk')";
+    $sql2 = "INSERT INTO queue_logs (queue_number, student_id, office, endorsed) VALUES ('$queueNumber', '$studentId', 'Kiosk', 'Admission')";
 
     if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE) {
         return true;
@@ -50,7 +50,7 @@ function insertQueueToTables($tabledata)
 
     // Build the SQL query
     $sql = "INSERT INTO $office (queue_number, student_id, endorsed_from, transaction) VALUES ('$queueNumber', '$studentId', 'Kiosk', '$transaction')";
-    $sql2 = "INSERT INTO queue_logs (queue_number, student_id, office, endorsed) VALUES ('$queueNumber', '$studentId', '$office', 'Kiosk')";
+    $sql2 = "INSERT INTO queue_logs (queue_number, student_id, office, endorsed) VALUES ('$queueNumber', '$studentId', 'Kiosk', '$office')";
 
     // Execute the query
     if ($conn->query($sql) === TRUE && $conn->query($sql2) === TRUE) {

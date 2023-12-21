@@ -42,8 +42,7 @@ if ($result) {
 // para sa academics_queue
 $academicsQueueTableName = "academics_queue";
 
-$insertLogsSql = "INSERT INTO academics_logs (student_id, queue_number, timestamp, remarks, status)
-                  SELECT student_id, queue_number, timestamp, remarks, status FROM $academicsQueueTableName;";
+
 $insertLogsResult = $conn->query($insertLogsSql);
 
 if ($insertLogsResult) {

@@ -96,22 +96,8 @@
                     <li class="pt-1 all-office"><a href="all-office.php"
                             class="fw-bold text-light text-decoration-none">ALL OFFICES</a></li>
                     <?php
-
-                        $officeTableName = 'academics_queue';
-                        // FOR FETCHING THE PENDING QUEUE
-                        $sqlPending = "SELECT COUNT(*) AS pending_count FROM `$officeTableName` WHERE status = 0";
-                        $stmtPending = mysqli_prepare($conn, $sqlPending);
-                        mysqli_stmt_execute($stmtPending);
-                        $resultPending = mysqli_stmt_get_result($stmtPending);
-                        $rowPending = mysqli_fetch_assoc($resultPending);
-                        $pendingCount3 = $rowPending['pending_count'];
-                        // Pass the office name as a parameter in the URL
-                        echo '<li class="pt-1"><a href="academics-table.php" class="fw-bold text-light text-decoration-none">ACADEMICS <span class="badge text-bg-primary">' . $pendingCount3 . '</span></a></li>';
-
-                    ?>
-                    <?php
                     // Fetch office names from the offices table
-                    $query = "SELECT officeName FROM offices WHERE officeName != 'ACADEMICS'";
+                    $query = "SELECT officeName FROM offices";
                     $result = mysqli_query($conn, $query);
 
                     // Display each office name as a list item

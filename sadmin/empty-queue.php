@@ -1,10 +1,12 @@
 <?php
 @include '../database.php';
 
-$sql = "INSERT INTO queue_logs (student_id, queue_number, office, timestamp, status, remarks, endorsed)
-        SELECT student_id, queue_number, office, timestamp, status, remarks, endorsed FROM queue;";
+// Commenting out the INSERT INTO queue_logs
+// $sql = "INSERT INTO queue_logs (student_id, queue_number, office, timestamp, status, remarks, endorsed)
+//         SELECT student_id, queue_number, office, timestamp, status, remarks, endorsed FROM queue;";
 
-$result = $conn->query($sql);
+// Commented out the INSERT INTO queue_logs; keeping only the truncation part
+$result = true; // Initialize result variable
 
 if ($result) {
     $truncateSql = "TRUNCATE TABLE queue";

@@ -127,32 +127,34 @@ function endorse($post_data) {
   $status = 0;
 
   if ($office == "ACADEMICS") {
-    $concern = $data['concern'];
-    $program = $data['program'];
-    $sql = "SELECT course FROM program_chairs WHERE full_name = '$concern' ";
-    $sqlResult = $conn->query($sql);
-    if ($sqlResult->num_rows > 0) {
-      if ($programRow = $sqlResult->fetch_assoc()) {
-          // Convert to uppercase using strtoupper
-          $course = $programRow['course'];
-          $insertIntoOfficeQuery = "INSERT INTO academics_queue (queue_number, student_id, remarks, timestamp, endorsed_from, status, program, concern, course, transaction) VALUES ('$queue_number', '$student_id', '$remarks', '$time_stamp', '$endorsed_from', $status, '$program', '$concern', '$course', '$transaction')";
+      $concern = $data['concern'];
+      $program = $data['program'];
+      $sql = "SELECT course FROM program_chairs WHERE full_name = '$concern' ";
+      $sqlResult = $conn->query($sql);
+      if ($sqlResult->num_rows > 0) {
+          if ($programRow = $sqlResult->fetch_assoc()) {
+              // Convert to uppercase using strtoupper
+              $course = $programRow['course'];
+              $insertIntoOfficeQuery = "INSERT INTO academics_queue (queue_number, student_id, remarks, timestamp, endorsed_from, status, program, concern, course, transaction) VALUES ('$queue_number', '$student_id', '$remarks', '$time_stamp', '$endorsed_from', $status, '$program', '$concern', '$course', '$transaction')";
+          }
       }
-       
-  }
-   
   } else {
-    $insertIntoOfficeQuery = "INSERT INTO $office (queue_number, student_id, remarks, timestamp, endorsed_from, status, transaction) VALUES ('$queue_number', '$student_id', '$remarks', '$time_stamp', '$endorsed_from', $status, '$transaction')";
+      $insertIntoOfficeQuery = "INSERT INTO $office (queue_number, student_id, remarks, timestamp, endorsed_from, status, transaction) VALUES ('$queue_number', '$student_id', '$remarks', '$time_stamp', '$endorsed_from', $status, '$transaction')";
   }
-
 
   $result = $conn->query($insertIntoOfficeQuery);
 
- 
-
   setQueueStatus($id, 1, $queue_number);
 
-  $sql = "UPDATE display SET `window` = '$window', `status` = 1 WHERE queue_number = '$queue_number' AND officeName = '$CURRENT_OFFICE'";
-  $result = mysqli_query($conn, $sql);
+  // Update 'queue' table to set status to 0
+  $sqlUpdateQueue = "UPDATE queue SET status = 0 WHERE queue_number = '$queue_number'";
+
+  $resultUpdateQueue = mysqli_query($conn, $sqlUpdateQueue);
+
+  // Update 'display' table
+  $sqlUpdateDisplay = "UPDATE display SET `window` = '$window', `status` = 1 WHERE queue_number = '$queue_number' AND officeName = '$CURRENT_OFFICE'";
+
+  $resultUpdateDisplay = mysqli_query($conn, $sqlUpdateDisplay);
 
   insertQueueLog($data);
   insertToQueueLogTable($data, "endorse");
@@ -202,12 +204,14 @@ function finishTransaction($post_data) {
 
   $id = $data['id'];
 
-  $updateQueueQuery = "UPDATE queue SET status = 1, studentstatus = 1 WHERE id = '$id'";
-  mysqli_query($conn, $updateQueueQuery);
-  $updateQueueQuery = "UPDATE $currentOffice SET status = 1 WHERE  queue_number = '$queue_number'";
-  $result = mysqli_query($conn, $updateQueueQuery);
+  $updateQueueQuery = "UPDATE queue SET status = 1 WHERE id = '$id'";
+  $updateQueueQuery = "UPDATE $currentOffice
+  JOIN queue ON $currentOffice.queue_number = queue.queue_number
+  SET $currentOffice.status = 1, queue.studentstatus = 1, queue.status = 1
+  WHERE $currentOffice.queue_number = '$queue_number'";
 
 
+  $result = $conn->query($updateQueueQuery);
 
   $sql = "UPDATE display SET `window` = '$WINDOW', `status` = 1 WHERE queue_number = '$queue_number' AND officeName = '$CURRENT_OFFICE'";
   $res = mysqli_query($conn, $sql);
@@ -231,7 +235,7 @@ function insertQueueLog($data) {
   $timeout = date('Y-m-d H:i:s');
   $endorsed_from = $data['endorsed_from'];
   $transaction = $data['transaction'];
-  $status = 1;
+  $status = $data['status'];
 
   if ($currentOffice == "REGISTRAR") {
     $insertIntoQueueLogQuery = "INSERT INTO registrar_done (queue_number, student_id, remarks, timestamp, timeout, endorsed_from, transaction, status) VALUES ('$queue_number', '$student_id', '$remarks', '$timestamp', '$timeout', '$endorsed_from', '$transaction', $status)";
