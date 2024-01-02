@@ -51,9 +51,12 @@ function submitStudentId() {
             if (response.status === 'error') {
                 // Display a pop-up or show a message indicating an ongoing queue
                 $('#ongoingQueueAlert').fadeIn();
+                $('#queueNumber').text(response.queueNumber);
+                $('#exStudentError').modal('show');
+                $('#exStudent').modal('hide');
 
-                // Close the alert after 5 seconds (5000 milliseconds)
-                setTimeout(closeAlert, 10000);
+                // // Close the alert after 5 seconds (5000 milliseconds)
+                // setTimeout(closeAlert, 10000);
             } else {
                 // Set the student ID in local storage
                 localStorage.setItem("studentId", studentId);
@@ -68,6 +71,34 @@ function submitStudentId() {
         }
     });
 }
+
+function deleteStudentId() {
+    var studentId = localStorage.getItem("studentId");
+
+    $.ajax({
+        type: "POST",
+        url: "deletestudent.php",
+        data: { studentId: studentId },
+        dataType: "json",
+        success: function (response) {
+            if (response.status === 'success') {
+                $('#exStudentError').modal('hide');
+                $('#exStudent').modal('show');
+
+                // // Close the alert after 5 seconds (5000 milliseconds)
+                // setTimeout(closeAlert, 10000);
+            } else {
+                // Set the student ID in local storage
+                localStorage.setItem("studentId", studentId);
+                localStorage.setItem("program", program);
+            }
+        },
+        error: function () {
+            alert("An error occurred.");
+        }
+    });
+}
+
 
 // queue student
 function registerStudent() {

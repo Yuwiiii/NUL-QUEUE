@@ -79,10 +79,6 @@
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header d-block border-0 pb-0">
-                <div class="alert alert-warning fade show text-center" role="alert" id="ongoingQueueAlert"
-                    style="display: none;">
-                    You have an ongoing queue. Please wait for your turn.
-                </div>
                     <h1 class="modal-title fs-4 text-center custom-bold custom-primary-color" id="modalTitle2">
                         EXISTING STUDENT</h1>
                     <p class="modal-secondary fst-italic text-center custom-primary-color p-0 m-0">Please select your
@@ -126,6 +122,32 @@
                     <button type="button" class="btn btn-yes px-4 rounded" onclick="submitStudentId()"
                         id="doneButton">DONE</button>
                     <button type="button" class="btn btn-no px-4 rounded" data-bs-dismiss="modal">CANCEL</button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exStudentError" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header d-block border-0 pb-0">
+
+                    <h1 class="modal-title fs-4 text-center custom-bold custom-primary-color mb-2" id="modalTitle2">
+                        Existing Queue: <span id="queueNumber"> </span></h1>
+
+                    <div class="alert alert-warning fade show text-center" role="alert" id="ongoingQueueAlert"
+                        style="display: none;">
+                        You have an ongoing
+                        queue. Do you wish to cancel your current transaction?
+                    </div>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-center border-0">
+                    <button type="button" class="btn btn-yes px-4 rounded" onclick="deleteStudentId()"
+                        id="doneButton">YES</button>
+                    <button type="button" class="btn btn-no px-4 rounded" data-bs-dismiss="modal">NO</button>
 
 
                 </div>
