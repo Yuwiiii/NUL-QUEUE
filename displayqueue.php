@@ -1,7 +1,23 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['officeSelected'])) {
+    header("Location: selectdisplay.php");
+    exit();
+}
+
 @include 'database.php';
 
-$sql = "SELECT DISTINCT officeName FROM offices";
+// Retrieve the selected office from the session
+$officeSelected = $_SESSION['officeSelected'];
+
+// Modify the query based on the selected office
+if ($officeSelected == 'all') {
+    $sql = "SELECT DISTINCT officeName FROM offices";
+} else {
+    $sql = "SELECT DISTINCT officeName FROM offices WHERE officeName = '$officeSelected'";
+}
+
 $result = $conn->query($sql);
 
 ?>
@@ -13,8 +29,11 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Display Queue</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="styles/displayqueue.css">
     <link href='http://fonts.googleapis.com/css?family=' rel='stylesheet' type='text/css'>
 </head>
@@ -24,6 +43,30 @@ $result = $conn->query($sql);
 
         <!-- PENDING OF THE QUEUE STARTS -->
         <div class="pending-container">
+            <div class="pending-heading">
+                <form class="heading-text" action="validate_selection.php" method="post" id="officeForm">
+                    <select name="officeSelected" id="officeSelect" required>
+                        <!-- Add an option for "All Offices" -->
+                        <option value="all" <?php echo ($officeSelected == '*') ? 'selected' : ''; ?>>All Offices
+                        </option>
+
+                        <!-- Populate the dropdown with office names from the database -->
+                        <?php
+                        @include 'database.php';
+
+                        $sql = "SELECT DISTINCT officeName FROM offices";
+                        $resultdropdown = $conn->query($sql);
+
+                        if ($resultdropdown->num_rows > 0) {
+                            while ($row = $resultdropdown->fetch_assoc()) {
+                                $selected = ($row["officeName"] == $officeSelected) ? 'selected' : '';
+                                echo '<option value="' . $row["officeName"] . '" ' . $selected . '>' . $row["officeName"] . '</option>';
+                            }
+                        }
+                        ?>
+                    </select>
+                </form>
+            </div>
             <div class="pending-heading heading-container">
                 <h1 class="heading-text">NUMBER</h1>
             </div>
@@ -64,23 +107,23 @@ $result = $conn->query($sql);
                         echo '<h1 class="heading-text">' . $officeName . '</h1>';
                         echo '</div>';
                         // echo '<div class="' . $officeName . '-queue-container" id="' . $officeName . 'QueueContainer">';
+                
+
+                        // echo '<div class="' . $officeName . '-queue queue">'; // Open the queue div once
+                        echo '<div class="' . $officeName . '-queue queue" id="' . $officeName . 'QueueContainer">';
+
+                        echo '<h2 class="queue-text">' . $window . ': ' . $queueNumber . '</h2>';
 
 
-                            // echo '<div class="' . $officeName . '-queue queue">'; // Open the queue div once
-                            echo '<div class="' . $officeName . '-queue queue" id="' . $officeName . 'QueueContainer">';
-
-                                echo '<h2 class="queue-text">' . $window . ': ' . $queueNumber . '</h2>';
-
-
-                            echo '</div>'; // Close the queue div
- 
+                        echo '</div>'; // Close the queue div
+                
                         // else {
                         //     // Display an empty queue container if no data is found for the current office
                         //     echo '<div class="' . $officeName . '-queue queue">';
                         //     echo '<h2 class="queue-text">-</h2>';
                         //     echo '</div>';
                         // }
-
+                
                         //echo '</div>'; // Close queue container
                         echo '</div>'; // Close office container
                     }
@@ -89,7 +132,7 @@ $result = $conn->query($sql);
                 }
                 ?>
             </section>
-        
+
             <!-- OFFICES WITH QUEUE ENDS -->
         </div>
         <!-- SERVING OF THE QUEUE ENDS -->
@@ -101,7 +144,7 @@ $result = $conn->query($sql);
 
         const audio = new Audio('../nul-queue/sound/queue_notification.mp3');
         document.getElementById('playButton').addEventListener('click', () => {
-        audio.play();
+            audio.play();
         });
 
         let currentQueues = {};
@@ -111,7 +154,7 @@ $result = $conn->query($sql);
             $result->data_seek(0);
             while ($row = $result->fetch_assoc()) {
                 $officeName = $row["officeName"];
-            ?>
+                ?>
                 $.ajax({
                     url: 'fetch_queues.php',
                     type: 'POST',
@@ -121,7 +164,7 @@ $result = $conn->query($sql);
                     success: function (data) {
                         $('#<?php echo $officeName; ?>QueueContainer').html(data);
                         const newData = $('#<?php echo $officeName; ?>QueueContainer').children().first().text();
-                        
+
                         if (currentQueues['<?php echo $officeName; ?>'] !== undefined && currentQueues['<?php echo $officeName; ?>'] !== newData) {
                             console.log('Data changed for', '<?php echo $officeName; ?>');
                             console.log('Old data:', currentQueues['<?php echo $officeName; ?>']);
@@ -133,7 +176,7 @@ $result = $conn->query($sql);
 
                         // Update currentQueues with new data
                         currentQueues['<?php echo $officeName; ?>'] = newData;
-                        
+
                     }
                 });
             <?php } ?>
@@ -150,7 +193,7 @@ $result = $conn->query($sql);
             $.ajax({
                 url: 'fetch_pending_queue.php',
                 type: 'GET',
-                success: function(data) {
+                success: function (data) {
                     $('#pendingQueue').html(data);
                 }
             });
@@ -160,6 +203,13 @@ $result = $conn->query($sql);
         fetchPendingQueue();
 
         setInterval(fetchPendingQueue, 3000);
+
+        // Automatically submit the form when an option is selected
+        $(document).ready(function () {
+            $('#officeSelect').change(function () {
+                $('#officeForm').submit();
+            });
+        });
     </script>
     <script src="script/displayscript.js"></script>
 </body>
