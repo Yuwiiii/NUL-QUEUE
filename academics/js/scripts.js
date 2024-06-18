@@ -480,7 +480,7 @@ function notifyFront() {
   $("#timer-container").show();
 
   // Start a timer for 60 seconds (adjust as needed)
-  var remainingTime = 60; // Initial remaining time in seconds
+  var remainingTime = 5; // Initial remaining time in seconds
   timerInterval = setInterval(function () {
       // Update the timer display
       $("#timer").text("Timer: " + remainingTime + " seconds");

@@ -22,6 +22,8 @@ function submitStudentId() {
 
 // queue student
 function registerStudent() {
+    console.log("this is triggered")
+
     var studentId = localStorage.getItem("studentId");
     var program = localStorage.getItem("program");
     var office = document.getElementById("modalTitle1").innerText;
@@ -41,6 +43,8 @@ function registerStudent() {
             }
         },
         error: function () {
+            console.log('1🔴')
+
             alert("An error occurred.");
         }
     });
@@ -75,6 +79,8 @@ function registerGuest() {
             }
         },
         error: function () {
+            console.log('2🔴')
+
             alert("An error occurred.");
         }
     });
@@ -166,6 +172,8 @@ function insertAcads() {
             }
         },
         error: function () {
+            console.log('3🔴')
+
             alert("An error occurred.");
         }
     });

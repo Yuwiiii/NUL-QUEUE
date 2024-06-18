@@ -114,6 +114,8 @@
                         echo '<li class="pt-1"><a href="office.php?office=' . urlencode(str_replace(' ', '', $row['officeName'])) . '" class="fw-bold text-light text-decoration-none">' . $row['officeName'] . ' <span class="badge text-bg-primary">' . $pendingCount . '</span></a></li>';
 
                     }
+
+                    
                     ?>
                 </ul>
             </div>

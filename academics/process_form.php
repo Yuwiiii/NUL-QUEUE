@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         VALUES ('$queuenumbercolumn', '$studentId', '$endorsedFromStr', '$OfficeStr', '$timenow' , NOW(),'$transaction', '$remarks')";
 
         $sql3 = "INSERT INTO queue_logs (queue_number, student_id, endorsed, office, timestamp, remarks)
-        VALUES ('$queuenumbercolumn', '$studentId', '$OfficeStr', '$academicsStr', '$timenow', '$remarks')";
+        VALUES ('$queuenumbercolumn', '$studentId', '$OfficeStr', '$academicsStr', now(), '$remarks')";
 
         $sql4 = "DELETE FROM academics_queue WHERE queue_number = '$queuenumbercolumn'";
 

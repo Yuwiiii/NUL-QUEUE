@@ -255,15 +255,14 @@ function insertToQueueLogTable($data, $transaction_type) {
   $queue_number = $data['queue_number'];
   $student_id = $data['student_id'];
   $remarks = $data['remarks'];
-  $timestamp = $data['timestamp'];
   $endorsed_to = $data['endorse_to'] ?? '';
 
   $log_table = "queue_logs";
 
   if ($transaction_type == "endorse") {
-    $insertIntoQueueLogQuery = "INSERT INTO $log_table (student_id, queue_number, office, timestamp, remarks, endorsed) VALUES ('$student_id', '$queue_number', '$currentOffice', '$timestamp', '$remarks', '$endorsed_to')";
+    $insertIntoQueueLogQuery = "INSERT INTO $log_table (student_id, queue_number, office, timestamp, remarks, endorsed) VALUES ('$student_id', '$queue_number', '$currentOffice', NOW(), '$remarks', '$endorsed_to')";
   } else if ($transaction_type == "finish") {
-    $insertIntoQueueLogQuery = "INSERT INTO $log_table (student_id, queue_number, office, timestamp, remarks, endorsed) VALUES ('$student_id', '$queue_number', '$currentOffice', '$timestamp', '$remarks', '$currentOffice')";
+    $insertIntoQueueLogQuery = "INSERT INTO $log_table (student_id, queue_number, office, timestamp, remarks, endorsed) VALUES ('$student_id', '$queue_number', '$currentOffice', NOW(), '$remarks', '$currentOffice')";
   }
 
 

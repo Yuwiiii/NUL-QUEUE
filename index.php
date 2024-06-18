@@ -112,7 +112,7 @@
                         <option value="SABM">SABM - School of Accountancy and Business Management</option>
                         <option value="SHS">SHS - Senior High School</option> -->
                     </select>
-                    <input type="text"
+                    <input type="text" pattern="[0-9]*[^a-zA-Z]"
                         class="form-control text-center rounded border-1 border-dark custom-primary-color font-weight-bold"
                         placeholder="Enter Student ID" id="studentId">
                     <p class="text-danger" id="error-message" style="display: none;">Please enter a Student ID.</p>

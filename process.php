@@ -71,6 +71,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get the next queue number for the selected office
     $queueNumber = getNextQueueNumber($office);
 
+    // echo json_encode([
+    //     "office" => $office,
+    //     "studentId" => $studentId,
+    //     "program" => $program,
+    //     "endorsed" => $endorsed,
+    //     "queue_number" => $queueNumber
+    // ]);
+
     // Insert the record into the database
     $sql = "INSERT INTO queue (student_id, program, queue_number, office, endorsed) VALUES ('$studentId', '$program', '$queueNumber', '$office', '$endorsed')";
 
@@ -101,6 +109,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         insertQueueToTables($tabledata);
     }
+
+
 } else {
     echo "Invalid request";
 }
@@ -132,8 +142,16 @@ function getNextQueueNumber($office)
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $maxQueue = $row['max_queue'];
-        // Extract the numeric part of the queue number
-        $numericPart = (int) substr($maxQueue, strlen($prefix));
+    
+        // Check if $maxQueue is not null before using substr
+        if ($maxQueue !== null) {
+            // Extract the numeric part of the queue number
+            $numericPart = (int) substr($maxQueue, strlen($prefix));
+        } else {
+            // Handle the case where $maxQueue is null (no records exist)
+            $numericPart = 0; // or any default numeric value
+        }
+    
         // Increment the numeric part
         $nextNumericPart = $numericPart + 1;
         // Format the next queue number

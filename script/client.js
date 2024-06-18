@@ -112,6 +112,9 @@ function registerStudent() {
         data: { studentId: studentId, program: program, office: office },
         dataType: "json",
         success: function (response) {
+
+            console.log(response)
+
             if (response.success) {
                 var queueNumber = response.queue_number;
                 document.getElementById("queueNumber").innerText = queueNumber;
@@ -123,7 +126,10 @@ function registerStudent() {
                 alert("Error: " + response.message);
             }
         },
-        error: function () {
+        error: function (error) {
+
+            console.log("ERROR IS THROWN HERE 👁️")
+            console.log(error)
             alert("An error occurred.");
         }
     });

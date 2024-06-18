@@ -161,7 +161,7 @@ if (isset($_SESSION["full_name"]) && isset($_SESSION["username"]) && isset($_SES
         <div class="time-div">
             <p><i id="info-queue-time">please select queue number</i></p> 
             <div id="timer-container" style="display: none;">
-            <p id="timer">Timer: 60 seconds</p>
+            <p id="timer">Timer: 5 seconds</p>
             </div>
             <p hidden><i id="info-queue-timestamp">please select queue number</i></p>
         </div>
