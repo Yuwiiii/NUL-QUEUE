@@ -138,30 +138,7 @@ function fetchInfo(queueNumber) {
     const confirmEndYesButton = document.getElementById('confirm-end-yes-btn');
     const confirmEndNoButton = document.getElementById('confirm-end-no-btn');
 
-// // Add a click event listener to the 'END' button
-// $("#end-button").on("click", function () {
-//   // Check if there is data in the info-div
-//   var isInfoDivEmpty =
-//       $("#info-queue-number").text().trim() === "Welcome!" &&
-//       $("#info-queue-time").text().trim() === "please select queue number" &&
-//       $("#info-student").text().trim() === "" &&
-//       $("#info-transaction").text().trim() === "" &&
-//       $("#info-endorse").text().trim() === "" &&
-//       $("#info-remarks").text().trim() === "";
 
-//   if (isInfoDivEmpty) {
-//       $("#select-queue-modal").css("display", "flex");
-//   } else {
-//       $("#end-button").prop("disabled", true);      
-//       $("#wait-modal").css("display", "flex");
-//       setTimeout(function() {
-//         $("#end-button").prop("disabled", false);
-//         $("#wait-modal").css("display", "none");
-//       }, 120000);
-//       setTimeout(function() {
-//         confirmEndModal.style.display = 'flex';
-//       }, 120000);
-//   }
 // });
 
 // Add a click event listener to the 'END' button
@@ -331,31 +308,6 @@ queuebutton.addEventListener('click', () => {
         });
 });
 
-// function hideFormModal() {
-//   const formModal = document.getElementById('formModal');
-//   formModal.style.display = 'none';
-// }
-
-// function showFormModal() {
-//   const formModal = document.getElementById('formModal');
-//   formModal.style.display = 'flex';
-// }
-
-// function showOptionsModal() {
-//     // Hide the form-modal
-//     hideFormModal();
-//     // Display the modal for informing the user to select options
-//     const optionsModal = document.getElementById('select-options-modal');
-//     optionsModal.style.display = 'block';
-//     // Add an event listener to the OK button in the modal
-//     const okButton = document.getElementById('select-options-ok-btn');
-//     okButton.addEventListener('click', function () {
-//         // Close the modal when the OK button is clicked
-//         optionsModal.style.display = 'none';
-//         // Show the form-modal again
-//         showFormModal();
-//     });
-// }
 
 document.getElementById("confirm-done-btn").addEventListener("click", function () {
   const queueNumber = document.getElementById("form-queue-number").value;
