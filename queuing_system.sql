@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 18, 2024 at 10:56 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Generation Time: Jun 20, 2024 at 10:15 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -141,7 +141,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`users`, `id`, `email`, `password`) VALUES
-('window1', 1, 'magalingka@gmail.com', '12345678');
+('window1', 1, 'SuperAdmin@nu-laguna', '12345678');
 
 -- --------------------------------------------------------
 
@@ -412,8 +412,7 @@ INSERT INTO `offices` (`ID`, `acronym`, `officeName`, `office`) VALUES
 (7, 'AS', 'ASSETS', 1),
 (8, 'IT', 'ITSO', 1),
 (9, 'G', 'GUIDANCE', 1),
-(13, 'F', 'ACADEMICS', 0),
-(23, 'BX', 'BULLDOGEXCHANGE', 0);
+(13, 'F', 'ACADEMICS', 0);
 
 -- --------------------------------------------------------
 
@@ -449,7 +448,10 @@ INSERT INTO `program_chairs` (`id`, `full_name`, `program`, `status`, `user_id`,
 (13, 'Arnel Villamin', 'SABM', 'available', 0, 'BSA'),
 (14, 'Richard Miguel Butial', 'SHS', 'offline', 0, 'ABM'),
 (15, 'Jhanna Mae Tadique', 'SHS', 'offline', 0, 'STEM'),
-(16, 'Maria Carina Pontanar', 'SHS', 'available', 0, 'HUMSS');
+(16, 'Maria Carina Pontanar', 'SHS', 'available', 0, 'HUMSS'),
+(37, 'ABM', 'SHS', NULL, 55, 'ABM'),
+(38, 'HUMMS', 'SHS', NULL, 56, 'HUMSS'),
+(39, 'STEM', 'SHS', NULL, 57, 'STEM');
 
 -- --------------------------------------------------------
 
@@ -573,20 +575,16 @@ INSERT INTO `user_accounts` (`ID`, `full_name`, `office`, `username`, `password`
 (13, 'Richard Miguel Butial', 'SHS', 'Richard', '25d55ad283aa400af464c76d713c07ad', 'offline', 0),
 (14, 'Jhanna Mae Tadique', 'SHS', 'Jhanna', '25d55ad283aa400af464c76d713c07ad', 'offline', 0),
 (15, 'Maria Carina Pontanar', 'SHS', 'Maria', '12345678', NULL, 0),
-(22, 'Admission 1', 'ADMISSION', 'admission1', '12345678', NULL, 4),
-(32, 'Accounting 1', 'ACCOUNTING', 'accounting1', '12345678', 'offline', 1),
-(33, 'Accounting 2', 'ACCOUNTING', 'accounting2', '12345678', NULL, 2),
-(34, 'Registrar 1', 'REGISTRAR', 'registrar1', '12345678', NULL, 1),
-(35, 'Registrar 2', 'REGISTRAR', 'registrar2', '12345678', NULL, 2),
-(36, 'Clinic 1', 'CLINIC', 'clinic1', '12345678', NULL, 1),
-(37, 'Clinic 2', 'CLINIC', 'clinic2', '12345678', NULL, 2),
-(38, 'Assets 1', 'ASSETS', 'assets1', '12345678', NULL, 1),
-(39, 'Assets 2', 'ASSETS', 'assets2', '12345678', NULL, 2),
-(40, 'ITSO 1', 'ITSO', 'itso1', '12345678', NULL, 1),
-(41, 'ITSO 2', 'ITSO', 'itso2', '12345678', NULL, 2),
-(42, 'Guidance 1', 'GUIDANCE', 'guidance1', '12345678', NULL, 1),
-(43, 'Guidance 2', 'GUIDANCE', 'guidance2', '12345678', NULL, 2),
-(44, 'Admission 2', 'ADMISSION', 'admission2', '12345678', NULL, 2);
+(48, 'Admission', 'ADMISSION', 'admission1', '12345678', NULL, 1),
+(49, 'Registrar', 'REGISTRAR', 'registrar1', '12345678', NULL, 1),
+(50, 'Accounting', 'ACCOUNTING', 'accounting1', '12345678', NULL, 1),
+(51, 'Clinic', 'CLINIC', 'clinic1', '12345678', NULL, 1),
+(52, 'Assets', 'ASSETS', 'assets1', '12345678', NULL, 1),
+(53, 'ITSO', 'ITSO', 'itso1', '12345678', NULL, 1),
+(54, 'Guidance', 'GUIDANCE', 'guidance1', '12345678', NULL, 1),
+(55, 'ABM', 'SHS', 'abm1', '12345678', NULL, 1),
+(56, 'HUMMS', 'SHS', 'humss1', '12345678', NULL, 1),
+(57, 'STEM', 'SHS', 'stem1', '12345678', NULL, 1);
 
 --
 -- Indexes for dumped tables
@@ -882,7 +880,7 @@ ALTER TABLE `offices`
 -- AUTO_INCREMENT for table `program_chairs`
 --
 ALTER TABLE `program_chairs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `queue`
@@ -918,7 +916,7 @@ ALTER TABLE `studentid_list`
 -- AUTO_INCREMENT for table `user_accounts`
 --
 ALTER TABLE `user_accounts`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
